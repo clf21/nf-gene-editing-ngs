@@ -1,0 +1,131 @@
+diff --color -ruN CRISPResso-master/CRISPResso/CRISPRessoCORE.py CRISPResso-master.modified/CRISPResso/CRISPRessoCORE.py
+--- CRISPResso-master/CRISPResso/CRISPRessoCORE.py	2019-05-17 19:23:11.000000000 +0100
++++ CRISPResso-master.modified/CRISPResso/CRISPRessoCORE.py	2024-02-21 12:53:31.625991717 +0000
+@@ -497,6 +497,7 @@
+ 
+                         if current_read_spliced_modified:
+                             SPLICING_SITES_MODIFIED+=1
++                            df_needle_alignment_chunk.ix[idx_row,'Splice_mod']=True
+ 
+                         #if modified check if frameshift
+                         if current_read_exons_modified:
+@@ -505,6 +506,7 @@
+                                 #there are no indels
+                                 MODIFIED_NON_FRAMESHIFT+=1
+                                 hist_inframe[0]+=1
++                                df_needle_alignment_chunk.ix[idx_row,'In_frame']=True
+                             else:
+ 
+                                 effetive_length=sum(lenght_modified_positions_exons)
+@@ -512,9 +514,11 @@
+                                 if (effetive_length % 3 )==0:
+                                     MODIFIED_NON_FRAMESHIFT+=1
+                                     hist_inframe[effetive_length]+=1
++                                    df_needle_alignment_chunk.ix[idx_row,'In_frame']=True
+                                 else:
+                                     MODIFIED_FRAMESHIFT+=1
+                                     hist_frameshift[effetive_length]+=1
++                                    df_needle_alignment_chunk.ix[idx_row,'Frameshift']=True
+ 
+                         #the indels and subtitutions are outside the exon/s  so we don't care!
+                         else:
+@@ -522,6 +526,7 @@
+                             effect_vector_insertion_noncoding[insertion_positions_flat]+=1
+                             effect_vector_deletion_noncoding[deletion_positions_flat]+=1
+                             effect_vector_mutation_noncoding[substitution_positions]+=1
++                            df_needle_alignment_chunk.ix[idx_row,'Noncoding']=True
+ 
+      hist_inframe=dict(hist_inframe)
+      hist_frameshift=dict(hist_frameshift)
+@@ -570,13 +575,13 @@
+ 
+ def get_row_around_cut(row,cut_point,offset):
+     cut_idx=row['ref_positions'].index(cut_point)
+-    return  row['Aligned_Sequence'][cut_idx-offset+1:cut_idx+offset+1],row['Reference_Sequence'][cut_idx-offset+1:cut_idx+offset+1],row['UNMODIFIED'],row['%Reads'], row['#Reads']
++    return  row['Aligned_Sequence'][cut_idx-offset+1:cut_idx+offset+1],row['Reference_Sequence'][cut_idx-offset+1:cut_idx+offset+1],row['UNMODIFIED'],row['NHEJ'],row['HDR'],row['Frameshift'],row['In_frame'],row['Noncoding'],row['Splice_mod'],row['%Reads'],row['#Reads']
+ 
+ 
+ def get_dataframe_around_cut(df_alleles, cut_point,offset):
+     df_alleles_around_cut=pd.DataFrame(list(df_alleles.apply(lambda row: get_row_around_cut(row,cut_point,offset),axis=1).values),
+-                        columns=['Aligned_Sequence','Reference_Sequence','Unedited','%Reads','#Reads'])
+-    df_alleles_around_cut=df_alleles_around_cut.groupby(['Aligned_Sequence','Reference_Sequence']).sum().reset_index().set_index('Aligned_Sequence')
++                        columns=['Aligned_Sequence','Reference_Sequence','Unedited','NHEJ','HDR','Frameshift','In_frame','Noncoding','Splice_mod','%Reads','#Reads'])
++    df_alleles_around_cut=df_alleles_around_cut.groupby(['Aligned_Sequence','Reference_Sequence','Unedited','NHEJ','HDR','Frameshift','In_frame','Noncoding','Splice_mod']).sum().reset_index().set_index('Aligned_Sequence')
+ 
+     df_alleles_around_cut.sort_values(by='%Reads',inplace=True,ascending=False)
+     df_alleles_around_cut['Unedited']=df_alleles_around_cut['Unedited']>0
+@@ -1436,6 +1441,19 @@
+              df_needle_alignment['HDR']=False
+              df_needle_alignment['NHEJ']=False
+ 
++             if args.coding_seq:
++                df_needle_alignment['Frameshift']=False
++                df_needle_alignment['In_frame']=False
++                df_needle_alignment['Noncoding']=False
++                df_needle_alignment['Splice_mod']=False
++             else:
++                df_needle_alignment['Frameshift']='NA'
++                df_needle_alignment['In_frame']='NA'
++                df_needle_alignment['Noncoding']='NA'
++                df_needle_alignment['Splice_mod']='NA'
++
++             df_needle_alignment['cut_points']='NA'
++
+              df_needle_alignment['n_mutated']=0
+              df_needle_alignment['n_inserted']=0
+              df_needle_alignment['n_deleted']=0
+@@ -1638,7 +1656,7 @@
+                 #return list(df_alignment.ix[(row.Aligned_Sequence ,row.Reference_Sequence),'ref_positions'][0])
+                 return list(df_alignment.loc[[(row.Aligned_Sequence,row.Reference_Sequence)]].iloc[0,].loc['ref_positions'])
+ 
+-             df_alleles=df_needle_alignment.groupby(['align_seq','ref_seq','NHEJ','UNMODIFIED','HDR','n_deleted','n_inserted','n_mutated',]).size()
++             df_alleles=df_needle_alignment.groupby(['align_seq','ref_seq','UNMODIFIED','NHEJ','HDR','Frameshift','In_frame','Noncoding','Splice_mod','cut_points','n_deleted','n_inserted','n_mutated',]).size()
+              df_alleles=df_alleles.reset_index()
+              df_alleles.rename(columns={0:'#Reads','align_seq':'Aligned_Sequence','ref_seq':'Reference_Sequence'},inplace=True)
+              #df_alleles.set_index('Aligned_Sequence',inplace=True)
+@@ -1654,6 +1672,10 @@
+              df_needle_alignment.sort_index(inplace=True)
+              df_alleles['ref_positions']=df_alleles.apply(lambda x: get_ref_positions(x,df_needle_alignment),axis=1).values
+ 
++             #set cut site position relative to alignment
++             if cut_points:
++                df_alleles['cut_points'] = df_alleles.apply(lambda x: ','.join([str(x['ref_positions'].index(i)) for i in cut_points]), axis=1).values
++
+              info('Done!')
+ 
+ 
+diff --color -ruN CRISPResso-master/setup.py CRISPResso-master.modified/setup.py
+--- CRISPResso-master/setup.py	2019-05-17 19:23:11.000000000 +0100
++++ CRISPResso-master.modified/setup.py	2024-02-21 12:54:17.839322645 +0000
+@@ -78,12 +78,16 @@
+               'Programming Language :: Python',
+               ],
+           install_requires=[
+-              'numpy>=1.9',
+-              'pandas>=0.15',
+-              'matplotlib>=1.3.1',
+-              'biopython>=1.6.5',
++              'numpy>=1.9,<1.15',
++              'scipy>=0.17,<1.1',
++              'pandas>=0.15,<0.23',
++              'matplotlib>=1.3.1,<2',
++              'biopython>=1.6.5,<1.74',
++              'pyparsing>=2.0,<2.3',
++              'kiwisolver>=1.0,<1.1',
++              'cycler>=0.10,<0.11',
+               'argparse>=1.3',
+-			  'seaborn>=0.7.1',
++              'seaborn>=0.7.1,<0.10',
+               ],
+ 
+           )
+@@ -244,6 +248,6 @@
+     main()
+     if sys.argv[1]=='install':
+     	sys.stdout.write ('\nPython package installed')
+-    	sys.stdout.write ('\n\nChecking dependencies...')
+-    	install_dependencies()
+-    	sys.stdout.write ('\nAll done!')
++    	# sys.stdout.write ('\n\nChecking dependencies...')
++    	# install_dependencies()
++    	# sys.stdout.write ('\nAll done!')

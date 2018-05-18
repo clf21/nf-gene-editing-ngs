@@ -1,0 +1,4 @@
+.nextflow*
+ref_genomes
+work
+output
