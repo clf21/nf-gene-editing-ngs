@@ -1,5 +1,6 @@
 // Nextflow wrapper to align_amplicons_to_reference.pl
 process _alignAmpliconsToReference {
+    label "process_low"
     label "usesBowtie2"
 
     input:

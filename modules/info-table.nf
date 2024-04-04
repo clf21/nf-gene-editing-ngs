@@ -40,7 +40,8 @@ process _infoTableYamlFromYaml {
         // Tuple of the form:
         // * List of delimited YAML routes
         // * List of info.yaml payload paths
-        tuple val(yamlRoutes), path(payloads, name: "*.yaml")
+        tuple val(yamlRoutes),
+              path(payloads, name: "*.yaml")
 
     output:
         path "info.yaml"
@@ -67,7 +68,8 @@ process _infoTableYamlFromRaw {
         // Tuple of the form:
         // * List of delimited YAML routes
         // * List of raw payloads
-        tuple val(yamlRoutes), val(payloads)
+        tuple val(yamlRoutes),
+              val(payloads)
 
     output:
         path "info.yaml"
@@ -139,14 +141,14 @@ workflow toOverlapInfo {
         // NOTE These inputs are precisely the output of countReadOverlap
 
         // Channel of tuples, of the form:
-        // * Metadata<Sample name, Read ID>
+        // * Metadata<Sample name, Read ID, Amplicon name>
         // * Aligned BAM and its index
         // * Path to amplicon definition
         // * Overlap count
         identifiedCount
 
         // Channel of tuples, of the form:
-        // * Metadata<Sample name, Read ID>
+        // * Metadata<Sample name, Read ID, Amplicon name>
         // * Aligned BAM and its index
         // * Path to amplicon definition
         // * Overlap count
@@ -155,7 +157,7 @@ workflow toOverlapInfo {
     main:
         identifiedCount
         | mix(skippedCount)
-        | map { meta, _bam, ampliconYaml, overlapCount -> [ meta << ampliconYaml, overlapCount ] }
+        | map { meta, _bam, _ampliconYaml, overlapCount -> [ meta, overlapCount ] }
         | set { overlap }
 
     emit:

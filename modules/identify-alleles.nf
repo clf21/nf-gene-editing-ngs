@@ -1,18 +1,19 @@
 // Nextflow wrapper to identify_alleles.pl
 process identifyAllelesCRISPResso {
+    label "process_low"
     label "usesSamtools"
     label "usesCRISPResso"
 
     errorStrategy "ignore"
 
-    tag "${metaWithAmplicon.id}"
+    tag "${meta.id}"
     publishDir "${params.outdir}", mode: "copyNoFollow", overwrite: true, saveAs: {
-        it == "alleles_analysis" ? metaWithAmplicon.publishDir : it
+        it == "alleles_analysis" ? meta.publishDir : it
     }
 
     input:
         // Tuple of:
-        // * Metadata<Sample name, Read ID>
+        // * Metadata<Sample name, Read ID, Amplicon name>
         // * Aligned sample read (BAM and index) paths
         // * Amplicon description (YAML) path
         // * Amplicon read overlap count
@@ -20,16 +21,19 @@ process identifyAllelesCRISPResso {
         // The Amplicon YAML should have the following structure:
         // * name  String  Name of the amplicon
         // * info  Object  Amplicon alignment details
-        tuple val(meta), path(alignedSample), path(ampliconYaml), val(overlapCount)
+        tuple val(meta),
+              path(alignedSample),
+              path(ampliconYaml),
+              val(overlapCount)
 
     output:
         // * Identifier, of the form Metadata<Sample name, Read ID, Amplicon name>
         // * CRISPResso analysis (and convenience symlinks) directory
-        tuple val(metaWithAmplicon), path("alleles_analysis")
+        tuple val(meta),
+              path("alleles_analysis")
 
     shell:
-        assert meta.hasKeys(Metadata.Keys.SampleId)
-        metaWithAmplicon = meta << ampliconYaml
+        assert meta.hasKeys(Metadata.Keys.AnalysisId)
 
         assert alignedSample.size() == 2
         (sampleBam, _) = alignedSample
@@ -57,7 +61,9 @@ process reportFailedAnalysis {
         val meta
 
     output:
-        tuple val(meta), val("failed"), path("error.yaml")
+        tuple val(meta),
+              val("failed"),
+              path("error.yaml")
 
     shell:
         assert meta.hasKeys(Metadata.Keys.AnalysisId)
@@ -77,7 +83,7 @@ workflow identifyAlleles {
     take:
         // Channel of read, amplicon and overlap count. That is, tuples
         // of the form:
-        // * Meta<Sample name, Read ID>
+        // * Meta<Sample name, Read ID, Amplicon name>
         // * Aligned sample read (and corresponding index)
         // * Amplicon description YAML
         // * Overlap count
@@ -93,7 +99,7 @@ workflow identifyAlleles {
         // To determine failures, we only care about the input
         // identifiers; so drop everything else
         readsWithAmpliconsAndOverlapCount
-        | map { meta, _sample, ampliconYaml, _overlap -> meta << ampliconYaml }
+        | map { meta, _sample, _ampliconYaml, _overlap -> meta }
         | set { inputIdentifiers }
 
         // NOTE If _no_ analyses succeeded, then the result of the join

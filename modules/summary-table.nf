@@ -8,7 +8,9 @@ process _summaryTableYaml {
         //
         // NOTE Nextflow will rename each of the input files to N.yaml,
         // where N is an increasing integer starting from 1
-        tuple val(metas), val(outputTypes), path(analysisSummariesYaml, name: "*.yaml")
+        tuple val(metas),
+              val(outputTypes),
+              path(analysisSummariesYaml, name: "*.yaml")
 
     output:
         path "summary.yaml"

@@ -7,7 +7,8 @@ process _postProcess {
         // name) and respective results directories
         // NOTE Nextflow will rename each of the input directories to
         // alleles_analysisN, where N is an increasing integer from 1
-        tuple val(metas), path(analysisResults, name: "alleles_analysis")
+        tuple val(metas),
+              path(analysisResults, name: "alleles_analysis")
 
     output:
         path "alleles_frequency_table.txt.gz"

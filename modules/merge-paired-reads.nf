@@ -6,14 +6,19 @@ process _mergePairedReads {
 
     input:
         // Sample Read (Metadata<Sample name> and FASTQ pair)
-        tuple val(meta), path(sampleFastqPair, name: "*.fastq.gz")
+        tuple val(meta),
+              path(sampleFastqPair, name: "*.fastq.gz")
 
     output:
         // FLASH output
-        tuple val(meta), path("out.*.fastq.gz"), emit: output
+        tuple val(meta),
+              path("out.*.fastq.gz"),
+              emit: output
 
         // Additional details about read merging
-        tuple val(meta), path("info.yaml"), emit: info
+        tuple val(meta),
+              path("info.yaml"),
+              emit: info
 
     shell:
         assert sampleFastqPair.size() == 2

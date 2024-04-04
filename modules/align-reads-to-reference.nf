@@ -1,5 +1,6 @@
 // Nextflow wrapper to align_reads_to_reference.pl
 process _alignReadsToReference {
+    label "process_low"
     label "usesSamtools"
     label "usesBowtie2"
 
@@ -14,14 +15,19 @@ process _alignReadsToReference {
         path bt2IndexPath
 
         // Input Read
-        tuple val(meta), path(sampleFastq)
+        tuple val(meta),
+              path(sampleFastq)
 
     output:
         // Output from Samtools (BAM and its index)
-        tuple val(meta), path("aligned.bam*"), emit: output
+        tuple val(meta),
+              path("aligned.bam*"),
+              emit: output
 
         // Additional details about read alignment
-        tuple val(meta), path("info.yaml"), emit: info
+        tuple val(meta),
+              path("info.yaml"),
+              emit: info
 
     shell:
         assert meta.hasKeys(Metadata.Keys.SampleId)

@@ -7,42 +7,47 @@ use File::Spec;
 use YAML::XS qw(LoadFile);
 
 # Template Tags:
-#   ampliconYaml)
-#     Amplicon YAML file
-#       name)
-#         name of the amplicon
-#       info)
-#         amplicon alignment coordinates
-#   sampleBam)
-#     BAMfile of aligned sample read
+#   N)
+#     Number of combinations to count
+#     NOTE {1..N}.bam, {1..N}.bam.bai and {1..N}.yaml are assumed to
+#          exist in the working directory
 #   task.ext.samtools)
 #     Samtools command definition
 #
 # Output
 #   standard output)
-#     Count of reads overlapping the region
+#     Count of reads overlapping the region for each input (delimited)
 
-my $amplicon = LoadFile("!{ampliconYaml}");
+my $N = !{N};
 
-my $info = $amplicon->{info};
-my $amplicon_location = "$info->{chr}:$info->{start}-$info->{end}";
+my @counts = ();
+my $delimiter = "!{params._internal.delimiter}";
 
-my $amplicon_read_count;
-if ($info->{barcode}) {
-  my $rc_barcode = reverse($info->{barcode});
-  $rc_barcode =~ tr /atcgATCG/tagcTAGC/;
-  my $viewcmd = !{Escape.cmdAsPerlString(task.ext.samtools, 'view', sampleBam, '$amplicon_location')};
-  my $countcmd = "awk -F '\\t' '(\$10 ~ /^$info->{barcode}|$rc_barcode\$/) {i++} END{print i}'";
-  $amplicon_read_count = `bash -c "set -o pipefail; $viewcmd | $countcmd"`;
-  $? == 0 or die "ERROR: samtools barcode count failed: $?";
+foreach my $i (1 .. $N) {
+  my $sample_bam = "$i.bam";
+  my $amplicon = LoadFile("$i.yaml");
+
+  my $info = $amplicon->{info};
+  my $amplicon_location = "$info->{chr}:$info->{start}-$info->{end}";
+
+  my $amplicon_read_count;
+  if ($info->{barcode}) {
+    my $rc_barcode = reverse($info->{barcode});
+    $rc_barcode =~ tr /atcgATCG/tagcTAGC/;
+    my $viewcmd = !{Escape.cmdAsPerlString(task.ext.samtools, 'view', '$sample_bam', '$amplicon_location')};
+    my $countcmd = "awk -F '\\t' '(\$10 ~ /^$info->{barcode}|$rc_barcode\$/) {i++} END{print i}'";
+    $amplicon_read_count = `bash -c "set -o pipefail; $viewcmd | $countcmd"`;
+    $? == 0 or die "ERROR: samtools barcode count failed: $?";
+  }
+  else {
+    my $countcmd = !{Escape.cmdAsPerlString(task.ext.samtools, 'view', '-c', '$sample_bam', '$amplicon_location')};
+    $amplicon_read_count = `$countcmd`;
+    $? == 0 or die "ERROR: samtools count failed: $?";
+  }
+  chomp($amplicon_read_count);
+
+  # Write count to stdout
+  push @counts, ($amplicon_read_count + 0);
 }
-else {
-  my $countcmd = !{Escape.cmdAsPerlString(task.ext.samtools, 'view', '-c', sampleBam, '$amplicon_location')};
-  $amplicon_read_count = `$countcmd`;
-  $? == 0 or die "ERROR: samtools count failed: $?";
-}
-chomp($amplicon_read_count);
 
-# Write count to stdout
-$amplicon_read_count += 0;
-print "${amplicon_read_count}";
+print join($delimiter, @counts);

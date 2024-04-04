@@ -121,10 +121,9 @@ rename($output_dir . "/CRISPResso_on_reads", $output_dir . "/" . $CRISPResso_out
 
 # For easier browsing, link main CRISPResso output files to the top level directory
 # with names that include sample and amplicon information, and compress alleles table.
-# TODO Use underscores as the delimiter, rather than dashes (see Issue #63)
-my $sample_prefix = "!{meta.sampleName}-";
-$sample_prefix .= "!{meta.readId}-" unless "!{meta.readId}" eq "Merged";
-$sample_prefix .= $amplicon->{name} . "-";
+my $sample_prefix = "!{meta.sampleName}_";
+$sample_prefix .= "!{meta.readId}_" unless "!{meta.readId}" eq "Merged";
+$sample_prefix .= $amplicon->{name} . "_";
 
 opendir(my $CRISPResso_dir, $output_dir . "/" . $CRISPResso_out);
 while (my $file = readdir($CRISPResso_dir)) {

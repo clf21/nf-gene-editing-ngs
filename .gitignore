@@ -1,4 +1,5 @@
 .nextflow*
+.nf-test*
 ref_genomes
 work
 output

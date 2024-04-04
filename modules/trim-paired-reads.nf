@@ -8,14 +8,19 @@ process _trimPairedReads {
         // Sample Read (Metadata<Sample name> and FASTQ pair)
         // NOTE The input downsampled.fastq.gz files are renamed by
         // Nextflow to downsampled-{1,2}.fastq.gz, automatically
-        tuple val(meta), path(sampleFastqPair, name: "downsampled-*.fastq.gz")
+        tuple val(meta),
+              path(sampleFastqPair, name: "downsampled-*.fastq.gz")
 
     output:
         // Trimmed read pair
-        tuple val(meta), path("read*_trimmed.fastq.gz"), emit: output
+        tuple val(meta),
+              path("read*_trimmed.fastq.gz"),
+              emit: output
 
         // Additional details about read trimming
-        tuple val(meta), path("info.yaml"), emit: info
+        tuple val(meta),
+              path("info.yaml"),
+              emit: info
 
     shell:
         assert sampleFastqPair.size() == 2

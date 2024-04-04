@@ -10,11 +10,14 @@ process summarizeAlleles {
     input:
         // CRISPResso Allele Analysis ID and output directory
         // (i.e., Path containing CRISPResso_output/{Quantification_of_editing_frequency.txt,Frameshift_analysis.txt})
-        tuple val(meta), path(analysisDir)
+        tuple val(meta),
+              path(analysisDir)
 
     output:
         // Summary of CRISPResso results
-        tuple val(meta), val("results"), path("info.yaml")
+        tuple val(meta),
+              val("results"),
+              path("info.yaml")
 
     shell:
         assert meta.hasKeys(Metadata.Keys.AnalysisId)

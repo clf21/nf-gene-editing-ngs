@@ -454,14 +454,14 @@ Inputs:
 Outputs:
 * `toIdentify`: Channel of inputs, augmented with the amplicon overlap
   count, that exceed the overlap threshold. That is, tuples of the form:
-  * Sample identifier (sample name and read ID).
+  * Analysis identifier (sample name, read ID and amplicon name).
   * Aligned reads (BAM and associated index).
   * Single amplicon description YAML file.
   * Read overlap count.
 * `toSkip`: Channel of inputs, augmented with the amplicon overlap
   count, that fail to meet the overlap threshold. That is, tuples of the
   form:
-  * Sample identifier (sample name and read ID).
+  * Analysis identifier (sample name, read ID and amplicon name).
   * Aligned reads (BAM and associated index).
   * Single amplicon description YAML file.
   * Read overlap count.
@@ -571,7 +571,7 @@ Published:
 Inputs:
 1. Channel of sample read, amplicon and overlap. That is, tuples of the
    form:
-   * Sample identifier (sample name and read ID).
+   * Analysis identifier (sample name, read ID and amplicon name).
    * Aligned reads (BAM and associated index).
    * Single amplicon description YAML file.
    * Read overlap count.
@@ -592,7 +592,7 @@ Outputs:
 Inputs:
 1. Channel of sample read, amplicon and overlap. That is, tuples of the
    form:
-   * Sample identifier (sample name and read ID).
+   * Analysis identifier (sample name, read ID and amplicon name).
    * Aligned reads (BAM and associated index).
    * Single amplicon description YAML file.
    * Read overlap count.
@@ -687,7 +687,7 @@ Published:
 Inputs:
 1. Channel of sample read, amplicon and overlap. That is, tuples of the
    form:
-   * Sample identifier (sample name and read ID).
+   * Analysis identifier (sample name, read ID and amplicon name).
    * Aligned reads (BAM and associated index).
    * Single amplicon description YAML file.
    * Read overlap count.

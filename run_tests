@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+
+# Environment-aware test runner
+#
+# Usage:
+# [IMAGE=<IMAGE>] [TAG=<TAG>] [NO_HPC=1] ./run_tests [TEST_FILE] [NF-TEST_OPTIONS...]
+#
+# If no TEST_FILE is specified, then all test files in 'tests/' will be used.
+#
+# Docker will be used if it exists, otherwise Singularity; failing if
+# neither exist.
+#
+# The IMAGE and TAG environment variables can be set to override the
+# default image. Setting the NO_HPC environment variable (to anything) will
+# disable SLURM execution.
+
+set -euo pipefail
+
+declare TESTS="tests/"
+if [[ -e "${1-}" ]]; then
+  TESTS="$1"
+  shift
+fi
+
+# Default image name
+declare IMAGE="${IMAGE-nf-gene-editing-ngs}"
+declare TAG="${TAG-latest}"
+declare GENA_IMAGE
+
+declare EXECUTOR="local"
+declare CONTAINER
+
+has() {
+  local cmd="$1"
+  command -v "${cmd}" >/dev/null
+}
+
+has-docker-image() {
+  local image="$1"
+  local tag="${2-latest}"
+
+  docker images --filter dangling=false \
+                --format '{{ .Repository }}:{{ .Tag }}' \
+  | grep -Fqx "${image}:${tag}"
+}
+
+in-chroot() {
+  root-mount-id() {
+    local pid="$1"
+    awk '$5 == "/" { print $1 }' < "/proc/${pid}/mountinfo"
+  }
+
+  [[ "$(root-mount-id 1)" != "$(root-mount-id $$)" ]]
+}
+
+# Check if LMOD is available and load nextflow in HPC environment
+if has module; then
+  module load nextflow-22.10.6-gcc-11.2.0-g3vbp5x
+fi
+
+if ! has nextflow; then
+  >&2 echo "Nextflow not available!"
+  exit 1
+fi
+
+if ! has nf-test; then
+  >&2 echo "nf-test not available!"
+  exit 1
+fi
+
+if has docker; then
+  # Check image exists
+  if ! has-docker-image "${IMAGE}" "${TAG}"; then
+    cat <<-EOF >&2
+			Docker image '${IMAGE}:${TAG}' not found!
+			Set the IMAGE and/or TAG environment variables to override.
+			EOF
+    exit 1
+  fi
+
+  CONTAINER="docker"
+  GENA_IMAGE="${IMAGE}:${TAG}"
+
+elif has singularity; then
+  CONTAINER="singularity"
+
+  # Use a local image, if it exists, otherwise default to Artifactory
+  if [[ -e "${IMAGE%*.sif}.sif" ]]; then
+    GENA_IMAGE="$(realpath "${IMAGE%*.sif}.sif")"
+  else
+    GENA_IMAGE="artifacts.example.com/functional-genomics/${IMAGE}:${TAG}"
+  fi
+
+else
+  >&2 echo "No containerisation available!"
+  exit 1
+fi
+
+# SLURM detection (and override)
+if has sbatch && ! [[ "${NO_HPC+x}" ]]; then
+  EXECUTOR="hpc"
+fi
+
+# Singularity cannot run in a chroot
+if [[ "${EXECUTOR}" = "local" ]] && [[ "${CONTAINER}" = "singularity" ]] && in-chroot; then
+  >&2 echo "Cannot run Singularity in a chroot!"
+  exit 1
+fi
+
+export GENA_IMAGE
+
+nf-test test \
+  --profile "+${EXECUTOR},${CONTAINER}" \
+  "${TESTS}" \
+  "$@"

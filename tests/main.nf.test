@@ -1,0 +1,924 @@
+nextflow_pipeline {
+
+    name "Full Pipeline Tests"
+    tag "pipeline"
+    script "main.nf"
+
+    test("Pipeline Defaults, Paired-end") {
+        tag "pipeline_defaults_pe"
+        tag "pipeline_defaults"
+        tag "paired_end"
+
+        when {
+            params {
+                fastqDir      = "$baseDir/tests/nf-core-test-datasets/fastq"
+                reference     = "hg19"
+                refBase       = "$baseDir/ref_genomes"
+                ampliconsYaml = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir        = "$outputDir"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                path("${outputDir}/info.txt"),
+                path("${outputDir}/info.yaml"),
+                path("${outputDir}/summary.txt"),
+                path("${outputDir}/summary.yaml"),
+                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+
+                path("${outputDir}/B2M/B2M-2/info.yaml"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+                path("${outputDir}/HPRT/HPRT-ctrl/info.yaml"),
+                path("${outputDir}/HPRT/HPRT-ctrl/HPRT_HPRT-ctrl_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/HPRT/B2M-2/skipped.yaml"),
+                path("${outputDir}/HPRT/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/HPRT/SNP-edit/skipped.yaml"),
+                path("${outputDir}/SNP/SNP-edit/info.yaml"),
+                path("${outputDir}/SNP/SNP-edit/SNP_SNP-edit_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/SNP/B2M-2/skipped.yaml"),
+                path("${outputDir}/SNP/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/SNP/FLAG-KI/skipped.yaml"),
+            ).match()
+            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert path("${outputDir}/HPRT/HPRT-ctrl/CRISPResso_output").exists()
+            assert path("${outputDir}/SNP/SNP-edit/CRISPResso_output").exists()
+            assert ! path("${outputDir}/HPRT/HPRT-ctrl/HPRT_HPRT-ctrl_Frameshift_analysis.txt").exists()
+            assert ! path("${outputDir}/SNP/SNP-edit/SNP_SNP-edit_Frameshift_analysis.txt").exists()
+        }
+    }
+
+    test("Pipeline Defaults, Single-end") {
+        tag "pipeline_defaults_se"
+        tag "pipeline_defaults"
+        tag "single_end"
+
+        when {
+            params {
+                fastqDir      = "$baseDir/tests/nf-core-test-datasets/fastq_single-end"
+                reference     = "hg19"
+                refBase       = "$baseDir/ref_genomes"
+                ampliconsYaml = "$baseDir/tests/nf-core-test-datasets/amplicons_single-end.yaml"
+                outdir        = "$outputDir"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                path("${outputDir}/info.txt"),
+                path("${outputDir}/info.yaml"),
+                path("${outputDir}/summary.txt"),
+                path("${outputDir}/summary.yaml"),
+                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+
+                path("${outputDir}/B2M_Read1/B2M-2/error.yaml"),
+                path("${outputDir}/B2M_Read1/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M_Read1/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG_Read1/FLAG-KI/info.yaml"),
+                path("${outputDir}/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Frameshift_analysis.txt"),
+                path("${outputDir}/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/FLAG_Read1/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG_Read1/SNP-edit/skipped.yaml"),
+                path("${outputDir}/HPRT_Read1/HPRT-ctrl/info.yaml"),
+                path("${outputDir}/HPRT_Read1/HPRT-ctrl/HPRT_Read1_HPRT-ctrl_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/HPRT_Read1/B2M-2/skipped.yaml"),
+                path("${outputDir}/HPRT_Read1/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/HPRT_Read1/SNP-edit/skipped.yaml"),
+                path("${outputDir}/SNP_Read1/SNP-edit/info.yaml"),
+                path("${outputDir}/SNP_Read1/SNP-edit/SNP_Read1_SNP-edit_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/SNP_Read1/B2M-2/skipped.yaml"),
+                path("${outputDir}/SNP_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/SNP_Read1/FLAG-KI/skipped.yaml"),
+            ).match()
+            assert path("${outputDir}/FLAG_Read1/FLAG-KI/CRISPResso_output").exists()
+            assert path("${outputDir}/HPRT_Read1/HPRT-ctrl/CRISPResso_output").exists()
+            assert path("${outputDir}/SNP_Read1/SNP-edit/CRISPResso_output").exists()
+            assert ! path("${outputDir}/HPRT_Read1/HPRT-ctrl/HPRT_Read1_HPRT-ctrl_Frameshift_analysis.txt").exists()
+            assert ! path("${outputDir}/SNP_Read1/SNP-edit/SNP_Read1_SNP-edit_Frameshift_analysis.txt").exists()
+            assert ! path("${outputDir}/B2M").exists()
+            assert ! path("${outputDir}/FLAG").exists()
+            assert ! path("${outputDir}/HPRT").exists()
+            assert ! path("${outputDir}/SNP").exists()
+        }
+    }
+
+    test("One Sample 1000 Reads, Paired-end") {
+        tag "one_sample_1k_pe"
+        tag "paired_end"
+        tag "minimal"
+
+        when {
+            params {
+                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
+                reference           = "hg19"
+                refBase             = "$baseDir/ref_genomes"
+                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir              = "$outputDir"
+
+                samplesInclude      = "B2M"
+                maxReads            = 1000
+                minReadsPerAmplicon = 500
+                maxReadsPerAmplicon = 10000
+                trimBases           = 6
+                mergeMode           = "merge"
+                mergeMinOverlap     = 4
+                mergeMaxOverlap     = 150
+                crispressoWindow    = 6
+                frameshiftThreshold = 85
+                hdrThreshold        = 85
+                unmodifiedThreshold = 85
+                wtFrameshiftMax     = 5
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                path("${outputDir}/info.txt"),
+                path("${outputDir}/info.yaml"),
+                path("${outputDir}/summary.txt"),
+                path("${outputDir}/summary.yaml"),
+                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+
+                path("${outputDir}/B2M/B2M-2/info.yaml"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
+            ).match()
+            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
+            assert ! path("${outputDir}/FLAG").exists()
+            assert ! path("${outputDir}/HPRT").exists()
+            assert ! path("${outputDir}/SNP").exists()
+        }
+    }
+
+    /* Read count control tests *****************************************/
+
+    test("Read Count Control - No Max Reads, Paired-end") {
+        tag "read_count_no_max_pe"
+        tag "read_count"
+        tag "paired_end"
+
+        when {
+            params {
+                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
+                reference           = "hg19"
+                refBase             = "$baseDir/ref_genomes"
+                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir              = "$outputDir"
+
+                // Common parameters for all read count control tests, using two samples
+                samplesInclude      = "B2M,FLAG"
+                trimBases           = 6
+                mergeMode           = "merge"
+                mergeMinOverlap     = 4
+                mergeMaxOverlap     = 150
+                crispressoWindow    = 6
+                frameshiftThreshold = 85
+                hdrThreshold        = 85
+                unmodifiedThreshold = 85
+                wtFrameshiftMax     = 5
+
+                maxReads            = 0
+                minReadsPerAmplicon = 500
+                maxReadsPerAmplicon = 10000
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                path("${outputDir}/info.txt"),
+                path("${outputDir}/info.yaml"),
+                path("${outputDir}/summary.txt"),
+                path("${outputDir}/summary.yaml"),
+                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+
+                path("${outputDir}/B2M/B2M-2/info.yaml"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+            ).match()
+            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${outputDir}/HPRT").exists()
+            assert ! path("${outputDir}/SNP").exists()
+        }
+    }
+
+    test("Read Count Control - 1000 Max Reads per Amplicon, Paired-end") {
+        tag "read_count_1k_max_per_amplicon_pe"
+        tag "read_count"
+        tag "paired_end"
+
+        when {
+            params {
+                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
+                reference           = "hg19"
+                refBase             = "$baseDir/ref_genomes"
+                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir              = "$outputDir"
+
+                // Common parameters for all read count control tests, using two samples
+                samplesInclude      = "B2M,FLAG"
+                trimBases           = 6
+                mergeMode           = "merge"
+                mergeMinOverlap     = 4
+                mergeMaxOverlap     = 150
+                crispressoWindow    = 6
+                frameshiftThreshold = 85
+                hdrThreshold        = 85
+                unmodifiedThreshold = 85
+                wtFrameshiftMax     = 5
+
+                maxReads            = 10000
+                minReadsPerAmplicon = 500
+                maxReadsPerAmplicon = 1000
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                path("${outputDir}/info.txt"),
+                path("${outputDir}/info.yaml"),
+                path("${outputDir}/summary.txt"),
+                path("${outputDir}/summary.yaml"),
+                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+
+                path("${outputDir}/B2M/B2M-2/info.yaml"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+            ).match()
+            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${outputDir}/HPRT").exists()
+            assert ! path("${outputDir}/SNP").exists()
+        }
+    }
+
+    test("Read Count Control - 5000 Min Reads per Amplicon, Paired-end") {
+        tag "read_count_5k_min_per_amplicon_pe"
+        tag "read_count"
+        tag "paired_end"
+
+        when {
+            params {
+                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
+                reference           = "hg19"
+                refBase             = "$baseDir/ref_genomes"
+                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir              = "$outputDir"
+
+                // Common parameters for all read count control tests, using two samples
+                samplesInclude      = "B2M,FLAG"
+                trimBases           = 6
+                mergeMode           = "merge"
+                mergeMinOverlap     = 4
+                mergeMaxOverlap     = 150
+                crispressoWindow    = 6
+                frameshiftThreshold = 85
+                hdrThreshold        = 85
+                unmodifiedThreshold = 85
+                wtFrameshiftMax     = 5
+
+                maxReads            = 10000
+                minReadsPerAmplicon = 5000
+                maxReadsPerAmplicon = 10000
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                path("${outputDir}/info.txt"),
+                path("${outputDir}/info.yaml"),
+                path("${outputDir}/summary.txt"),
+                path("${outputDir}/summary.yaml"),
+                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+
+                path("${outputDir}/B2M/B2M-2/info.yaml"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+            ).match()
+            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
+            assert ! path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${outputDir}/HPRT").exists()
+            assert ! path("${outputDir}/SNP").exists()
+        }
+    }
+
+    /* Trimming tests ***************************************************/
+
+    test("Trimming - No Trimming, Paired-end") {
+        tag "trimming_noTrimming_pe"
+        tag "trimming"
+        tag "paired_end"
+
+        when {
+            params {
+                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
+                reference           = "hg19"
+                refBase             = "$baseDir/ref_genomes"
+                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir              = "$outputDir"
+
+                // Common parameters for all trimming tests, using two samples
+                samplesInclude      = "B2M,FLAG"
+                maxReads            = 10000
+                minReadsPerAmplicon = 500
+                maxReadsPerAmplicon = 10000
+                mergeMode           = "merge"
+                mergeMinOverlap     = 4
+                mergeMaxOverlap     = 150
+                crispressoWindow    = 6
+                frameshiftThreshold = 85
+                hdrThreshold        = 85
+                unmodifiedThreshold = 85
+                wtFrameshiftMax     = 5
+
+                noTrimming          = true
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                path("${outputDir}/info.txt"),
+                path("${outputDir}/info.yaml"),
+                path("${outputDir}/summary.txt"),
+                path("${outputDir}/summary.yaml"),
+                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+
+                path("${outputDir}/B2M/B2M-2/info.yaml"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+            ).match()
+            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${outputDir}/HPRT").exists()
+            assert ! path("${outputDir}/SNP").exists()
+        }
+    }
+
+    test("Trimming - Trim Without Headcrop, Paired-end") {
+        tag "trimming_no_headcrop_pe"
+        tag "trimming"
+        tag "paired_end"
+
+        when {
+            params {
+                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
+                reference           = "hg19"
+                refBase             = "$baseDir/ref_genomes"
+                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir              = "$outputDir"
+
+                // Common parameters for all trimming tests, using two samples
+                samplesInclude      = "B2M,FLAG"
+                maxReads            = 10000
+                minReadsPerAmplicon = 500
+                maxReadsPerAmplicon = 10000
+                mergeMode           = "merge"
+                mergeMinOverlap     = 4
+                mergeMaxOverlap     = 150
+                crispressoWindow    = 6
+                frameshiftThreshold = 85
+                hdrThreshold        = 85
+                unmodifiedThreshold = 85
+                wtFrameshiftMax     = 5
+
+                trimBases           = 0
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                path("${outputDir}/info.txt"),
+                path("${outputDir}/info.yaml"),
+                path("${outputDir}/summary.txt"),
+                path("${outputDir}/summary.yaml"),
+                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+
+                path("${outputDir}/B2M/B2M-2/info.yaml"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+            ).match()
+            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${outputDir}/HPRT").exists()
+            assert ! path("${outputDir}/SNP").exists()
+        }
+    }
+
+    /* Merge mode tests *************************************************/
+
+    test("Merge mode - auto, Paired-end") {
+        tag "mergeMode_auto_pe"
+        tag "mergeMode"
+        tag "paired_end"
+
+        when {
+            params {
+                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
+                reference           = "hg19"
+                refBase             = "$baseDir/ref_genomes"
+                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir              = "$outputDir"
+
+                // Common parameters for all merge mode tests, using two samples
+                samplesInclude      = "B2M,FLAG"
+                maxReads            = 10000
+                minReadsPerAmplicon = 500
+                maxReadsPerAmplicon = 10000
+                trimBases           = 6
+                mergeMinOverlap     = 4
+                mergeMaxOverlap     = 150
+                crispressoWindow    = 6
+                frameshiftThreshold = 85
+                hdrThreshold        = 85
+                unmodifiedThreshold = 85
+                wtFrameshiftMax     = 5
+
+                mergeMode           = "auto"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                path("${outputDir}/info.txt"),
+                path("${outputDir}/info.yaml"),
+                path("${outputDir}/summary.txt"),
+                path("${outputDir}/summary.yaml"),
+                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+
+                path("${outputDir}/B2M/B2M-2/info.yaml"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
+                path("${outputDir}/B2M_Read1/B2M-2/skipped.yaml"),
+                path("${outputDir}/B2M_Read1/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M_Read1/SNP-edit/skipped.yaml"),
+                path("${outputDir}/B2M_Read2/B2M-2/skipped.yaml"),
+                path("${outputDir}/B2M_Read2/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M_Read2/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M_Read2/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG_Read1/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG_Read1/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/FLAG_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG_Read1/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG_Read2/FLAG-KI/info.yaml"),
+                path("${outputDir}/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Frameshift_analysis.txt"),
+                path("${outputDir}/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/FLAG_Read2/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG_Read2/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG_Read2/SNP-edit/skipped.yaml"),
+            ).match()
+            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert path("${outputDir}/FLAG_Read2/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${outputDir}/HPRT").exists()
+            assert ! path("${outputDir}/HPRT_Read1").exists()
+            assert ! path("${outputDir}/HPRT_Read2").exists()
+            assert ! path("${outputDir}/SNP").exists()
+            assert ! path("${outputDir}/SNP_Read1").exists()
+            assert ! path("${outputDir}/SNP_Read2").exists()
+        }
+    }
+
+    test("Merge mode - both, Paired-end") {
+        tag "mergeMode_both_pe"
+        tag "mergeMode"
+        tag "paired_end"
+
+        when {
+            params {
+                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
+                reference           = "hg19"
+                refBase             = "$baseDir/ref_genomes"
+                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir              = "$outputDir"
+
+                // Common parameters for all merge mode tests, using two samples
+                samplesInclude      = "B2M,FLAG"
+                maxReads            = 10000
+                minReadsPerAmplicon = 500
+                maxReadsPerAmplicon = 10000
+                trimBases           = 6
+                mergeMinOverlap     = 4
+                mergeMaxOverlap     = 150
+                crispressoWindow    = 6
+                frameshiftThreshold = 85
+                hdrThreshold        = 85
+                unmodifiedThreshold = 85
+                wtFrameshiftMax     = 5
+
+                mergeMode           = "both"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                path("${outputDir}/info.txt"),
+                path("${outputDir}/info.yaml"),
+                path("${outputDir}/summary.txt"),
+                path("${outputDir}/summary.yaml"),
+                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+
+                path("${outputDir}/B2M/B2M-2/info.yaml"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
+                path("${outputDir}/B2M_Read1/B2M-2/info.yaml"),
+                path("${outputDir}/B2M_Read1/B2M-2/B2M_Read1_B2M-2_Frameshift_analysis.txt"),
+                path("${outputDir}/B2M_Read1/B2M-2/B2M_Read1_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/B2M_Read1/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M_Read1/SNP-edit/skipped.yaml"),
+                path("${outputDir}/B2M_Read2/B2M-2/info.yaml"),
+                path("${outputDir}/B2M_Read2/B2M-2/B2M_Read2_B2M-2_Frameshift_analysis.txt"),
+                path("${outputDir}/B2M_Read2/B2M-2/B2M_Read2_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/B2M_Read2/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M_Read2/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M_Read2/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG_Read1/FLAG-KI/info.yaml"),
+                path("${outputDir}/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Frameshift_analysis.txt"),
+                path("${outputDir}/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/FLAG_Read1/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG_Read1/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG_Read2/FLAG-KI/info.yaml"),
+                path("${outputDir}/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Frameshift_analysis.txt"),
+                path("${outputDir}/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/FLAG_Read2/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG_Read2/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG_Read2/SNP-edit/skipped.yaml"),
+            ).match()
+            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${outputDir}/B2M_Read1/B2M-2/CRISPResso_output").exists()
+            assert path("${outputDir}/B2M_Read2/B2M-2/CRISPResso_output").exists()
+            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert path("${outputDir}/FLAG_Read1/FLAG-KI/CRISPResso_output").exists()
+            assert path("${outputDir}/FLAG_Read2/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${outputDir}/HPRT").exists()
+            assert ! path("${outputDir}/HPRT_Read1").exists()
+            assert ! path("${outputDir}/HPRT_Read2").exists()
+            assert ! path("${outputDir}/SNP").exists()
+            assert ! path("${outputDir}/SNP_Read1").exists()
+            assert ! path("${outputDir}/SNP_Read2").exists()
+        }
+    }
+
+    test("Merge mode - merge, Paired-end") {
+        tag "mergeMode_merge_pe"
+        tag "mergeMode"
+        tag "paired_end"
+
+        when {
+            params {
+                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
+                reference           = "hg19"
+                refBase             = "$baseDir/ref_genomes"
+                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir              = "$outputDir"
+
+                // Common parameters for all merge mode tests, using two samples
+                samplesInclude      = "B2M,FLAG"
+                maxReads            = 10000
+                minReadsPerAmplicon = 500
+                maxReadsPerAmplicon = 10000
+                trimBases           = 6
+                mergeMinOverlap     = 4
+                mergeMaxOverlap     = 150
+                crispressoWindow    = 6
+                frameshiftThreshold = 85
+                hdrThreshold        = 85
+                unmodifiedThreshold = 85
+                wtFrameshiftMax     = 5
+
+                mergeMode           = "merge"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                path("${outputDir}/info.txt"),
+                path("${outputDir}/info.yaml"),
+                path("${outputDir}/summary.txt"),
+                path("${outputDir}/summary.yaml"),
+                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+
+                path("${outputDir}/B2M/B2M-2/info.yaml"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+            ).match()
+            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${outputDir}/B2M_Read1").exists()
+            assert ! path("${outputDir}/B2M_Read2").exists()
+            assert ! path("${outputDir}/FLAG_Read1").exists()
+            assert ! path("${outputDir}/FLAG_Read2").exists()
+            assert ! path("${outputDir}/HPRT").exists()
+            assert ! path("${outputDir}/HPRT_Read1").exists()
+            assert ! path("${outputDir}/HPRT_Read2").exists()
+            assert ! path("${outputDir}/SNP").exists()
+            assert ! path("${outputDir}/SNP_Read1").exists()
+            assert ! path("${outputDir}/SNP_Read2").exists()
+        }
+    }
+
+    test("Merge mode - no-merge, Paired-end") {
+        tag "mergeMode_no-merge_pe"
+        tag "mergeMode"
+        tag "paired_end"
+
+        when {
+            params {
+                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
+                reference           = "hg19"
+                refBase             = "$baseDir/ref_genomes"
+                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir              = "$outputDir"
+
+                // Common parameters for all merge mode tests, using two samples
+                samplesInclude      = "B2M,FLAG"
+                maxReads            = 10000
+                minReadsPerAmplicon = 500
+                maxReadsPerAmplicon = 10000
+                trimBases           = 6
+                mergeMinOverlap     = 4
+                mergeMaxOverlap     = 150
+                crispressoWindow    = 6
+                frameshiftThreshold = 85
+                hdrThreshold        = 85
+                unmodifiedThreshold = 85
+                wtFrameshiftMax     = 5
+
+                mergeMode           = "no-merge"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                path("${outputDir}/info.txt"),
+                path("${outputDir}/info.yaml"),
+                path("${outputDir}/summary.txt"),
+                path("${outputDir}/summary.yaml"),
+                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+
+                path("${outputDir}/B2M_Read1/B2M-2/info.yaml"),
+                path("${outputDir}/B2M_Read1/B2M-2/B2M_Read1_B2M-2_Frameshift_analysis.txt"),
+                path("${outputDir}/B2M_Read1/B2M-2/B2M_Read1_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/B2M_Read1/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M_Read1/SNP-edit/skipped.yaml"),
+                path("${outputDir}/B2M_Read2/B2M-2/info.yaml"),
+                path("${outputDir}/B2M_Read2/B2M-2/B2M_Read2_B2M-2_Frameshift_analysis.txt"),
+                path("${outputDir}/B2M_Read2/B2M-2/B2M_Read2_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/B2M_Read2/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M_Read2/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M_Read2/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG_Read1/FLAG-KI/info.yaml"),
+                path("${outputDir}/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Frameshift_analysis.txt"),
+                path("${outputDir}/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/FLAG_Read1/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG_Read1/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG_Read2/FLAG-KI/info.yaml"),
+                path("${outputDir}/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Frameshift_analysis.txt"),
+                path("${outputDir}/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/FLAG_Read2/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG_Read2/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG_Read2/SNP-edit/skipped.yaml"),
+            ).match()
+            assert path("${outputDir}/B2M_Read1/B2M-2/CRISPResso_output").exists()
+            assert path("${outputDir}/B2M_Read2/B2M-2/CRISPResso_output").exists()
+            assert path("${outputDir}/FLAG_Read1/FLAG-KI/CRISPResso_output").exists()
+            assert path("${outputDir}/FLAG_Read2/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${outputDir}/B2M").exists()
+            assert ! path("${outputDir}/FLAG").exists()
+            assert ! path("${outputDir}/HPRT").exists()
+            assert ! path("${outputDir}/HPRT_Read1").exists()
+            assert ! path("${outputDir}/HPRT_Read2").exists()
+            assert ! path("${outputDir}/SNP").exists()
+            assert ! path("${outputDir}/SNP_Read1").exists()
+            assert ! path("${outputDir}/SNP_Read2").exists()
+        }
+    }
+
+    /* CRISPResso tests *************************************************/
+
+    test("CRISPResso Parameters - 4bp Window, Paired-end") {
+        tag "crispresso_window_pe"
+        tag "crispresso"
+        tag "paired_end"
+
+        when {
+            params {
+                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
+                reference           = "hg19"
+                refBase             = "$baseDir/ref_genomes"
+                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir              = "$outputDir"
+
+                // Common parameters for all CRISPResso tests, using two samples
+                samplesInclude      = "B2M,FLAG"
+                maxReads            = 10000
+                minReadsPerAmplicon = 500
+                maxReadsPerAmplicon = 10000
+                trimBases           = 6
+                mergeMode           = "merge"
+                mergeMinOverlap     = 4
+                mergeMaxOverlap     = 150
+                frameshiftThreshold = 85
+                hdrThreshold        = 85
+                unmodifiedThreshold = 85
+                wtFrameshiftMax     = 5
+
+                crispressoWindow    = 4
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                path("${outputDir}/info.txt"),
+                path("${outputDir}/info.yaml"),
+                path("${outputDir}/summary.txt"),
+                path("${outputDir}/summary.yaml"),
+                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+
+                path("${outputDir}/B2M/B2M-2/info.yaml"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+            ).match()
+            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${outputDir}/HPRT").exists()
+            assert ! path("${outputDir}/SNP").exists()
+        }
+    }
+
+// TODO: The CRISPResso extra arguments handling needs to be updated to take a single string
+// instead of a list (see Issue #104), at which point this test will need to be changed.
+    test("CRISPResso Parameters - Extra Arguments, Paired-end") {
+        tag "crispresso_extra_args_pe"
+        tag "crispresso"
+        tag "paired_end"
+
+        when {
+            params {
+                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
+                reference           = "hg19"
+                refBase             = "$baseDir/ref_genomes"
+                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir              = "$outputDir"
+
+                // Common parameters for all CRISPResso tests, using two samples
+                samplesInclude      = "B2M,FLAG"
+                maxReads            = 10000
+                minReadsPerAmplicon = 500
+                maxReadsPerAmplicon = 10000
+                trimBases           = 6
+                mergeMode           = "merge"
+                mergeMinOverlap     = 4
+                mergeMaxOverlap     = 150
+                frameshiftThreshold = 85
+                hdrThreshold        = 85
+                unmodifiedThreshold = 85
+                wtFrameshiftMax     = 5
+
+                crispressoWindow    = 6
+                crispressoExtraArgs = ["--hdr_perfect_alignment_threshold", "85"]
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                path("${outputDir}/info.txt"),
+                path("${outputDir}/info.yaml"),
+                path("${outputDir}/summary.txt"),
+                path("${outputDir}/summary.yaml"),
+                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+
+                path("${outputDir}/B2M/B2M-2/info.yaml"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
+                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
+                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+            ).match()
+            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${outputDir}/HPRT").exists()
+            assert ! path("${outputDir}/SNP").exists()
+        }
+    }
+
+}

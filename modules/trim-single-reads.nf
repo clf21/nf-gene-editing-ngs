@@ -6,14 +6,19 @@ process _trimSingleReads {
 
     input:
         // Sample Read (Metadata<Sample name> and FASTQ pair)
-        tuple val(meta), path(sampleFastq, name: "downsampled.fastq.gz")
+        tuple val(meta),
+              path(sampleFastq, name: "downsampled.fastq.gz")
 
     output:
         // Trimmed reads
-        tuple val(meta), path("read_trimmed.fastq.gz"), emit: output
+        tuple val(meta),
+              path("read_trimmed.fastq.gz"),
+              emit: output
 
         // Additional details about read trimming
-        tuple val(meta), path("info.yaml"), emit: info
+        tuple val(meta),
+              path("info.yaml"),
+              emit: info
 
     shell:
         // Template tags:

@@ -4,14 +4,21 @@ process _downsampleSingleRead {
 
   input:
     // Single read tuple: Metadata<Sample name> and its FASTQ file
-    tuple val(meta), path(fastqFile)
+    tuple val(meta),
+          path(fastqFile)
 
   output:
     // Downsampled read
-    tuple val(meta), val(sortKey), path("downsampled.fastq.gz"), emit: output
+    tuple val(meta),
+          val(sortKey),
+          path("downsampled.fastq.gz"),
+          emit: output
 
     // Additional details about downsampling
-    tuple val(meta), val(sortKey), path("info.yaml"), emit: info
+    tuple val(meta),
+          val(sortKey),
+          path("info.yaml"),
+          emit: info
 
   shell:
     // We use the input FASTQ file's basename as a sort key downstream
