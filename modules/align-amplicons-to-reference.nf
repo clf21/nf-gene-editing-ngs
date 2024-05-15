@@ -6,7 +6,7 @@ process _alignAmpliconsToReference {
     input:
         // Bowtie2 Index Path
         // i.e., path containing `$BASENAME.*.bt2` files, where BASENAME is
-        // taken from `pattern` in YAML config
+        // taken from `prefix` in YAML config
         path bt2IndexPath
 
         // Amplicons YAML Path
@@ -20,7 +20,7 @@ process _alignAmpliconsToReference {
         // Template tags:
         // * ampliconsYaml           Amplicons YAML file
         // * bt2IndexPath            Bowtie2 reference/index path
-        // * params.bowtie2.pattern  Reference file pattern/prefix
+        // * params.bowtie2.prefix   Reference file prefix
         // * task.ext.bowtie2        Bowtie2 command definition
         template "align_amplicons_to_reference.pl"
 }

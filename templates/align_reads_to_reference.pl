@@ -11,7 +11,7 @@ use YAML::XS qw(DumpFile);
 #     Sample name
 #   sampleFastq)
 #     Sample FASTQ filename
-#   params.bowtie2.pattern)
+#   params.bowtie2.prefix)
 #     Reference file pattern/prefix
 #   task.ext.bowtie2)
 #     Bowtie2 command definition
@@ -24,7 +24,7 @@ use YAML::XS qw(DumpFile);
 #   `info.yaml`)
 #     Additional details about read alignment
 
-my $genome_base = "!{bt2IndexPath}/!{params.bowtie2.pattern}";
+my $genome_base = "!{bt2IndexPath}/!{params.bowtie2.prefix}";
 my $sample_name = "!{meta.sampleName}";
 my $fastq = "!{sampleFastq}";
 

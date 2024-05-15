@@ -27,7 +27,6 @@ process _downsampleSingleRead {
     // Template tags:
     // * fastqFile          FASTQ file of sample read
     // * task.ext.maxReads  Maximum number of reads to keep after downsampling
-    // * task.ext.seed      Seed for the pseudorandom number generator
     template "downsample_fastq.pl"
 }
 
@@ -42,8 +41,8 @@ workflow _downsample {
         reads
 
     main:
-        if (params.maxReads) {
-            // Only downsample if maxReads is set...
+        if (params.max_reads) {
+            // Only downsample if max_reads is set...
             reads
             | _downsampleSingleRead
             | set { downsampled }

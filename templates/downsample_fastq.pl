@@ -10,9 +10,6 @@ use YAML::XS qw(LoadFile DumpFile);
 # Template tags:
 #   task.ext.maxReads)
 #     Maximum number of reads to keep after downsampling
-#   task.ext.seed)
-#     Seed for the pseudorandom number generator
-#     The downsampling should be deterministic wrt this parameter
 #   fastqFile)
 #     FASTQ file of sample read
 #
@@ -66,8 +63,8 @@ my $num_lines = 0;
 
 print STDERR "Downsampling file $input_file...";
 
-# Initialize pseudo random number generator.
-srand(!{task.ext.seed});
+# Initialize the PRNG with a constant seed (i.e., 0) for deterministic downsampling
+srand(0);
 
 # Initialize FASTQ record
 my $fastq_record = "";

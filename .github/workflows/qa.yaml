@@ -1,0 +1,40 @@
+name: Code QA
+
+on:
+  push
+
+jobs:
+
+  lint:
+    runs-on: [self-hosted, bolt-ubuntu]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Establish dependency cache
+        uses: actions/cache@v4
+        with:
+          path: .dependencies
+          key: lint-${{ hashFiles('.github/workflows/install-linters.sh') }}
+
+      - name: Install dependencies
+        run: ./.github/workflows/install-linters.sh
+
+      - name: Lint Nextflow code
+        run: |
+          CodeNarc -rulesetfiles=file:.dependencies/share/nextflow.xml \
+                   -report=text:stdout \
+                   -includes=**/**.nf
+
+      - name: Lint Groovy code
+        run: |
+          CodeNarc -rulesetfiles=file:.dependencies/share/groovy.txt \
+                   -report=text:stdout \
+                   -basedir=lib

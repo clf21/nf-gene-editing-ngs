@@ -53,7 +53,7 @@ profiles, depending on the environment.
 
 Parameters are exposed to the pipeline, via Nextflow, as `--PARAMETER
 [VALUE]`; where `VALUE` is not required for on/off flags. For example,
-`--reference hg19` and `--noTrimming`. Alternatively, the parameters can
+`--genome hg19` and `--no_trimming`. Alternatively, the parameters can
 be specified as a YAML or JSON file and passed to Nextflow via the
 `-params-file` argument:
 
@@ -67,44 +67,45 @@ or, more simply:
 $ ./run path/to/my/config.yaml
 ```
 
-#### Reference Identifier and Base Directory
+#### Reference Genome Identifier and Base Directory
 
-* **`reference`** (required) \
-  Reference identifier
+* **`genome`** (required) \
+  Reference genome identifier
 
-* **`refBase`** (default: `ref_genomes`) \
-  The prefix path to the reference
+* **`genome_dir`** (default: `ref_genomes`) \
+  The prefix path to the reference genome
 
-Reference identifiers are defined in `conf/ref.config` and currently
-include:
+Reference genome identifiers are defined in
+[`conf/ref.config`](/conf/ref.config) and currently include:
 
-| Reference ID | Description |
-| :----------- | :---------- |
-| `hg19`       | Human       |
-| `mm10`       | Mouse       |
-| `rn4`        | Rat         |
+| Reference Genome ID | Description |
+| :------------------ | :---------- |
+| `hg19`              | Human (v19) |
+| `hg38`              | Human (v38) |
+| `mm10`              | Mouse       |
+| `rn6`               | Rat         |
 
 #### Sample Selection Configuration
 
-* **`fastqDir`** (required) \
+* **`fastq_dir`** (required) \
   Path to sample FASTQs
 
-* **`samplesPattern`** (default: `Illumina`) \
+* **`samples_pattern`** (default: `Illumina`) \
   Filename pattern preset, to match input files
 
-* **`samplesInclude`** \
+* **`samples_include`** \
   Included sample filenames, as an exact match (comma-separated)
 
-* **`samplesIncludeRegex`** \
+* **`samples_include_regex`** \
   Included sample filenames, as a regular expression
 
-* **`samplesExclude`** \
+* **`samples_exclude`** \
   Excluded sample filenames, as an exact match (comma-separated)
 
-* **`samplesExcludeRegex`** \
+* **`samples_exclude_regex`** \
   Excluded sample filenames, as a regular expression
 
-* **`samplesProcessUndetermined`** \
+* **`samples_process_undetermined`** \
   Process undetermined samples (leave unset to skip undetermined
   samples)
 
@@ -112,12 +113,12 @@ Valid sample filename pattern presets are:
 * `Illumina`
 
 > [!NOTE]
-> * `samplesInclude` and `samplesExclude` override `samplesIncludeRegex`
->    and `samplesExcludeRegex`, respectively.
+> * `samples_include` and `samples_exclude` override
+>   `samples_include_regex` and `samples_exclude_regex`, respectively.
 > * Inclusion overrides exclusion.
 
 > [!NOTE]
-> `samplesIncludeRegex` and `samplesExcludeRegex` expect regular
+> `samples_include_regex` and `samples_exclude_regex` expect regular
 > expressions in a form compatible with [`java.util.regex.Pattern`](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html).
 
 > [!CAUTION]
@@ -126,7 +127,7 @@ Valid sample filename pattern presets are:
 
 #### Amplicons
 
-* **`ampliconsYaml`** (required) \
+* **`amplicons`** (required) \
   Path to amplicons YAML
 
 The amplicons YAML file must be a top-level object, where each key
@@ -165,24 +166,24 @@ Another-Amplicon:
 
 #### Read Count Control
 
-* **`maxReads`** (default `20000`) \
+* **`max_reads`** (default `20000`) \
   Read count threshold to trigger downsampling (leave unset to disable)
 
-* **`minReadsPerAmplicon`** (default `500`) \
+* **`min_reads_per_amplicon`** (default `500`) \
   Minimum amplicon read overlap count
 
-* **`maxReadsPerAmplicon`** (default `10000`) \
+* **`max_reads_per_amplicon`** (default `10000`) \
   Maximum amplicon read overlap count
 
 #### Merging Configuration
 
-* **`mergeMode`** (default `merge`) \
+* **`merge_mode`** (default `merge`) \
   Paired sample merging strategy
 
-* **`mergeMinOverlap`** (default `4`) \
+* **`merge_min_overlap`** (default `4`) \
   Minimum read overlap count
 
-* **`mergeMaxOverlap`** (default `150`) \
+* **`merge_max_overlap`** (default `150`) \
   Maximum read overlap count
 
 Valid paired sample merging strategies are:
@@ -196,32 +197,32 @@ Valid paired sample merging strategies are:
 
 #### Trimming Configuration
 
-* **`noTrimming`** \
+* **`no_trimming`** \
   Do not perform trimming (leave unset to trim)
 
-* **`trimBases`** (default `6`) \
+* **`trim_bases`** (default `6`) \
   Number of bases to trim
 
 #### CRISPResso Configuration
 
-* **`crispressoWindow`** (default `6`) \
+* **`crispresso_window`** (default `6`) \
   Window (bp) around sgRNA
 
-* **`crispressoExtraArgs`** \
+* **`crispresso_extra_args`** \
   Additional arguments passed to CRISPResso for tuning
 
 #### Summary Configuration
 
-* **`frameshiftThreshold`** (default `85`) \
+* **`frameshift_threshold`** (default `85`) \
   Percentage of frameshift reads necessary to call a knockout genotype
 
-* **`hdrThreshold`** (default `85`) \
+* **`hdr_threshold`** (default `85`) \
   Percentage of HDR reads necessary to call an HDR genotype
 
-* **`unmodifiedThreshold`** (default `85`) \
+* **`unmodified_threshold`** (default `85`) \
   Percentage of unmodified reads necessary to call a wildtype genotype
 
-* **`wtFrameshiftMax`** (default `5`) \
+* **`wt_frameshift_max`** (default `5`) \
   Maximum number of frameshift reads that can be present and still call
   a wildtype genotype
 
@@ -297,7 +298,6 @@ Equipped with the above context and vocabulary, below follows a somewhat high-le
 3. Sample / amplicon combinations that pass the filter in 2) are now subject to allele analysis using the [CRISPResso](https://github.com/lucapinello/CRISPResso) software. This results in a range of plots and tables with the desired information, such as proportion of HDR and NHEJ outcomes, frameshift / inframe mutations, ...
 4. The CRISPResso results obtained in 3) are then summarized: based on user-defined thresholds for the number of frameshift mutations, HDR outcomes, and the number of unmodified reads in a sample, an amplicon is classified either as a knockout, HDR, wild-type or unspecified. Also, a summary table is produced that also information about the sample / amplicon pairs that were filtered out in 2).
 5. In a final post-processing step, all allele frequency tables produces in 3) are combined into a gzipped text file.
-
 
 ### Architecture and Implementation
 
@@ -443,6 +443,22 @@ Outputs:
   * Alignment diagnostics YAML file.
 * `failed`: Channel of failed sample identifiers.
 
+##### `collectAlleleFrequencies` (in `modules/collect-allele-frequencies.nf`)
+
+Inputs:
+1. Channel of CRISPResso analysis directories. That is, tuples of the
+   form:
+   * Analysis identifier (sample name, read ID and amplicon name).
+   * CRISPResso analysis directory.
+
+Outputs:
+* (None)
+
+Published:
+* `alleles_frequency_table.txt.gz`, tabulated allele frequency data from
+  the CRISPResso analyses, is published to the root of the output
+  directory.
+
 ##### `countReadOverlap` (in `modules/count-reads-overlap.nf`)
 
 Inputs:
@@ -491,6 +507,9 @@ Outputs:
   * Sample name.
   * Downsampling diagnostics pair YAML files.
 
+> [!NOTE]
+> Downsampling is deterministic.
+
 ##### `downsampleSingleReads` (in `modules/downsample.nf`)
 
 Inputs:
@@ -507,6 +526,9 @@ Outputs:
   the form:
   * Sample name.
   * Downsampling diagnostics YAML file.
+
+> [!NOTE]
+> Downsampling is deterministic.
 
 ##### `generateInfoTable` (in `modules/info-table.nf`)
 
@@ -613,10 +635,14 @@ Published:
 > above), which instruments it in such a way that failures can be
 > identified.
 
+> [!NOTE]
+> A further round of deterministic downsampling can occur at this step.
+
 ##### `listSequencingSamples` (in `modules/list-sequencing-samples.nf`)
 
 Inputs:
-1. Channel of sample FASTQ path.
+1. Successful deployment trigger.
+2. Channel of sample FASTQ path.
 
 Outputs:
 1. Channel of samples that meet the filter criteria, grouped by sample
@@ -643,26 +669,11 @@ Outputs:
 ##### `normalizeAmplicons` (in `modules/normalize-amplicons.nf`)
 
 Inputs:
-1. Channel of amplicon manifest YAML file.
+1. Successful deployment trigger.
+2. Channel of amplicon manifest YAML file.
 
 Outputs:
 1. Channel of normalized amplicon manifest YAML file.
-
-##### `postProcess` (in `modules/post-process.nf`)
-
-Inputs:
-1. Channel of CRISPResso analysis directories. That is, tuples of the
-   form:
-   * Analysis identifier (sample name, read ID and amplicon name).
-   * CRISPResso analysis directory.
-
-Outputs:
-* (None)
-
-Published:
-* `alleles_frequency_table.txt.gz`, tabulated allele frequency data from
-  the CRISPResso analyses, is published to the root of the output
-  directory.
 
 ##### `reportFailedAnalysis` (in `modules/identify-alleles.nf`)
 
@@ -766,14 +777,27 @@ Outputs:
   * Sample name.
   * Trimming diagnostics YAML file.
 
+## Deployment Workflow
+
+A deployment workflow is included to bootstrap the necessary reference
+genome files. This is run at the beginning of the CRISPR workflow, but
+can also be run standalone with:
+
+```console
+$ ./run deploy.nf [--genome_dir <reference genome base directory>] [OPTIONS...]
+```
+
+This will download and install the reference genomes, defined in
+[`conf/ref.config`](/conf/ref.config), into the directory defined by the
+[`genome_dir` parameter](#reference-genome-identifier-and-base-directory).
+Only reference genomes that are missing from the base directory will be
+downloaded, so subsequent runs of the pipeline will effectively skip
+this step.
+
 <!--
 
 ## Image
 
 [Details of the image, its building and CI]
-
-## Utilities
-
-[Details of utility workflows]
 
 -->

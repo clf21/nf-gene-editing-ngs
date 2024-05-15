@@ -7,7 +7,7 @@ class Escape {
     String toString() { this.raw }
   }
 
-  // Convenience , rather than having to do `new Escape.NoQuote(...)`
+  // Convenience, rather than having to do `new Escape.NoQuote(...)`
   static NoQuote noQuote(String raw) {
     new NoQuote(raw)
   }
@@ -22,15 +22,66 @@ class Escape {
     "\"${this.cmdBuilder("\\\"", extCommand, args).join(" ")}\""
   }
 
-  private static String[] cmdBuilder(String quote, extCommand, Object... args) {
-    // NOTE args is of type List<Object>, so we have to explicitly
-    // convert it into a Object[], so we can concatenate the arrays.
-    Object[] cmd = extCommand.cmd + (args as ArrayList) + extCommand.extraArgs
+  private static List cmdBuilder(String quote, extCommand, Object... args) {
+    List cmd =
+      extCommand.cmd +
+      // `args` needs to be cast to the right type for concatenation
+      (args as List) +
+      // `extCommand.extraArgs` is a string, so is tokenised
+      shellTokenise(extCommand.extraArgs)
 
     // TODO Do actual escaping!
     cmd.collect {
       if (it instanceof NoQuote) { "$it" }
       else { "${quote}${it}${quote}" }
     }
+  }
+
+  private static List shellTokenise(String s) {
+    // Groovy port of https://gist.github.com/raymyers/8077031
+    List tokens = []
+
+    // Tokeniser state
+    Boolean inEscape = false
+    Boolean inQuote = false
+    Character quote = ' '
+    Integer lastCloseQuoteIndex = Integer.MIN_VALUE
+
+    // Current token
+    StringBuilder token = new StringBuilder()
+
+    s.eachWithIndex { String c, Integer i ->
+      if (inEscape) {
+        token.append(c)
+        inEscape = false
+
+      } else if (c == '\\' && !(inQuote && quote == '\'')) {
+        inEscape = true
+
+      } else if (inQuote && c == quote) {
+        inQuote = false
+        lastCloseQuoteIndex = i
+
+      } else if (!inQuote && (c == '\'' || c == '"')) {
+        inQuote = true
+        quote = c as Character
+
+      } else if (!inQuote && c.isAllWhitespace()) {
+        if (token || lastCloseQuoteIndex == i - 1) {
+          tokens.add(token.toString())
+          token = new StringBuilder()
+        }
+
+      } else {
+        token.append(c)
+      }
+    }
+
+    // Append any remainder
+    if (token || lastCloseQuoteIndex == s.size() - 1) {
+      tokens.add(token.toString())
+    }
+
+    tokens
   }
 }

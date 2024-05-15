@@ -10,7 +10,7 @@ use YAML::XS qw(LoadFile DumpFile);
 # Template tags:
 #   bt2IndexPath)
 #     Bowtie2 reference/index path
-#   params.bowtie2.pattern)
+#   params.bowtie2.prefix)
 #     Reference file pattern/prefix
 #   ampliconsYaml)
 #     Amplicons YAML file
@@ -21,7 +21,7 @@ use YAML::XS qw(LoadFile DumpFile);
 #   `alignments.yaml`)
 #     Associates amplicon name with aligment
 
-my $genome_base = "!{bt2IndexPath}/!{params.bowtie2.pattern}";
+my $genome_base = "!{bt2IndexPath}/!{params.bowtie2.prefix}";
 my $amplicons = LoadFile("!{ampliconsYaml}");
 
 my @cmd = !{Escape.cmdAsPerlList(task.ext.bowtie2,

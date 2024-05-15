@@ -40,7 +40,7 @@ workflow trimPairedReads {
         sampleFastqPair
 
     main:
-        if (params._doTrimming) {
+        if (params._do_trimming) {
             _trimPairedReads(sampleFastqPair)
             | set { trimmed }
 

@@ -38,7 +38,7 @@ workflow mergePairedReads {
         samplePairFastq
 
     main:
-        if (params.mergeMode == MergeMode.NoMerge) {
+        if (params.merge_mode == MergeMode.NoMerge) {
             // Bypass the FLASH step when no merging is required...
             samplePairFastq
             | map { meta, _samples -> [ meta, [] ] }
@@ -59,10 +59,10 @@ workflow mergePairedReads {
         samplePairFastq
         | join(merged)
         | flatMap { meta, originals, flashOutput ->
-            // For some unknown reason, params.mergeMode is being
+            // For some unknown reason, params.merge_mode is being
             // serialised to a string in this closure, so we have to
             // convert it back into a MergeMode enum (??)
-            switch(MergeMode.from(params.mergeMode)) {
+            switch(MergeMode.from(params.merge_mode)) {
                 case MergeMode.Auto:
                     merged = flashOutput[0]  // FLASH's out.extendedFrags.fastq.gz
                     read1  = flashOutput[1]  // FLASH's out.notCombined_1.fastq.gz

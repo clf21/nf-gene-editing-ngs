@@ -129,10 +129,10 @@ process _infoTable {
 
     shell:
         // Template tags:
-        // * infoYaml            Info YAML file
-        // * params._doTrimming  Trimming enabled/disabled
-        // * params.mergeMode    Merge mode
-        // * task.ext.maxReads   Read count threshold
+        // * infoYaml             Info YAML file
+        // * params._do_trimming  Trimming enabled/disabled
+        // * params.merge_mode    Merge mode
+        // * task.ext.maxReads    Read count threshold
         template "info_table.pl"
 }
 

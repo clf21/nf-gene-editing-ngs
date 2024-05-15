@@ -3,7 +3,9 @@ Utils.preFlight(params)
 
 include { alignAmpliconsToReference } from "./modules/align-amplicons-to-reference"
 include { alignReadsToReference } from "./modules/align-reads-to-reference"
+include { collectAlleleFrequencies } from "./modules/collect-allele-frequencies"
 include { countReadOverlap; reportSkippedSamples } from "./modules/count-reads-overlap"
+include { deploy } from "./deploy"
 include { determineReferenceCoordinates } from "./modules/determine-reference-coordinates"
 include { downsampleSingleReads; downsamplePairedReads } from "./modules/downsample"
 include { generateInfoTable; toOverlapInfo; toResultsInfo } from "./modules/info-table"
@@ -12,22 +14,25 @@ include { identifyAlleles; reportFailedAnalysis } from "./modules/identify-allel
 include { listSequencingSamples } from "./modules/list-sequencing-samples"
 include { mergePairedReads } from "./modules/merge-paired-reads"
 include { normalizeAmplicons } from "./modules/normalize-amplicons"
-include { postProcess } from "./modules/post-process"
 include { splitAmpliconsYaml } from "./modules/split-amplicons-yaml"
 include { summarizeAlleles } from "./modules/summarize-alleles"
 include { trimPairedReads } from "./modules/trim-paired-reads"
 include { trimSingleReads } from "./modules/trim-single-reads"
 
 workflow {
+    // Deploy environment
+    deploy
+    | set { isDeployed }
+
     // Prepare amplicons
-    normalizeAmplicons(file(params.ampliconsYaml))
+    normalizeAmplicons(isDeployed, file(params.amplicons))
     | alignAmpliconsToReference
     | determineReferenceCoordinates
     | splitAmpliconsYaml
     | set { amplicons }
 
     // Acquire input samples
-    listSequencingSamples(params.fastqDir)
+    listSequencingSamples(isDeployed, params.fastq_dir)
     | branch { _name, samples ->
         single: samples.size() == 1
         paired: samples.size() == 2
@@ -93,5 +98,5 @@ workflow {
 
     // Summarise identified allele frequency tables
     alleleAnalyses.passed
-    | postProcess
+    | collectAlleleFrequencies
 }

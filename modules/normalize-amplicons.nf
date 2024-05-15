@@ -14,6 +14,9 @@
 // Nextflow wrapper to normalize_amplicons.pl
 process normalizeAmplicons {
     input:
+        // State trigger to wait for deployment
+        val isDeployed
+
         // Amplicons YAML Path
         path ampliconsYaml
 

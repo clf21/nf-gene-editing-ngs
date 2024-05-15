@@ -36,7 +36,7 @@ workflow trimSingleReads {
         sampleFastq
 
     main:
-        if (params._doTrimming) {
+        if (params._do_trimming) {
             _trimSingleReads(sampleFastq)
             | set { trimmed }
 

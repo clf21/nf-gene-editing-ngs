@@ -11,7 +11,7 @@ process _alignReadsToReference {
     input:
         // Bowtie2 Index Path Prefix
         // i.e., path containing `$BASENAME.*.bt2` files, where BASENAME is
-        // taken from `pattern` in YAML config
+        // taken from `prefix` in YAML config
         path bt2IndexPath
 
         // Input Read
@@ -36,7 +36,7 @@ process _alignReadsToReference {
         // * bt2IndexPath            Bowtie2 reference/index path
         // * sampleFastq             Sample FASTQ filename
         // * meta.sampleName         Sample name
-        // * params.bowtie2.pattern  Reference file pattern/prefix
+        // * params.bowtie2.prefix   Reference file prefix
         // * task.ext.bowtie2        Bowtie2 command definition
         // * task.ext.samtools       Samtools command definition
         template "align_reads_to_reference.pl"

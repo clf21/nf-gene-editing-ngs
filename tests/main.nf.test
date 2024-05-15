@@ -11,11 +11,11 @@ nextflow_pipeline {
 
         when {
             params {
-                fastqDir      = "$baseDir/tests/nf-core-test-datasets/fastq"
-                reference     = "hg19"
-                refBase       = "$baseDir/ref_genomes"
-                ampliconsYaml = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir        = "$outputDir"
+                fastq_dir  = "$baseDir/tests/nf-core-test-datasets/fastq"
+                genome     = "hg19"
+                genome_dir = "$baseDir/ref_genomes"
+                amplicons  = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir     = "$outputDir"
             }
         }
 
@@ -67,11 +67,11 @@ nextflow_pipeline {
 
         when {
             params {
-                fastqDir      = "$baseDir/tests/nf-core-test-datasets/fastq_single-end"
-                reference     = "hg19"
-                refBase       = "$baseDir/ref_genomes"
-                ampliconsYaml = "$baseDir/tests/nf-core-test-datasets/amplicons_single-end.yaml"
-                outdir        = "$outputDir"
+                fastq_dir  = "$baseDir/tests/nf-core-test-datasets/fastq_single-end"
+                genome     = "hg19"
+                genome_dir = "$baseDir/ref_genomes"
+                amplicons  = "$baseDir/tests/nf-core-test-datasets/amplicons_single-end.yaml"
+                outdir     = "$outputDir"
             }
         }
 
@@ -124,25 +124,25 @@ nextflow_pipeline {
 
         when {
             params {
-                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
-                reference           = "hg19"
-                refBase             = "$baseDir/ref_genomes"
-                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir              = "$outputDir"
+                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                genome                 = "hg19"
+                genome_dir             = "$baseDir/ref_genomes"
+                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir                 = "$outputDir"
 
-                samplesInclude      = "B2M"
-                maxReads            = 1000
-                minReadsPerAmplicon = 500
-                maxReadsPerAmplicon = 10000
-                trimBases           = 6
-                mergeMode           = "merge"
-                mergeMinOverlap     = 4
-                mergeMaxOverlap     = 150
-                crispressoWindow    = 6
-                frameshiftThreshold = 85
-                hdrThreshold        = 85
-                unmodifiedThreshold = 85
-                wtFrameshiftMax     = 5
+                samples_include        = "B2M"
+                max_reads              = 1000
+                min_reads_per_amplicon = 500
+                max_reads_per_amplicon = 10000
+                trim_bases             = 6
+                merge_mode             = "merge"
+                merge_min_overlap      = 4
+                merge_max_overlap      = 150
+                crispresso_window      = 6
+                frameshift_threshold   = 85
+                hdr_threshold          = 85
+                unmodified_threshold   = 85
+                wt_frameshift_max      = 5
             }
         }
 
@@ -178,27 +178,27 @@ nextflow_pipeline {
 
         when {
             params {
-                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
-                reference           = "hg19"
-                refBase             = "$baseDir/ref_genomes"
-                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir              = "$outputDir"
+                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                genome                 = "hg19"
+                genome_dir             = "$baseDir/ref_genomes"
+                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir                 = "$outputDir"
 
                 // Common parameters for all read count control tests, using two samples
-                samplesInclude      = "B2M,FLAG"
-                trimBases           = 6
-                mergeMode           = "merge"
-                mergeMinOverlap     = 4
-                mergeMaxOverlap     = 150
-                crispressoWindow    = 6
-                frameshiftThreshold = 85
-                hdrThreshold        = 85
-                unmodifiedThreshold = 85
-                wtFrameshiftMax     = 5
+                samples_include        = "B2M,FLAG"
+                trim_bases             = 6
+                merge_mode             = "merge"
+                merge_min_overlap      = 4
+                merge_max_overlap      = 150
+                crispresso_window      = 6
+                frameshift_threshold   = 85
+                hdr_threshold          = 85
+                unmodified_threshold   = 85
+                wt_frameshift_max      = 5
 
-                maxReads            = 0
-                minReadsPerAmplicon = 500
-                maxReadsPerAmplicon = 10000
+                max_reads              = 0
+                min_reads_per_amplicon = 500
+                max_reads_per_amplicon = 10000
             }
         }
 
@@ -238,27 +238,27 @@ nextflow_pipeline {
 
         when {
             params {
-                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
-                reference           = "hg19"
-                refBase             = "$baseDir/ref_genomes"
-                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir              = "$outputDir"
+                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                genome                 = "hg19"
+                genome_dir             = "$baseDir/ref_genomes"
+                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir                 = "$outputDir"
 
                 // Common parameters for all read count control tests, using two samples
-                samplesInclude      = "B2M,FLAG"
-                trimBases           = 6
-                mergeMode           = "merge"
-                mergeMinOverlap     = 4
-                mergeMaxOverlap     = 150
-                crispressoWindow    = 6
-                frameshiftThreshold = 85
-                hdrThreshold        = 85
-                unmodifiedThreshold = 85
-                wtFrameshiftMax     = 5
+                samples_include        = "B2M,FLAG"
+                trim_bases             = 6
+                merge_mode             = "merge"
+                merge_min_overlap      = 4
+                merge_max_overlap      = 150
+                crispresso_window      = 6
+                frameshift_threshold   = 85
+                hdr_threshold          = 85
+                unmodified_threshold   = 85
+                wt_frameshift_max      = 5
 
-                maxReads            = 10000
-                minReadsPerAmplicon = 500
-                maxReadsPerAmplicon = 1000
+                max_reads              = 10000
+                min_reads_per_amplicon = 500
+                max_reads_per_amplicon = 1000
             }
         }
 
@@ -298,27 +298,27 @@ nextflow_pipeline {
 
         when {
             params {
-                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
-                reference           = "hg19"
-                refBase             = "$baseDir/ref_genomes"
-                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir              = "$outputDir"
+                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                genome                 = "hg19"
+                genome_dir             = "$baseDir/ref_genomes"
+                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir                 = "$outputDir"
 
                 // Common parameters for all read count control tests, using two samples
-                samplesInclude      = "B2M,FLAG"
-                trimBases           = 6
-                mergeMode           = "merge"
-                mergeMinOverlap     = 4
-                mergeMaxOverlap     = 150
-                crispressoWindow    = 6
-                frameshiftThreshold = 85
-                hdrThreshold        = 85
-                unmodifiedThreshold = 85
-                wtFrameshiftMax     = 5
+                samples_include        = "B2M,FLAG"
+                trim_bases             = 6
+                merge_mode             = "merge"
+                merge_min_overlap      = 4
+                merge_max_overlap      = 150
+                crispresso_window      = 6
+                frameshift_threshold   = 85
+                hdr_threshold          = 85
+                unmodified_threshold   = 85
+                wt_frameshift_max      = 5
 
-                maxReads            = 10000
-                minReadsPerAmplicon = 5000
-                maxReadsPerAmplicon = 10000
+                max_reads              = 10000
+                min_reads_per_amplicon = 5000
+                max_reads_per_amplicon = 10000
             }
         }
 
@@ -352,33 +352,33 @@ nextflow_pipeline {
     /* Trimming tests ***************************************************/
 
     test("Trimming - No Trimming, Paired-end") {
-        tag "trimming_noTrimming_pe"
+        tag "trimming_no_trimming_pe"
         tag "trimming"
         tag "paired_end"
 
         when {
             params {
-                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
-                reference           = "hg19"
-                refBase             = "$baseDir/ref_genomes"
-                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir              = "$outputDir"
+                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                genome                 = "hg19"
+                genome_dir             = "$baseDir/ref_genomes"
+                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir                 = "$outputDir"
 
                 // Common parameters for all trimming tests, using two samples
-                samplesInclude      = "B2M,FLAG"
-                maxReads            = 10000
-                minReadsPerAmplicon = 500
-                maxReadsPerAmplicon = 10000
-                mergeMode           = "merge"
-                mergeMinOverlap     = 4
-                mergeMaxOverlap     = 150
-                crispressoWindow    = 6
-                frameshiftThreshold = 85
-                hdrThreshold        = 85
-                unmodifiedThreshold = 85
-                wtFrameshiftMax     = 5
+                samples_include        = "B2M,FLAG"
+                max_reads              = 10000
+                min_reads_per_amplicon = 500
+                max_reads_per_amplicon = 10000
+                merge_mode             = "merge"
+                merge_min_overlap      = 4
+                merge_max_overlap      = 150
+                crispresso_window      = 6
+                frameshift_threshold   = 85
+                hdr_threshold          = 85
+                unmodified_threshold   = 85
+                wt_frameshift_max      = 5
 
-                noTrimming          = true
+                no_trimming            = true
             }
         }
 
@@ -418,27 +418,27 @@ nextflow_pipeline {
 
         when {
             params {
-                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
-                reference           = "hg19"
-                refBase             = "$baseDir/ref_genomes"
-                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir              = "$outputDir"
+                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                genome                 = "hg19"
+                genome_dir             = "$baseDir/ref_genomes"
+                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir                 = "$outputDir"
 
                 // Common parameters for all trimming tests, using two samples
-                samplesInclude      = "B2M,FLAG"
-                maxReads            = 10000
-                minReadsPerAmplicon = 500
-                maxReadsPerAmplicon = 10000
-                mergeMode           = "merge"
-                mergeMinOverlap     = 4
-                mergeMaxOverlap     = 150
-                crispressoWindow    = 6
-                frameshiftThreshold = 85
-                hdrThreshold        = 85
-                unmodifiedThreshold = 85
-                wtFrameshiftMax     = 5
+                samples_include        = "B2M,FLAG"
+                max_reads              = 10000
+                min_reads_per_amplicon = 500
+                max_reads_per_amplicon = 10000
+                merge_mode             = "merge"
+                merge_min_overlap      = 4
+                merge_max_overlap      = 150
+                crispresso_window      = 6
+                frameshift_threshold   = 85
+                hdr_threshold          = 85
+                unmodified_threshold   = 85
+                wt_frameshift_max      = 5
 
-                trimBases           = 0
+                trim_bases             = 0
             }
         }
 
@@ -474,33 +474,33 @@ nextflow_pipeline {
     /* Merge mode tests *************************************************/
 
     test("Merge mode - auto, Paired-end") {
-        tag "mergeMode_auto_pe"
-        tag "mergeMode"
+        tag "merge_mode_auto_pe"
+        tag "merge_mode"
         tag "paired_end"
 
         when {
             params {
-                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
-                reference           = "hg19"
-                refBase             = "$baseDir/ref_genomes"
-                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir              = "$outputDir"
+                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                genome                 = "hg19"
+                genome_dir             = "$baseDir/ref_genomes"
+                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir                 = "$outputDir"
 
                 // Common parameters for all merge mode tests, using two samples
-                samplesInclude      = "B2M,FLAG"
-                maxReads            = 10000
-                minReadsPerAmplicon = 500
-                maxReadsPerAmplicon = 10000
-                trimBases           = 6
-                mergeMinOverlap     = 4
-                mergeMaxOverlap     = 150
-                crispressoWindow    = 6
-                frameshiftThreshold = 85
-                hdrThreshold        = 85
-                unmodifiedThreshold = 85
-                wtFrameshiftMax     = 5
+                samples_include        = "B2M,FLAG"
+                max_reads              = 10000
+                min_reads_per_amplicon = 500
+                max_reads_per_amplicon = 10000
+                trim_bases             = 6
+                merge_min_overlap      = 4
+                merge_max_overlap      = 150
+                crispresso_window      = 6
+                frameshift_threshold   = 85
+                hdr_threshold          = 85
+                unmodified_threshold   = 85
+                wt_frameshift_max      = 5
 
-                mergeMode           = "auto"
+                merge_mode             = "auto"
             }
         }
 
@@ -557,33 +557,33 @@ nextflow_pipeline {
     }
 
     test("Merge mode - both, Paired-end") {
-        tag "mergeMode_both_pe"
-        tag "mergeMode"
+        tag "merge_mode_both_pe"
+        tag "merge_mode"
         tag "paired_end"
 
         when {
             params {
-                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
-                reference           = "hg19"
-                refBase             = "$baseDir/ref_genomes"
-                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir              = "$outputDir"
+                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                genome                 = "hg19"
+                genome_dir             = "$baseDir/ref_genomes"
+                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir                 = "$outputDir"
 
                 // Common parameters for all merge mode tests, using two samples
-                samplesInclude      = "B2M,FLAG"
-                maxReads            = 10000
-                minReadsPerAmplicon = 500
-                maxReadsPerAmplicon = 10000
-                trimBases           = 6
-                mergeMinOverlap     = 4
-                mergeMaxOverlap     = 150
-                crispressoWindow    = 6
-                frameshiftThreshold = 85
-                hdrThreshold        = 85
-                unmodifiedThreshold = 85
-                wtFrameshiftMax     = 5
+                samples_include        = "B2M,FLAG"
+                max_reads              = 10000
+                min_reads_per_amplicon = 500
+                max_reads_per_amplicon = 10000
+                trim_bases             = 6
+                merge_min_overlap      = 4
+                merge_max_overlap      = 150
+                crispresso_window      = 6
+                frameshift_threshold   = 85
+                hdr_threshold          = 85
+                unmodified_threshold   = 85
+                wt_frameshift_max      = 5
 
-                mergeMode           = "both"
+                merge_mode             = "both"
             }
         }
 
@@ -649,33 +649,33 @@ nextflow_pipeline {
     }
 
     test("Merge mode - merge, Paired-end") {
-        tag "mergeMode_merge_pe"
-        tag "mergeMode"
+        tag "merge_mode_merge_pe"
+        tag "merge_mode"
         tag "paired_end"
 
         when {
             params {
-                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
-                reference           = "hg19"
-                refBase             = "$baseDir/ref_genomes"
-                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir              = "$outputDir"
+                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                genome                 = "hg19"
+                genome_dir             = "$baseDir/ref_genomes"
+                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir                 = "$outputDir"
 
                 // Common parameters for all merge mode tests, using two samples
-                samplesInclude      = "B2M,FLAG"
-                maxReads            = 10000
-                minReadsPerAmplicon = 500
-                maxReadsPerAmplicon = 10000
-                trimBases           = 6
-                mergeMinOverlap     = 4
-                mergeMaxOverlap     = 150
-                crispressoWindow    = 6
-                frameshiftThreshold = 85
-                hdrThreshold        = 85
-                unmodifiedThreshold = 85
-                wtFrameshiftMax     = 5
+                samples_include        = "B2M,FLAG"
+                max_reads              = 10000
+                min_reads_per_amplicon = 500
+                max_reads_per_amplicon = 10000
+                trim_bases             = 6
+                merge_min_overlap      = 4
+                merge_max_overlap      = 150
+                crispresso_window      = 6
+                frameshift_threshold   = 85
+                hdr_threshold          = 85
+                unmodified_threshold   = 85
+                wt_frameshift_max      = 5
 
-                mergeMode           = "merge"
+                merge_mode             = "merge"
             }
         }
 
@@ -717,33 +717,33 @@ nextflow_pipeline {
     }
 
     test("Merge mode - no-merge, Paired-end") {
-        tag "mergeMode_no-merge_pe"
-        tag "mergeMode"
+        tag "merge_mode_no-merge_pe"
+        tag "merge_mode"
         tag "paired_end"
 
         when {
             params {
-                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
-                reference           = "hg19"
-                refBase             = "$baseDir/ref_genomes"
-                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir              = "$outputDir"
+                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                genome                 = "hg19"
+                genome_dir             = "$baseDir/ref_genomes"
+                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir                 = "$outputDir"
 
                 // Common parameters for all merge mode tests, using two samples
-                samplesInclude      = "B2M,FLAG"
-                maxReads            = 10000
-                minReadsPerAmplicon = 500
-                maxReadsPerAmplicon = 10000
-                trimBases           = 6
-                mergeMinOverlap     = 4
-                mergeMaxOverlap     = 150
-                crispressoWindow    = 6
-                frameshiftThreshold = 85
-                hdrThreshold        = 85
-                unmodifiedThreshold = 85
-                wtFrameshiftMax     = 5
+                samples_include        = "B2M,FLAG"
+                max_reads              = 10000
+                min_reads_per_amplicon = 500
+                max_reads_per_amplicon = 10000
+                trim_bases             = 6
+                merge_min_overlap      = 4
+                merge_max_overlap      = 150
+                crispresso_window      = 6
+                frameshift_threshold   = 85
+                hdr_threshold          = 85
+                unmodified_threshold   = 85
+                wt_frameshift_max      = 5
 
-                mergeMode           = "no-merge"
+                merge_mode             = "no-merge"
             }
         }
 
@@ -805,27 +805,27 @@ nextflow_pipeline {
 
         when {
             params {
-                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
-                reference           = "hg19"
-                refBase             = "$baseDir/ref_genomes"
-                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir              = "$outputDir"
+                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                genome                 = "hg19"
+                genome_dir             = "$baseDir/ref_genomes"
+                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir                 = "$outputDir"
 
                 // Common parameters for all CRISPResso tests, using two samples
-                samplesInclude      = "B2M,FLAG"
-                maxReads            = 10000
-                minReadsPerAmplicon = 500
-                maxReadsPerAmplicon = 10000
-                trimBases           = 6
-                mergeMode           = "merge"
-                mergeMinOverlap     = 4
-                mergeMaxOverlap     = 150
-                frameshiftThreshold = 85
-                hdrThreshold        = 85
-                unmodifiedThreshold = 85
-                wtFrameshiftMax     = 5
+                samples_include        = "B2M,FLAG"
+                max_reads              = 10000
+                min_reads_per_amplicon = 500
+                max_reads_per_amplicon = 10000
+                trim_bases             = 6
+                merge_mode             = "merge"
+                merge_min_overlap      = 4
+                merge_max_overlap      = 150
+                frameshift_threshold   = 85
+                hdr_threshold          = 85
+                unmodified_threshold   = 85
+                wt_frameshift_max      = 5
 
-                crispressoWindow    = 4
+                crispresso_window      = 4
             }
         }
 
@@ -858,8 +858,6 @@ nextflow_pipeline {
         }
     }
 
-// TODO: The CRISPResso extra arguments handling needs to be updated to take a single string
-// instead of a list (see Issue #104), at which point this test will need to be changed.
     test("CRISPResso Parameters - Extra Arguments, Paired-end") {
         tag "crispresso_extra_args_pe"
         tag "crispresso"
@@ -867,28 +865,28 @@ nextflow_pipeline {
 
         when {
             params {
-                fastqDir            = "$baseDir/tests/nf-core-test-datasets/fastq"
-                reference           = "hg19"
-                refBase             = "$baseDir/ref_genomes"
-                ampliconsYaml       = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir              = "$outputDir"
+                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                genome                 = "hg19"
+                genome_dir             = "$baseDir/ref_genomes"
+                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
+                outdir                 = "$outputDir"
 
                 // Common parameters for all CRISPResso tests, using two samples
-                samplesInclude      = "B2M,FLAG"
-                maxReads            = 10000
-                minReadsPerAmplicon = 500
-                maxReadsPerAmplicon = 10000
-                trimBases           = 6
-                mergeMode           = "merge"
-                mergeMinOverlap     = 4
-                mergeMaxOverlap     = 150
-                frameshiftThreshold = 85
-                hdrThreshold        = 85
-                unmodifiedThreshold = 85
-                wtFrameshiftMax     = 5
+                samples_include        = "B2M,FLAG"
+                max_reads              = 10000
+                min_reads_per_amplicon = 500
+                max_reads_per_amplicon = 10000
+                trim_bases             = 6
+                merge_mode             = "merge"
+                merge_min_overlap      = 4
+                merge_max_overlap      = 150
+                frameshift_threshold   = 85
+                hdr_threshold          = 85
+                unmodified_threshold   = 85
+                wt_frameshift_max      = 5
 
-                crispressoWindow    = 6
-                crispressoExtraArgs = ["--hdr_perfect_alignment_threshold", "85"]
+                crispresso_window      = 6
+                crispresso_extra_args  = "--hdr_perfect_alignment_threshold 85"
             }
         }
 

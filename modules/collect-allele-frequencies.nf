@@ -1,5 +1,5 @@
-// Nextflow Wrapper to post_process.pl
-process _postProcess {
+// Nextflow Wrapper to collect_allele_frequencies.pl
+process _collectAlleleFrequencies {
     publishDir "${params.outdir}", mode: "copy", overwrite: true
 
     input:
@@ -39,10 +39,10 @@ process _postProcess {
         // * readIds          Reads IDs
         // * ampliconNames    Amplicon names
         // * analysisResults  Respective results paths
-        template "post_process.pl"
+        template "collect_allele_frequencies.pl"
 }
 
-workflow postProcess {
+workflow collectAlleleFrequencies {
     take:
         // Allele analysis channel:
         // * Metadata<Sample name, Read ID, amplicon Name>
@@ -53,5 +53,5 @@ workflow postProcess {
         alleleAnalysis
         | collect(flat: false, sort: { a, b -> a[0] <=> b[0] }) // Sort on metadata for stable output
         | map { it.transpose() }
-        | _postProcess
+        | _collectAlleleFrequencies
 }

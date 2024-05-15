@@ -9,9 +9,9 @@ use YAML::XS qw(LoadFile DumpFile);
 # use Data::Dumper;  # For debugging
 
 # Template tags:
-#   params._doTrimming)
+#   params._do_trimming)
 #     Trimming enabled/disabled
-#   params.mergeMode)
+#   params.merge_mode)
 #     Merge mode
 #   task.ext.maxReads)
 #     Read count threshold
@@ -29,9 +29,9 @@ open(my $out, '>', 'table.txt')
 
 my @columns =  ('Sample', 'Reads.Input');
 push @columns, ('Reads.Downsampled', 'Percent.Downsampled') if !{task.ext.maxReads ? 1 : 0};
-push @columns, ('Reads.Trimmed', 'Percent.Trimmed') if !{params._doTrimming ? 1 : 0};
+push @columns, ('Reads.Trimmed', 'Percent.Trimmed') if !{params._do_trimming ? 1 : 0};
 push @columns, ('Read');
-push @columns, ('Reads.After_merge', 'Percent.After_merge') if !{params.mergeMode == MergeMode.NoMerge ? 0 : 1};
+push @columns, ('Reads.After_merge', 'Percent.After_merge') if !{params.merge_mode == MergeMode.NoMerge ? 0 : 1};
 push @columns, (
   'Reads.Aligned_once', 'Reads.Aligned_multiple', 'Reads.Aligned', 'Percent.Aligned',
   'Amplicon', 'Reads.Overlapping_amplicon', 'Percent.Overlapping_amplicon',
@@ -65,7 +65,7 @@ foreach my $sample_name (sort keys %{ $info->{samples} }) {
     $row_output{'Read'} = $read_name;
 
     # If in paired mode, then merge information is attached to the merged read.
-    if (exists($sample{merge_paired_reads}) and ($read_name eq 'Merged' or !{params.mergeMode == MergeMode.Auto ? 1 : 0})) {
+    if (exists($sample{merge_paired_reads}) and ($read_name eq 'Merged' or !{params.merge_mode == MergeMode.Auto ? 1 : 0})) {
       my %merge = %{ $sample{merge_paired_reads} };
       $row_output{'Reads.Input'} = $merge{Total_pairs} unless $row_output{'Reads.Input'};
       $row_output{'Reads.After_merge'} = $read_name eq "Merged" ? $merge{Combined_pairs} : $merge{Uncombined_pairs};

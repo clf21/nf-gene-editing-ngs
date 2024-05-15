@@ -150,7 +150,7 @@ workflow countReadOverlap {
                 }
         }
         | branch { _meta, _bam, _amplicon, overlapCount ->
-            toSkip:     overlapCount < params.minReadsPerAmplicon
+            toSkip:     overlapCount < params.min_reads_per_amplicon
             toIdentify: true // Everything else
         }
         | set { counted }

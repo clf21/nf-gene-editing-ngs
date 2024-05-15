@@ -1,10 +1,18 @@
 workflow listSequencingSamples {
     take:
+        // State trigger to wait for deployment
+        isDeployed
+
         // Path to sequencing samples
         samplePath
 
     main:
-        Channel.fromFilePairs("${samplePath}/*", size: -1) { new Metadata(it, params.samplesPattern) }
+        // NOTE We have to combine the isDeployed channel for
+        // synchronisation purposes; hence the useless-looking
+        // combine-then-map. It is otherwise functionally redundant.
+        Channel.fromFilePairs("${samplePath}/*", size: -1) { new Metadata(it, params.samples_pattern) }
+        | combine(isDeployed)
+        | map { meta, samples, _deployed -> [ meta, samples ] }
         | filter { meta, samples -> params.samplesFilter.filter(meta.sampleName, samples) }
         | set { samples }
 

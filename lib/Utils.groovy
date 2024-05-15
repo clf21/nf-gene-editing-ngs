@@ -21,8 +21,8 @@ class Utils {
     if (params.help) { this.usage(params) }
 
     // Set reference parameters
-    if (params.reference && params._ref.containsKey(params.reference)) {
-      params.bowtie2 = params._ref[params.reference].bowtie2
+    if (params.genome && params._ref.containsKey(params.genome)) {
+      params.bowtie2 = params._ref[params.genome].bowtie2
     } else {
       this.usage(params, "No or invalid reference ID provided!")
     }
@@ -31,33 +31,33 @@ class Utils {
     if (!validate) { return }
 
     // Check required parameters are set
-    if (!params.fastqDir) { this.usage(params, "Path to sample FASTQs must be provided!") }
-    if (!params.ampliconsYaml) { this.usage(params, "Path to amplicons YAML must be provided!") }
+    if (!params.fastq_dir) { this.usage(params, "Path to sample FASTQs must be provided!") }
+    if (!params.amplicons) { this.usage(params, "Path to amplicons YAML must be provided!") }
 
-    // Skip undetermined by default, unless --samplesProcessUndetermined is set
-    if (params.samplesProcessUndetermined) { params._samplesSkipUndetermined = false }
+    // Skip undetermined by default, unless --samples_process_undetermined is set
+    if (params.samples_process_undetermined) { params._samples_skip_undetermined = false }
 
     // Construct sample filter
     params.samplesFilter = new SampleFilter(
-      params.samplesPattern,
-      params._samplesSkipUndetermined,
-      params.samplesInclude,
-      params.samplesIncludeRegex,
-      params.samplesExclude,
-      params.samplesExcludeRegex
+      params.samples_pattern,
+      params._samples_skip_undetermined,
+      params.samples_include,
+      params.samples_include_regex,
+      params.samples_exclude,
+      params.samples_exclude_regex
     )
 
     // Validate amplicon names
-    if (!this.validAmpliconNames(params.ampliconsYaml, *params._internal.forbidden)) {
+    if (!this.validAmpliconNames(params.amplicons, *params._internal.forbidden)) {
       this.usage(params, "Amplicon(s) detected with an invalid name; i.e., containing forbidden characters!")
     }
 
     // Validate merge mode
-    try { params.mergeMode = MergeMode.from(params.mergeMode) }
+    try { params.merge_mode = MergeMode.from(params.merge_mode) }
     catch(Exception err) { this.usage(params, "${err.message}") }
 
-    // Trim by default, unless --noTrimming is set
-    if (params.noTrimming) { params._doTrimming = false }
+    // Trim by default, unless --no_trimming is set
+    if (params.no_trimming) { params._do_trimming = false }
   }
 
   static void usage(params, failure = null) {
@@ -79,7 +79,7 @@ class Utils {
       }
     }
 
-    println "Valid reference IDs:"
+    println "Valid reference genome IDs:"
 
     // Output all reference IDs
     params._ref.each { k, v -> {
