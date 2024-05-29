@@ -35,7 +35,9 @@ use YAML::XS qw(LoadFile DumpFile);
 my $amplicon = LoadFile("!{ampliconYaml}");
 
 my $info = $amplicon->{info};
-my $amplicon_location = "$info->{chr}:$info->{start}-$info->{end}";
+
+  # Convert from BED to SAM format, for SAMtools
+my $amplicon_location = "$info->{chr}:" . ($info->{start} + 1) . "-$info->{end}";
 
 my $output_dir = "alleles_analysis";
 
@@ -98,15 +100,21 @@ my @crispresso_cmd = !{Escape.cmdAsPerlList(task.ext.crispresso,
 )};
 
 if ($info->{guide}) {
-  $info->{guide} = join(',', @{$info->{guide}}) if ref($info->{guide}) eq 'ARRAY';
-  push @crispresso_cmd, ('-g', $info->{guide});
+  my @guides;
+  foreach my $guide ( @{ $info->{guide} } ) {
+    push @guides, $guide->{seq};
+  }
+
+  push @crispresso_cmd, ('-g', join(',', @guides));
 }
+
 if ($info->{HDR}) {
-  $info->{HDR} = join(',', @{$info->{HDR}}) if ref($info->{HDR}) eq 'ARRAY';
+  $info->{HDR} = join(',', @{$info->{HDR}});
   push @crispresso_cmd, ('-e', $info->{HDR});
 }
+
 if ($info->{coding}) {
-  $info->{coding} = join(',', @{$info->{coding}}) if ref($info->{coding}) eq 'ARRAY';
+  $info->{coding} = join(',', @{$info->{coding}});
   push @crispresso_cmd, ('-c', $info->{coding});
 }
 

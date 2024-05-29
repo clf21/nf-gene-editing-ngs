@@ -6,6 +6,8 @@
             "summary.txt:md5,c3c89d2d9dd0ee42689e8397028d58f0",
             "summary.yaml:md5,d1138f1869ace4f72fccc487d428f345",
             "alleles_frequency_table.txt.gz:md5,bd5b00734ec74354eb8a3884f4a4f975",
+            "params.yaml:md5,3a6200e9c62dbbcdca6d78d184fa2d17",
+            "amplicons.yaml:md5,0bb5bc761c0f44bacd7463a34a7a8125",
             "error.yaml:md5,08808dd2b8ed5222eb21b77a67d9ed0c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,767427569edb8ccda9c72c8bffac71dd",
@@ -31,7 +33,7 @@
             "nf-test": "0.8.4",
             "nextflow": "22.10.6"
         },
-        "timestamp": "2024-05-24T11:45:31.887861"
+        "timestamp": "2024-06-10T11:47:22.174934308"
     },
     "CRISPResso Parameters - Extra Arguments, Paired-end": {
         "content": [
@@ -40,6 +42,8 @@
             "summary.txt:md5,cc055918b3a4b59768f67f171aa1b4c9",
             "summary.yaml:md5,b788bd50c4c7b4562b6d4aec6f6af712",
             "alleles_frequency_table.txt.gz:md5,693b63cf1f55624871b5f582cab462a0",
+            "params.yaml:md5,bf2b8ee4e95515c24ef1d6866b742d93",
+            "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,cd148a04d9ec8efe28119757d50550bc",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,fd676d7432da008894e6e9620ce0f250",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,2b1636718871456d4c09bf10133ae1bb",
@@ -57,7 +61,7 @@
             "nf-test": "0.8.4",
             "nextflow": "22.10.6"
         },
-        "timestamp": "2024-05-24T11:59:02.318874"
+        "timestamp": "2024-06-10T12:02:39.954492544"
     },
     "Read Count Control - No Max Reads, Paired-end": {
         "content": [
@@ -66,6 +70,8 @@
             "summary.txt:md5,b8b2c3ea5a1a0c60aa2e6d28a4e5545d",
             "summary.yaml:md5,ae502d25eb163f0fc4418b93876df4e8",
             "alleles_frequency_table.txt.gz:md5,2f759e94522adb89923389bfa28e3cb2",
+            "params.yaml:md5,f0629c53227d788ba916d465fb34be6b",
+            "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,92f9df85ad012193fa2b6a78fb1cce3a",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,4ec8cd6bcbb5a20e876b41ff5761f522",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,76f2c96ff3c07a5433a66d79b1a03008",
@@ -83,7 +89,7 @@
             "nf-test": "0.8.4",
             "nextflow": "22.10.6"
         },
-        "timestamp": "2024-04-29T19:01:33.232206"
+        "timestamp": "2024-06-10T11:50:17.392368118"
     },
     "Read Count Control - 5000 Min Reads per Amplicon, Paired-end": {
         "content": [
@@ -92,6 +98,8 @@
             "summary.txt:md5,04b669ca8cdaa39131fbc3c0d28b3294",
             "summary.yaml:md5,099af15d4e57d3204e4515c5b8684790",
             "alleles_frequency_table.txt.gz:md5,deb75e9266a44ad6813f72b73d4bcfb4",
+            "params.yaml:md5,82280833261090cb2e36623126c7150e",
+            "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,cd148a04d9ec8efe28119757d50550bc",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,fd676d7432da008894e6e9620ce0f250",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,2b1636718871456d4c09bf10133ae1bb",
@@ -107,7 +115,7 @@
             "nf-test": "0.8.4",
             "nextflow": "22.10.6"
         },
-        "timestamp": "2024-05-24T11:49:32.552407"
+        "timestamp": "2024-06-10T11:52:14.709908013"
     },
     "One Sample 1000 Reads, Paired-end": {
         "content": [
@@ -116,6 +124,8 @@
             "summary.txt:md5,6544d48f95125e7f6060d7352f83bf86",
             "summary.yaml:md5,dc4427ee9f8e6d86c65aa43a6b6786b6",
             "alleles_frequency_table.txt.gz:md5,7a5b611051fe0ef445abf33f532086d1",
+            "params.yaml:md5,3f81e570fcd0b058a96b4d3363f7f26b",
+            "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,021b51c0cde7b3c0a4fc495d9762337b",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,8e423cd342173ef08e7863a4ed124a89",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,d3448bb6f051bee522c1660735a80b8a",
@@ -127,7 +137,7 @@
             "nf-test": "0.8.4",
             "nextflow": "22.10.6"
         },
-        "timestamp": "2024-05-24T11:46:04.400117"
+        "timestamp": "2024-06-10T11:47:54.726617572"
     },
     "Merge mode - no-merge, Paired-end": {
         "content": [
@@ -136,6 +146,8 @@
             "summary.txt:md5,9aa1dddbe91403bd205231b3a63343b2",
             "summary.yaml:md5,5344e88e93b2ba082bf410862992aa7a",
             "alleles_frequency_table.txt.gz:md5,6a1d93e166bd86c5c4061fc4626a611b",
+            "params.yaml:md5,cdf3359155a2933a1b43af3e488f6e62",
+            "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,1d50aa0d7fa12cf2b3e032d486219377",
             "B2M_Read1_B2M-2_Frameshift_analysis.txt:md5,1d0aedca8e0570864ca49f7c0a15db34",
             "B2M_Read1_B2M-2_Quantification_of_editing_frequency.txt:md5,89081a1bd78fa2adf3511c9e78a1e6b1",
@@ -165,7 +177,7 @@
             "nf-test": "0.8.4",
             "nextflow": "22.10.6"
         },
-        "timestamp": "2024-05-24T11:56:37.133454"
+        "timestamp": "2024-06-10T12:00:24.344628996"
     },
     "Read Count Control - 1000 Max Reads per Amplicon, Paired-end": {
         "content": [
@@ -174,6 +186,8 @@
             "summary.txt:md5,8eb37d67c18be9c11827bdac54c1e6cb",
             "summary.yaml:md5,9b3c938c6f81bf128e83d50ab47f3f85",
             "alleles_frequency_table.txt.gz:md5,9a8a511ce3aec919a6666b86808758a4",
+            "params.yaml:md5,a7e5fef0aa74d69117db96ad6e8ebf59",
+            "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,1bfbf33455026200ab40d3c24ce2255e",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,5a777e6ccf59e0d03d1d868eae1d302f",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,dc702e6666ddce87b2f69c460e2c4319",
@@ -191,7 +205,7 @@
             "nf-test": "0.8.4",
             "nextflow": "22.10.6"
         },
-        "timestamp": "2024-05-24T11:48:21.149235"
+        "timestamp": "2024-06-10T11:51:10.552502556"
     },
     "Merge mode - auto, Paired-end": {
         "content": [
@@ -200,6 +214,8 @@
             "summary.txt:md5,fde0e39536d06c59a6a202dc720fba8e",
             "summary.yaml:md5,d68f95a439a7b02582923aafc09cda32",
             "alleles_frequency_table.txt.gz:md5,322cf091fa36b084c8776cbfb3fcd4d0",
+            "params.yaml:md5,749fe5946f0c89ad800fb9734a41d42f",
+            "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,cd148a04d9ec8efe28119757d50550bc",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,fd676d7432da008894e6e9620ce0f250",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,2b1636718871456d4c09bf10133ae1bb",
@@ -235,7 +251,7 @@
             "nf-test": "0.8.4",
             "nextflow": "22.10.6"
         },
-        "timestamp": "2024-05-24T11:53:14.704641"
+        "timestamp": "2024-06-10T11:55:56.235277991"
     },
     "Trimming - Trim Without Headcrop, Paired-end": {
         "content": [
@@ -244,6 +260,8 @@
             "summary.txt:md5,2095c92617df6e79db1620a7a6e42261",
             "summary.yaml:md5,edc1c3edc6be40d41fba9cc428baae9f",
             "alleles_frequency_table.txt.gz:md5,53f844d871e3e8a4efeaf2861aeda0ea",
+            "params.yaml:md5,d890af9207d6c6e81c0f5a383eac7094",
+            "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,9425ce46e168e27287eb5973c4e36a23",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,2c6a86cda41ae271364b5d9dd0992c0c",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,c947c0de87f024ac44f4df54f4df420d",
@@ -261,7 +279,7 @@
             "nf-test": "0.8.4",
             "nextflow": "22.10.6"
         },
-        "timestamp": "2024-05-24T11:52:00.931461"
+        "timestamp": "2024-06-10T11:54:38.465318126"
     },
     "CRISPResso Parameters - 4bp Window, Paired-end": {
         "content": [
@@ -270,6 +288,8 @@
             "summary.txt:md5,2b8bdf951c5dc7c6fa6ae8f76ffd4397",
             "summary.yaml:md5,4386bb881c7222aaebb7d66fae12cd71",
             "alleles_frequency_table.txt.gz:md5,26f032a10be19954519b6cd36f663bd5",
+            "params.yaml:md5,ad5f0b2b5870f25db142021787235a0d",
+            "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,fca848195dfa3d611e8fee3e8d25b577",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,3eddd952bd50016eb1514aa61afa8abc",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,e1335d9fec0a44d06081c5477d2681fc",
@@ -287,7 +307,7 @@
             "nf-test": "0.8.4",
             "nextflow": "22.10.6"
         },
-        "timestamp": "2024-05-24T11:57:49.603206"
+        "timestamp": "2024-06-10T12:01:31.238133015"
     },
     "Pipeline Defaults, Paired-end": {
         "content": [
@@ -296,6 +316,8 @@
             "summary.txt:md5,e76ca813b84cac2fe5647d66921a11ec",
             "summary.yaml:md5,99ff6f2d03823676f77a14ec20dec9f6",
             "alleles_frequency_table.txt.gz:md5,4f4b01981e722ee8ee774afb605d0fda",
+            "params.yaml:md5,0737afba72af4f090713b4b5273d47ac",
+            "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,3d804c8ede85ac247ef70d696fb5ede9",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,6c4585004b868f2d41ce6e82fc7ef76e",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,be254d1fb52486b518f571433e86aa5d",
@@ -323,7 +345,7 @@
             "nf-test": "0.8.4",
             "nextflow": "22.10.6"
         },
-        "timestamp": "2024-05-24T11:44:27.973607"
+        "timestamp": "2024-06-10T11:46:11.73078264"
     },
     "Merge mode - both, Paired-end": {
         "content": [
@@ -332,6 +354,8 @@
             "summary.txt:md5,faf710f2b8b5a11bdb568433a84e43f2",
             "summary.yaml:md5,015270d660eb744fc00a4ec90522bee8",
             "alleles_frequency_table.txt.gz:md5,0767574a8445926d430b04e199cb60a7",
+            "params.yaml:md5,ab4aaeed72fc229309be29fa61ebba32",
+            "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,cd148a04d9ec8efe28119757d50550bc",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,fd676d7432da008894e6e9620ce0f250",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,2b1636718871456d4c09bf10133ae1bb",
@@ -373,7 +397,7 @@
             "nf-test": "0.8.4",
             "nextflow": "22.10.6"
         },
-        "timestamp": "2024-05-24T11:54:29.457666"
+        "timestamp": "2024-06-10T11:57:55.73948218"
     },
     "Trimming - No Trimming, Paired-end": {
         "content": [
@@ -382,6 +406,8 @@
             "summary.txt:md5,d9368c5c3c5e8e243bebbaf7a160285e",
             "summary.yaml:md5,e7800f79ece4b83cdfd23ec037501377",
             "alleles_frequency_table.txt.gz:md5,0713624a2eaf0f51fb9ea95c8b7d2fe0",
+            "params.yaml:md5,2b68e3f92f978ea8bd88ecafad458a3c",
+            "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,cd148a04d9ec8efe28119757d50550bc",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,fd676d7432da008894e6e9620ce0f250",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,2b1636718871456d4c09bf10133ae1bb",
@@ -399,7 +425,7 @@
             "nf-test": "0.8.4",
             "nextflow": "22.10.6"
         },
-        "timestamp": "2024-05-24T11:50:44.681609"
+        "timestamp": "2024-06-10T11:53:25.690861693"
     },
     "Merge mode - merge, Paired-end": {
         "content": [
@@ -408,6 +434,8 @@
             "summary.txt:md5,d9368c5c3c5e8e243bebbaf7a160285e",
             "summary.yaml:md5,e7800f79ece4b83cdfd23ec037501377",
             "alleles_frequency_table.txt.gz:md5,0713624a2eaf0f51fb9ea95c8b7d2fe0",
+            "params.yaml:md5,bc79f61e812edfdce075369fbaea2e8d",
+            "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,cd148a04d9ec8efe28119757d50550bc",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,fd676d7432da008894e6e9620ce0f250",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,2b1636718871456d4c09bf10133ae1bb",
@@ -425,6 +453,6 @@
             "nf-test": "0.8.4",
             "nextflow": "22.10.6"
         },
-        "timestamp": "2024-05-24T11:55:41.539001"
+        "timestamp": "2024-06-10T11:59:03.315818239"
     }
 }

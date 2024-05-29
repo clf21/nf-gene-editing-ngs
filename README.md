@@ -132,14 +132,14 @@ Valid sample filename pattern presets are:
 
 The amplicons YAML file must be a top-level object, where each key
 represents an arbitrary name/identifier for the amplicon. The value,
-under each key, should contain the following subkeys:
+under each key, should contain (at least) the following subkeys:
 
-| Property | Description                                             |
-| :------- | :------------------------------------------------------ |
-| `seq`    | Expected amplicon sequence                              |
-| `guide`  | Guide sequence                                          |
-| `coding` | Coding sequence within the amplicon sequence (optional) |
-| `HDR`    | Expected amplicon sequence after HDR (optional)         |
+| Property | Description                                  | Required |
+| :------- | :------------------------------------------- | -------- |
+| `seq`    | Expected amplicon sequence                   | Yes      |
+| `guide`  | Guide sequence                               | Yes      |
+| `coding` | Coding sequence within the amplicon sequence | No       |
+| `HDR`    | Expected amplicon sequence after HDR         | No       |
 
 For example:
 
@@ -151,13 +151,80 @@ Some-Amplicon:
 
 Another-Amplicon:
   seq: GATTACA
-  guide: GATTACA
+  guide:
+  - GATTACA
+  - CAT
   HDR: GATTACA
 ```
+
+> [!NOTE]
+> Each amplicon may have multiple `guide`, `coding` and/or `HDR`
+> sequences. These can be expressed either as a comma-delimited string,
+> or a YAML list of strings.
+>
+> Additionally, `guide` sequences can be expressed as a YAML list of
+> dictionaries (with the sequence under a `seq` key). This option
+> matches the format of the normalized, aligned and coordinated amplicon
+> output from the pipeline, which is [described below](#amplicon-normalization).
 
 > [!CAUTION]
 > The amplicon name is arbitrary, but it must not contain `|` or
 > `/`-characters.
+
+##### Amplicon Normalization
+
+Each amplicon is normalized, aligned to and located within the given
+reference genome, for both the expected and all guide sequences, as part
+of the pipeline. The resulting YAML for each amplicon will look
+something like this (modulo order and comments):
+
+```yaml
+<AMPLICON NAME>:
+  genome: <GENOME ID>
+
+  seq: <DNA SEQUENCE>
+  CIGAR: <CIGAR SEQUENCE>
+
+  chr: <CHROMOSOME ID>
+  start: <START LOCATION>
+  end: <END LOCATION>
+  strand: <+/- FOR FORWARD/REVERSE>
+
+  guide:
+  - seq: <DNA SEQUENCE>
+    coords:
+      amplicon:
+        start: <GUIDE START LOCATION, WRT AMPLICON>
+        end: <GUIDE END LOCATION, WRT AMPLICON>
+        strand: <+/-, WRT AMPLICON>
+      reference:
+        start: <GUIDE START LOCATION, WRT REFERENCE>
+        end: <GUIDE END LOCATION, WRT REFERENCE>
+        strand: <+/-, WRT REFERENCE>
+  # etc.
+
+  # Optional (i.e., per the input)
+  coding:
+  - <DNA SEQUENCE>
+  # etc.
+
+  # Optional (i.e., per the input)
+  HDR:
+  - <DNA SEQUENCE>
+  # etc.
+```
+
+> [!TIP]
+> Genomic coordinates are expressed in the [BED standard](https://genome.ucsc.edu/FAQ/FAQformat.html#format1).
+
+> [!TIP]
+> The normalized amplicon output can be used as the input amplicon YAML
+> file, to allow convenient rerunning of the pipeline.
+
+> [!CAUTION]
+> If a guide sequence _cannot_ be found in the amplicon, either forward
+> or in reverse complement, then its `coords` key will not be present;
+> replaced with a `failed` key.
 
 #### Output
 
@@ -674,6 +741,16 @@ Inputs:
 
 Outputs:
 1. Channel of normalized amplicon manifest YAML file.
+
+##### `publishMetadata` (in `modules/publish-metadata.nf`)
+
+Inputs:
+1. Prepared amplicons YAML file.
+
+Published:
+* The prepared (i.e., normalized and aligned) amplicons YAML, as
+  `amplicons.yaml`.
+* The input parameters for the pipeline run, as `params.yaml`.
 
 ##### `reportFailedAnalysis` (in `modules/identify-alleles.nf`)
 

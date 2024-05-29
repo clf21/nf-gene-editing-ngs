@@ -1,3 +1,5 @@
+def testDataDir = "tests/nf-core-test-datasets"
+
 nextflow_pipeline {
 
     name "Full Pipeline Tests"
@@ -11,52 +13,55 @@ nextflow_pipeline {
 
         when {
             params {
-                fastq_dir  = "$baseDir/tests/nf-core-test-datasets/fastq"
+                fastq_dir  = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/fastq")
                 genome     = "hg19"
-                genome_dir = "$baseDir/ref_genomes"
-                amplicons  = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir     = "$outputDir"
+                genome_dir = RelativeDir.to(launchDir, "${baseDir}/ref_genomes")
+                amplicons  = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/amplicons.yaml")
+                outdir     = "output"
             }
         }
 
         then {
             assert workflow.success
             assert snapshot(
-                path("${outputDir}/info.txt"),
-                path("${outputDir}/info.yaml"),
-                path("${outputDir}/summary.txt"),
-                path("${outputDir}/summary.yaml"),
-                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/info.txt"),
+                path("${launchDir}/output/info.yaml"),
+                path("${launchDir}/output/summary.txt"),
+                path("${launchDir}/output/summary.yaml"),
+                path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
 
-                path("${outputDir}/B2M/B2M-2/info.yaml"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
-                path("${outputDir}/HPRT/HPRT-ctrl/info.yaml"),
-                path("${outputDir}/HPRT/HPRT-ctrl/HPRT_HPRT-ctrl_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/HPRT/B2M-2/skipped.yaml"),
-                path("${outputDir}/HPRT/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/HPRT/SNP-edit/skipped.yaml"),
-                path("${outputDir}/SNP/SNP-edit/info.yaml"),
-                path("${outputDir}/SNP/SNP-edit/SNP_SNP-edit_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/SNP/B2M-2/skipped.yaml"),
-                path("${outputDir}/SNP/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/SNP/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/params.yaml"),
+                path("${launchDir}/output/amplicons.yaml"),
+
+                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/HPRT/HPRT-ctrl/info.yaml"),
+                path("${launchDir}/output/HPRT/HPRT-ctrl/HPRT_HPRT-ctrl_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/HPRT/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/HPRT/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/HPRT/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/SNP/SNP-edit/info.yaml"),
+                path("${launchDir}/output/SNP/SNP-edit/SNP_SNP-edit_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/SNP/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/SNP/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/SNP/FLAG-KI/skipped.yaml"),
             ).match()
-            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
-            assert path("${outputDir}/HPRT/HPRT-ctrl/CRISPResso_output").exists()
-            assert path("${outputDir}/SNP/SNP-edit/CRISPResso_output").exists()
-            assert ! path("${outputDir}/HPRT/HPRT-ctrl/HPRT_HPRT-ctrl_Frameshift_analysis.txt").exists()
-            assert ! path("${outputDir}/SNP/SNP-edit/SNP_SNP-edit_Frameshift_analysis.txt").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/HPRT/HPRT-ctrl/CRISPResso_output").exists()
+            assert path("${launchDir}/output/SNP/SNP-edit/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/HPRT/HPRT-ctrl/HPRT_HPRT-ctrl_Frameshift_analysis.txt").exists()
+            assert ! path("${launchDir}/output/SNP/SNP-edit/SNP_SNP-edit_Frameshift_analysis.txt").exists()
         }
     }
 
@@ -67,53 +72,56 @@ nextflow_pipeline {
 
         when {
             params {
-                fastq_dir  = "$baseDir/tests/nf-core-test-datasets/fastq_single-end"
+                fastq_dir  = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/fastq_single-end")
                 genome     = "hg19"
-                genome_dir = "$baseDir/ref_genomes"
-                amplicons  = "$baseDir/tests/nf-core-test-datasets/amplicons_single-end.yaml"
-                outdir     = "$outputDir"
+                genome_dir = RelativeDir.to(launchDir, "${baseDir}/ref_genomes")
+                amplicons  = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/amplicons_single-end.yaml")
+                outdir     = "output"
             }
         }
 
         then {
             assert workflow.success
             assert snapshot(
-                path("${outputDir}/info.txt"),
-                path("${outputDir}/info.yaml"),
-                path("${outputDir}/summary.txt"),
-                path("${outputDir}/summary.yaml"),
-                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/info.txt"),
+                path("${launchDir}/output/info.yaml"),
+                path("${launchDir}/output/summary.txt"),
+                path("${launchDir}/output/summary.yaml"),
+                path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
 
-                path("${outputDir}/B2M_Read1/B2M-2/error.yaml"),
-                path("${outputDir}/B2M_Read1/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M_Read1/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M_Read1/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG_Read1/FLAG-KI/info.yaml"),
-                path("${outputDir}/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Frameshift_analysis.txt"),
-                path("${outputDir}/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/FLAG_Read1/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG_Read1/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG_Read1/SNP-edit/skipped.yaml"),
-                path("${outputDir}/HPRT_Read1/HPRT-ctrl/info.yaml"),
-                path("${outputDir}/HPRT_Read1/HPRT-ctrl/HPRT_Read1_HPRT-ctrl_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/HPRT_Read1/B2M-2/skipped.yaml"),
-                path("${outputDir}/HPRT_Read1/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/HPRT_Read1/SNP-edit/skipped.yaml"),
-                path("${outputDir}/SNP_Read1/SNP-edit/info.yaml"),
-                path("${outputDir}/SNP_Read1/SNP-edit/SNP_Read1_SNP-edit_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/SNP_Read1/B2M-2/skipped.yaml"),
-                path("${outputDir}/SNP_Read1/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/SNP_Read1/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/params.yaml"),
+                path("${launchDir}/output/amplicons.yaml"),
+
+                path("${launchDir}/output/B2M_Read1/B2M-2/error.yaml"),
+                path("${launchDir}/output/B2M_Read1/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read1/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/info.yaml"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read1/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read1/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/HPRT_Read1/HPRT-ctrl/info.yaml"),
+                path("${launchDir}/output/HPRT_Read1/HPRT-ctrl/HPRT_Read1_HPRT-ctrl_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/HPRT_Read1/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/HPRT_Read1/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/HPRT_Read1/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/SNP_Read1/SNP-edit/info.yaml"),
+                path("${launchDir}/output/SNP_Read1/SNP-edit/SNP_Read1_SNP-edit_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/SNP_Read1/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/SNP_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/SNP_Read1/FLAG-KI/skipped.yaml"),
             ).match()
-            assert path("${outputDir}/FLAG_Read1/FLAG-KI/CRISPResso_output").exists()
-            assert path("${outputDir}/HPRT_Read1/HPRT-ctrl/CRISPResso_output").exists()
-            assert path("${outputDir}/SNP_Read1/SNP-edit/CRISPResso_output").exists()
-            assert ! path("${outputDir}/HPRT_Read1/HPRT-ctrl/HPRT_Read1_HPRT-ctrl_Frameshift_analysis.txt").exists()
-            assert ! path("${outputDir}/SNP_Read1/SNP-edit/SNP_Read1_SNP-edit_Frameshift_analysis.txt").exists()
-            assert ! path("${outputDir}/B2M").exists()
-            assert ! path("${outputDir}/FLAG").exists()
-            assert ! path("${outputDir}/HPRT").exists()
-            assert ! path("${outputDir}/SNP").exists()
+            assert path("${launchDir}/output/FLAG_Read1/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/HPRT_Read1/HPRT-ctrl/CRISPResso_output").exists()
+            assert path("${launchDir}/output/SNP_Read1/SNP-edit/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/HPRT_Read1/HPRT-ctrl/HPRT_Read1_HPRT-ctrl_Frameshift_analysis.txt").exists()
+            assert ! path("${launchDir}/output/SNP_Read1/SNP-edit/SNP_Read1_SNP-edit_Frameshift_analysis.txt").exists()
+            assert ! path("${launchDir}/output/B2M").exists()
+            assert ! path("${launchDir}/output/FLAG").exists()
+            assert ! path("${launchDir}/output/HPRT").exists()
+            assert ! path("${launchDir}/output/SNP").exists()
         }
     }
 
@@ -124,11 +132,11 @@ nextflow_pipeline {
 
         when {
             params {
-                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                fastq_dir              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/fastq")
                 genome                 = "hg19"
-                genome_dir             = "$baseDir/ref_genomes"
-                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir                 = "$outputDir"
+                genome_dir             = RelativeDir.to(launchDir, "${baseDir}/ref_genomes")
+                amplicons              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/amplicons.yaml")
+                outdir                 = "output"
 
                 samples_include        = "B2M"
                 max_reads              = 1000
@@ -149,23 +157,26 @@ nextflow_pipeline {
         then {
             assert workflow.success
             assert snapshot(
-                path("${outputDir}/info.txt"),
-                path("${outputDir}/info.yaml"),
-                path("${outputDir}/summary.txt"),
-                path("${outputDir}/summary.yaml"),
-                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/info.txt"),
+                path("${launchDir}/output/info.yaml"),
+                path("${launchDir}/output/summary.txt"),
+                path("${launchDir}/output/summary.yaml"),
+                path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
 
-                path("${outputDir}/B2M/B2M-2/info.yaml"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/params.yaml"),
+                path("${launchDir}/output/amplicons.yaml"),
+
+                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
-            assert ! path("${outputDir}/FLAG").exists()
-            assert ! path("${outputDir}/HPRT").exists()
-            assert ! path("${outputDir}/SNP").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/FLAG").exists()
+            assert ! path("${launchDir}/output/HPRT").exists()
+            assert ! path("${launchDir}/output/SNP").exists()
         }
     }
 
@@ -178,11 +189,11 @@ nextflow_pipeline {
 
         when {
             params {
-                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                fastq_dir              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/fastq")
                 genome                 = "hg19"
-                genome_dir             = "$baseDir/ref_genomes"
-                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir                 = "$outputDir"
+                genome_dir             = RelativeDir.to(launchDir, "${baseDir}/ref_genomes")
+                amplicons              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/amplicons.yaml")
+                outdir                 = "output"
 
                 // Common parameters for all read count control tests, using two samples
                 samples_include        = "B2M,FLAG"
@@ -205,29 +216,32 @@ nextflow_pipeline {
         then {
             assert workflow.success
             assert snapshot(
-                path("${outputDir}/info.txt"),
-                path("${outputDir}/info.yaml"),
-                path("${outputDir}/summary.txt"),
-                path("${outputDir}/summary.yaml"),
-                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/info.txt"),
+                path("${launchDir}/output/info.yaml"),
+                path("${launchDir}/output/summary.txt"),
+                path("${launchDir}/output/summary.yaml"),
+                path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
 
-                path("${outputDir}/B2M/B2M-2/info.yaml"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/params.yaml"),
+                path("${launchDir}/output/amplicons.yaml"),
+
+                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
-            assert ! path("${outputDir}/HPRT").exists()
-            assert ! path("${outputDir}/SNP").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/HPRT").exists()
+            assert ! path("${launchDir}/output/SNP").exists()
         }
     }
 
@@ -238,11 +252,11 @@ nextflow_pipeline {
 
         when {
             params {
-                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                fastq_dir              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/fastq")
                 genome                 = "hg19"
-                genome_dir             = "$baseDir/ref_genomes"
-                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir                 = "$outputDir"
+                genome_dir             = RelativeDir.to(launchDir, "${baseDir}/ref_genomes")
+                amplicons              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/amplicons.yaml")
+                outdir                 = "output"
 
                 // Common parameters for all read count control tests, using two samples
                 samples_include        = "B2M,FLAG"
@@ -265,29 +279,32 @@ nextflow_pipeline {
         then {
             assert workflow.success
             assert snapshot(
-                path("${outputDir}/info.txt"),
-                path("${outputDir}/info.yaml"),
-                path("${outputDir}/summary.txt"),
-                path("${outputDir}/summary.yaml"),
-                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/info.txt"),
+                path("${launchDir}/output/info.yaml"),
+                path("${launchDir}/output/summary.txt"),
+                path("${launchDir}/output/summary.yaml"),
+                path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
 
-                path("${outputDir}/B2M/B2M-2/info.yaml"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/params.yaml"),
+                path("${launchDir}/output/amplicons.yaml"),
+
+                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
-            assert ! path("${outputDir}/HPRT").exists()
-            assert ! path("${outputDir}/SNP").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/HPRT").exists()
+            assert ! path("${launchDir}/output/SNP").exists()
         }
     }
 
@@ -298,11 +315,11 @@ nextflow_pipeline {
 
         when {
             params {
-                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                fastq_dir              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/fastq")
                 genome                 = "hg19"
-                genome_dir             = "$baseDir/ref_genomes"
-                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir                 = "$outputDir"
+                genome_dir             = RelativeDir.to(launchDir, "${baseDir}/ref_genomes")
+                amplicons              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/amplicons.yaml")
+                outdir                 = "output"
 
                 // Common parameters for all read count control tests, using two samples
                 samples_include        = "B2M,FLAG"
@@ -325,27 +342,30 @@ nextflow_pipeline {
         then {
             assert workflow.success
             assert snapshot(
-                path("${outputDir}/info.txt"),
-                path("${outputDir}/info.yaml"),
-                path("${outputDir}/summary.txt"),
-                path("${outputDir}/summary.yaml"),
-                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/info.txt"),
+                path("${launchDir}/output/info.yaml"),
+                path("${launchDir}/output/summary.txt"),
+                path("${launchDir}/output/summary.yaml"),
+                path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
 
-                path("${outputDir}/B2M/B2M-2/info.yaml"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/params.yaml"),
+                path("${launchDir}/output/amplicons.yaml"),
+
+                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
-            assert ! path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
-            assert ! path("${outputDir}/HPRT").exists()
-            assert ! path("${outputDir}/SNP").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/HPRT").exists()
+            assert ! path("${launchDir}/output/SNP").exists()
         }
     }
 
@@ -358,11 +378,11 @@ nextflow_pipeline {
 
         when {
             params {
-                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                fastq_dir              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/fastq")
                 genome                 = "hg19"
-                genome_dir             = "$baseDir/ref_genomes"
-                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir                 = "$outputDir"
+                genome_dir             = RelativeDir.to(launchDir, "${baseDir}/ref_genomes")
+                amplicons              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/amplicons.yaml")
+                outdir                 = "output"
 
                 // Common parameters for all trimming tests, using two samples
                 samples_include        = "B2M,FLAG"
@@ -385,29 +405,32 @@ nextflow_pipeline {
         then {
             assert workflow.success
             assert snapshot(
-                path("${outputDir}/info.txt"),
-                path("${outputDir}/info.yaml"),
-                path("${outputDir}/summary.txt"),
-                path("${outputDir}/summary.yaml"),
-                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/info.txt"),
+                path("${launchDir}/output/info.yaml"),
+                path("${launchDir}/output/summary.txt"),
+                path("${launchDir}/output/summary.yaml"),
+                path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
 
-                path("${outputDir}/B2M/B2M-2/info.yaml"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/params.yaml"),
+                path("${launchDir}/output/amplicons.yaml"),
+
+                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
-            assert ! path("${outputDir}/HPRT").exists()
-            assert ! path("${outputDir}/SNP").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/HPRT").exists()
+            assert ! path("${launchDir}/output/SNP").exists()
         }
     }
 
@@ -418,11 +441,11 @@ nextflow_pipeline {
 
         when {
             params {
-                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                fastq_dir              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/fastq")
                 genome                 = "hg19"
-                genome_dir             = "$baseDir/ref_genomes"
-                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir                 = "$outputDir"
+                genome_dir             = RelativeDir.to(launchDir, "${baseDir}/ref_genomes")
+                amplicons              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/amplicons.yaml")
+                outdir                 = "output"
 
                 // Common parameters for all trimming tests, using two samples
                 samples_include        = "B2M,FLAG"
@@ -445,29 +468,32 @@ nextflow_pipeline {
         then {
             assert workflow.success
             assert snapshot(
-                path("${outputDir}/info.txt"),
-                path("${outputDir}/info.yaml"),
-                path("${outputDir}/summary.txt"),
-                path("${outputDir}/summary.yaml"),
-                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/info.txt"),
+                path("${launchDir}/output/info.yaml"),
+                path("${launchDir}/output/summary.txt"),
+                path("${launchDir}/output/summary.yaml"),
+                path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
 
-                path("${outputDir}/B2M/B2M-2/info.yaml"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/params.yaml"),
+                path("${launchDir}/output/amplicons.yaml"),
+
+                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
-            assert ! path("${outputDir}/HPRT").exists()
-            assert ! path("${outputDir}/SNP").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/HPRT").exists()
+            assert ! path("${launchDir}/output/SNP").exists()
         }
     }
 
@@ -480,11 +506,11 @@ nextflow_pipeline {
 
         when {
             params {
-                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                fastq_dir              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/fastq")
                 genome                 = "hg19"
-                genome_dir             = "$baseDir/ref_genomes"
-                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir                 = "$outputDir"
+                genome_dir             = RelativeDir.to(launchDir, "${baseDir}/ref_genomes")
+                amplicons              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/amplicons.yaml")
+                outdir                 = "output"
 
                 // Common parameters for all merge mode tests, using two samples
                 samples_include        = "B2M,FLAG"
@@ -507,52 +533,55 @@ nextflow_pipeline {
         then {
             assert workflow.success
             assert snapshot(
-                path("${outputDir}/info.txt"),
-                path("${outputDir}/info.yaml"),
-                path("${outputDir}/summary.txt"),
-                path("${outputDir}/summary.yaml"),
-                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/info.txt"),
+                path("${launchDir}/output/info.yaml"),
+                path("${launchDir}/output/summary.txt"),
+                path("${launchDir}/output/summary.yaml"),
+                path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
 
-                path("${outputDir}/B2M/B2M-2/info.yaml"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
-                path("${outputDir}/B2M_Read1/B2M-2/skipped.yaml"),
-                path("${outputDir}/B2M_Read1/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M_Read1/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M_Read1/SNP-edit/skipped.yaml"),
-                path("${outputDir}/B2M_Read2/B2M-2/skipped.yaml"),
-                path("${outputDir}/B2M_Read2/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M_Read2/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M_Read2/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG_Read1/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG_Read1/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/FLAG_Read1/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG_Read1/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG_Read2/FLAG-KI/info.yaml"),
-                path("${outputDir}/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Frameshift_analysis.txt"),
-                path("${outputDir}/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/FLAG_Read2/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG_Read2/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG_Read2/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/params.yaml"),
+                path("${launchDir}/output/amplicons.yaml"),
+
+                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read1/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read1/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read2/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read2/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read2/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read2/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read1/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read1/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/info.yaml"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read2/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read2/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read2/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
-            assert path("${outputDir}/FLAG_Read2/FLAG-KI/CRISPResso_output").exists()
-            assert ! path("${outputDir}/HPRT").exists()
-            assert ! path("${outputDir}/HPRT_Read1").exists()
-            assert ! path("${outputDir}/HPRT_Read2").exists()
-            assert ! path("${outputDir}/SNP").exists()
-            assert ! path("${outputDir}/SNP_Read1").exists()
-            assert ! path("${outputDir}/SNP_Read2").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG_Read2/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/HPRT").exists()
+            assert ! path("${launchDir}/output/HPRT_Read1").exists()
+            assert ! path("${launchDir}/output/HPRT_Read2").exists()
+            assert ! path("${launchDir}/output/SNP").exists()
+            assert ! path("${launchDir}/output/SNP_Read1").exists()
+            assert ! path("${launchDir}/output/SNP_Read2").exists()
         }
     }
 
@@ -563,11 +592,11 @@ nextflow_pipeline {
 
         when {
             params {
-                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                fastq_dir              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/fastq")
                 genome                 = "hg19"
-                genome_dir             = "$baseDir/ref_genomes"
-                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir                 = "$outputDir"
+                genome_dir             = RelativeDir.to(launchDir, "${baseDir}/ref_genomes")
+                amplicons              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/amplicons.yaml")
+                outdir                 = "output"
 
                 // Common parameters for all merge mode tests, using two samples
                 samples_include        = "B2M,FLAG"
@@ -590,61 +619,64 @@ nextflow_pipeline {
         then {
             assert workflow.success
             assert snapshot(
-                path("${outputDir}/info.txt"),
-                path("${outputDir}/info.yaml"),
-                path("${outputDir}/summary.txt"),
-                path("${outputDir}/summary.yaml"),
-                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/info.txt"),
+                path("${launchDir}/output/info.yaml"),
+                path("${launchDir}/output/summary.txt"),
+                path("${launchDir}/output/summary.yaml"),
+                path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
 
-                path("${outputDir}/B2M/B2M-2/info.yaml"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
-                path("${outputDir}/B2M_Read1/B2M-2/info.yaml"),
-                path("${outputDir}/B2M_Read1/B2M-2/B2M_Read1_B2M-2_Frameshift_analysis.txt"),
-                path("${outputDir}/B2M_Read1/B2M-2/B2M_Read1_B2M-2_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/B2M_Read1/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M_Read1/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M_Read1/SNP-edit/skipped.yaml"),
-                path("${outputDir}/B2M_Read2/B2M-2/info.yaml"),
-                path("${outputDir}/B2M_Read2/B2M-2/B2M_Read2_B2M-2_Frameshift_analysis.txt"),
-                path("${outputDir}/B2M_Read2/B2M-2/B2M_Read2_B2M-2_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/B2M_Read2/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M_Read2/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M_Read2/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG_Read1/FLAG-KI/info.yaml"),
-                path("${outputDir}/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Frameshift_analysis.txt"),
-                path("${outputDir}/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/FLAG_Read1/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG_Read1/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG_Read1/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG_Read2/FLAG-KI/info.yaml"),
-                path("${outputDir}/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Frameshift_analysis.txt"),
-                path("${outputDir}/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/FLAG_Read2/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG_Read2/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG_Read2/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/params.yaml"),
+                path("${launchDir}/output/amplicons.yaml"),
+
+                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/info.yaml"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/B2M_Read1_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/B2M_Read1_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M_Read1/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read1/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read2/B2M-2/info.yaml"),
+                path("${launchDir}/output/B2M_Read2/B2M-2/B2M_Read2_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M_Read2/B2M-2/B2M_Read2_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M_Read2/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read2/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read2/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/info.yaml"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read1/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read1/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/info.yaml"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read2/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read2/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read2/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${outputDir}/B2M_Read1/B2M-2/CRISPResso_output").exists()
-            assert path("${outputDir}/B2M_Read2/B2M-2/CRISPResso_output").exists()
-            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
-            assert path("${outputDir}/FLAG_Read1/FLAG-KI/CRISPResso_output").exists()
-            assert path("${outputDir}/FLAG_Read2/FLAG-KI/CRISPResso_output").exists()
-            assert ! path("${outputDir}/HPRT").exists()
-            assert ! path("${outputDir}/HPRT_Read1").exists()
-            assert ! path("${outputDir}/HPRT_Read2").exists()
-            assert ! path("${outputDir}/SNP").exists()
-            assert ! path("${outputDir}/SNP_Read1").exists()
-            assert ! path("${outputDir}/SNP_Read2").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M_Read1/B2M-2/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M_Read2/B2M-2/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG_Read1/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG_Read2/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/HPRT").exists()
+            assert ! path("${launchDir}/output/HPRT_Read1").exists()
+            assert ! path("${launchDir}/output/HPRT_Read2").exists()
+            assert ! path("${launchDir}/output/SNP").exists()
+            assert ! path("${launchDir}/output/SNP_Read1").exists()
+            assert ! path("${launchDir}/output/SNP_Read2").exists()
         }
     }
 
@@ -655,11 +687,11 @@ nextflow_pipeline {
 
         when {
             params {
-                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                fastq_dir              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/fastq")
                 genome                 = "hg19"
-                genome_dir             = "$baseDir/ref_genomes"
-                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir                 = "$outputDir"
+                genome_dir             = RelativeDir.to(launchDir, "${baseDir}/ref_genomes")
+                amplicons              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/amplicons.yaml")
+                outdir                 = "output"
 
                 // Common parameters for all merge mode tests, using two samples
                 samples_include        = "B2M,FLAG"
@@ -682,37 +714,40 @@ nextflow_pipeline {
         then {
             assert workflow.success
             assert snapshot(
-                path("${outputDir}/info.txt"),
-                path("${outputDir}/info.yaml"),
-                path("${outputDir}/summary.txt"),
-                path("${outputDir}/summary.yaml"),
-                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/info.txt"),
+                path("${launchDir}/output/info.yaml"),
+                path("${launchDir}/output/summary.txt"),
+                path("${launchDir}/output/summary.yaml"),
+                path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
 
-                path("${outputDir}/B2M/B2M-2/info.yaml"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/params.yaml"),
+                path("${launchDir}/output/amplicons.yaml"),
+
+                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
-            assert ! path("${outputDir}/B2M_Read1").exists()
-            assert ! path("${outputDir}/B2M_Read2").exists()
-            assert ! path("${outputDir}/FLAG_Read1").exists()
-            assert ! path("${outputDir}/FLAG_Read2").exists()
-            assert ! path("${outputDir}/HPRT").exists()
-            assert ! path("${outputDir}/HPRT_Read1").exists()
-            assert ! path("${outputDir}/HPRT_Read2").exists()
-            assert ! path("${outputDir}/SNP").exists()
-            assert ! path("${outputDir}/SNP_Read1").exists()
-            assert ! path("${outputDir}/SNP_Read2").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/B2M_Read1").exists()
+            assert ! path("${launchDir}/output/B2M_Read2").exists()
+            assert ! path("${launchDir}/output/FLAG_Read1").exists()
+            assert ! path("${launchDir}/output/FLAG_Read2").exists()
+            assert ! path("${launchDir}/output/HPRT").exists()
+            assert ! path("${launchDir}/output/HPRT_Read1").exists()
+            assert ! path("${launchDir}/output/HPRT_Read2").exists()
+            assert ! path("${launchDir}/output/SNP").exists()
+            assert ! path("${launchDir}/output/SNP_Read1").exists()
+            assert ! path("${launchDir}/output/SNP_Read2").exists()
         }
     }
 
@@ -723,11 +758,11 @@ nextflow_pipeline {
 
         when {
             params {
-                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                fastq_dir              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/fastq")
                 genome                 = "hg19"
-                genome_dir             = "$baseDir/ref_genomes"
-                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir                 = "$outputDir"
+                genome_dir             = RelativeDir.to(launchDir, "${baseDir}/ref_genomes")
+                amplicons              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/amplicons.yaml")
+                outdir                 = "output"
 
                 // Common parameters for all merge mode tests, using two samples
                 samples_include        = "B2M,FLAG"
@@ -750,49 +785,52 @@ nextflow_pipeline {
         then {
             assert workflow.success
             assert snapshot(
-                path("${outputDir}/info.txt"),
-                path("${outputDir}/info.yaml"),
-                path("${outputDir}/summary.txt"),
-                path("${outputDir}/summary.yaml"),
-                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/info.txt"),
+                path("${launchDir}/output/info.yaml"),
+                path("${launchDir}/output/summary.txt"),
+                path("${launchDir}/output/summary.yaml"),
+                path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
 
-                path("${outputDir}/B2M_Read1/B2M-2/info.yaml"),
-                path("${outputDir}/B2M_Read1/B2M-2/B2M_Read1_B2M-2_Frameshift_analysis.txt"),
-                path("${outputDir}/B2M_Read1/B2M-2/B2M_Read1_B2M-2_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/B2M_Read1/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M_Read1/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M_Read1/SNP-edit/skipped.yaml"),
-                path("${outputDir}/B2M_Read2/B2M-2/info.yaml"),
-                path("${outputDir}/B2M_Read2/B2M-2/B2M_Read2_B2M-2_Frameshift_analysis.txt"),
-                path("${outputDir}/B2M_Read2/B2M-2/B2M_Read2_B2M-2_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/B2M_Read2/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M_Read2/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M_Read2/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG_Read1/FLAG-KI/info.yaml"),
-                path("${outputDir}/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Frameshift_analysis.txt"),
-                path("${outputDir}/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/FLAG_Read1/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG_Read1/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG_Read1/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG_Read2/FLAG-KI/info.yaml"),
-                path("${outputDir}/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Frameshift_analysis.txt"),
-                path("${outputDir}/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/FLAG_Read2/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG_Read2/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG_Read2/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/params.yaml"),
+                path("${launchDir}/output/amplicons.yaml"),
+
+                path("${launchDir}/output/B2M_Read1/B2M-2/info.yaml"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/B2M_Read1_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/B2M_Read1_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M_Read1/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read1/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read2/B2M-2/info.yaml"),
+                path("${launchDir}/output/B2M_Read2/B2M-2/B2M_Read2_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M_Read2/B2M-2/B2M_Read2_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M_Read2/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read2/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read2/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/info.yaml"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read1/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read1/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/info.yaml"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read2/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read2/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG_Read2/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${outputDir}/B2M_Read1/B2M-2/CRISPResso_output").exists()
-            assert path("${outputDir}/B2M_Read2/B2M-2/CRISPResso_output").exists()
-            assert path("${outputDir}/FLAG_Read1/FLAG-KI/CRISPResso_output").exists()
-            assert path("${outputDir}/FLAG_Read2/FLAG-KI/CRISPResso_output").exists()
-            assert ! path("${outputDir}/B2M").exists()
-            assert ! path("${outputDir}/FLAG").exists()
-            assert ! path("${outputDir}/HPRT").exists()
-            assert ! path("${outputDir}/HPRT_Read1").exists()
-            assert ! path("${outputDir}/HPRT_Read2").exists()
-            assert ! path("${outputDir}/SNP").exists()
-            assert ! path("${outputDir}/SNP_Read1").exists()
-            assert ! path("${outputDir}/SNP_Read2").exists()
+            assert path("${launchDir}/output/B2M_Read1/B2M-2/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M_Read2/B2M-2/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG_Read1/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG_Read2/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/B2M").exists()
+            assert ! path("${launchDir}/output/FLAG").exists()
+            assert ! path("${launchDir}/output/HPRT").exists()
+            assert ! path("${launchDir}/output/HPRT_Read1").exists()
+            assert ! path("${launchDir}/output/HPRT_Read2").exists()
+            assert ! path("${launchDir}/output/SNP").exists()
+            assert ! path("${launchDir}/output/SNP_Read1").exists()
+            assert ! path("${launchDir}/output/SNP_Read2").exists()
         }
     }
 
@@ -805,11 +843,11 @@ nextflow_pipeline {
 
         when {
             params {
-                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                fastq_dir              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/fastq")
                 genome                 = "hg19"
-                genome_dir             = "$baseDir/ref_genomes"
-                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir                 = "$outputDir"
+                genome_dir             = RelativeDir.to(launchDir, "${baseDir}/ref_genomes")
+                amplicons              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/amplicons.yaml")
+                outdir                 = "output"
 
                 // Common parameters for all CRISPResso tests, using two samples
                 samples_include        = "B2M,FLAG"
@@ -832,29 +870,32 @@ nextflow_pipeline {
         then {
             assert workflow.success
             assert snapshot(
-                path("${outputDir}/info.txt"),
-                path("${outputDir}/info.yaml"),
-                path("${outputDir}/summary.txt"),
-                path("${outputDir}/summary.yaml"),
-                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/info.txt"),
+                path("${launchDir}/output/info.yaml"),
+                path("${launchDir}/output/summary.txt"),
+                path("${launchDir}/output/summary.yaml"),
+                path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
 
-                path("${outputDir}/B2M/B2M-2/info.yaml"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/params.yaml"),
+                path("${launchDir}/output/amplicons.yaml"),
+
+                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
-            assert ! path("${outputDir}/HPRT").exists()
-            assert ! path("${outputDir}/SNP").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/HPRT").exists()
+            assert ! path("${launchDir}/output/SNP").exists()
         }
     }
 
@@ -865,11 +906,11 @@ nextflow_pipeline {
 
         when {
             params {
-                fastq_dir              = "$baseDir/tests/nf-core-test-datasets/fastq"
+                fastq_dir              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/fastq")
                 genome                 = "hg19"
-                genome_dir             = "$baseDir/ref_genomes"
-                amplicons              = "$baseDir/tests/nf-core-test-datasets/amplicons.yaml"
-                outdir                 = "$outputDir"
+                genome_dir             = RelativeDir.to(launchDir, "${baseDir}/ref_genomes")
+                amplicons              = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/amplicons.yaml")
+                outdir                 = "output"
 
                 // Common parameters for all CRISPResso tests, using two samples
                 samples_include        = "B2M,FLAG"
@@ -893,29 +934,32 @@ nextflow_pipeline {
         then {
             assert workflow.success
             assert snapshot(
-                path("${outputDir}/info.txt"),
-                path("${outputDir}/info.yaml"),
-                path("${outputDir}/summary.txt"),
-                path("${outputDir}/summary.yaml"),
-                path("${outputDir}/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/info.txt"),
+                path("${launchDir}/output/info.yaml"),
+                path("${launchDir}/output/summary.txt"),
+                path("${launchDir}/output/summary.yaml"),
+                path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
 
-                path("${outputDir}/B2M/B2M-2/info.yaml"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${outputDir}/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/B2M/FLAG-KI/skipped.yaml"),
-                path("${outputDir}/B2M/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/B2M/SNP-edit/skipped.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/info.yaml"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${outputDir}/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
-                path("${outputDir}/FLAG/B2M-2/skipped.yaml"),
-                path("${outputDir}/FLAG/HPRT-ctrl/skipped.yaml"),
-                path("${outputDir}/FLAG/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/params.yaml"),
+                path("${launchDir}/output/amplicons.yaml"),
+
+                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
+                path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${outputDir}/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${outputDir}/FLAG/FLAG-KI/CRISPResso_output").exists()
-            assert ! path("${outputDir}/HPRT").exists()
-            assert ! path("${outputDir}/SNP").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/HPRT").exists()
+            assert ! path("${launchDir}/output/SNP").exists()
         }
     }
 

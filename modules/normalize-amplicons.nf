@@ -1,6 +1,4 @@
-/*
- * TODO All that `normalize_amplicons.pl` does is to convert sequence
- * strings into uppercase. The input YAML file looks something like:
+/* The input YAML file should look something like:
  *
  *   <NAME>:
  *     seq: <SEQUENCE>
@@ -8,7 +6,33 @@
  *     coding: <SEQUENCE>   # Optional
  *     HDR: <SEQUENCE>      # Optional
  *
- * Nonetheless, this ought to be straightforward to Nextflow-ify.
+ * Where <NAME> identifies each amplicon.
+ *
+ * Note that `guide`, `coding` and `HDR` can be any of:
+ * - A single sequence string
+ * - A comma-delimited string of sequences
+ * - A list of single sequence strings
+ *
+ * The `guide` value may also be a list of dictionaries, each with a
+ * `seq` key; i.e., that matches the normalised output (see below).
+ *
+ * Note that the `HDR` key is case-insensitive.
+ *
+ * The normalised output will then look like this:
+ *
+ *   <NAME>:
+ *     seq: <UPPERCASE SEQUENCE>
+ *     guide:
+ *     - seq: <UPPERCASE SEQUENCE>
+ *     # etc.
+ *     coding:                      # Optional
+ *     - <UPPERCASE SEQUENCE>
+ *     # etc.
+ *     HDR:                         # Optional
+ *     - <UPPERCASE SEQUENCE>
+ *     # etc.
+ *
+ * Note that unrecognised keys are left as-is.
  */
 
 // Nextflow wrapper to normalize_amplicons.pl
@@ -22,7 +46,7 @@ process normalizeAmplicons {
 
     output:
         // Normalised amplicons YAML
-        path "${ampliconsYaml}.normalized"
+        path "normalized.yaml"
 
     script:
         """

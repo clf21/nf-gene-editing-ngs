@@ -21,6 +21,7 @@ process _alignAmpliconsToReference {
         // * ampliconsYaml           Amplicons YAML file
         // * bt2IndexPath            Bowtie2 reference/index path
         // * params.bowtie2.prefix   Reference file prefix
+        // * params.genome           Reference genome ID
         // * task.ext.bowtie2        Bowtie2 command definition
         template "align_amplicons_to_reference.pl"
 }

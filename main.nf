@@ -1,5 +1,5 @@
 // NOTE Preflight *must* be done before module imports
-Utils.preFlight(params)
+Utils.preFlight(workflow, params)
 
 include { alignAmpliconsToReference } from "./modules/align-amplicons-to-reference"
 include { alignReadsToReference } from "./modules/align-reads-to-reference"
@@ -14,6 +14,7 @@ include { identifyAlleles; reportFailedAnalysis } from "./modules/identify-allel
 include { listSequencingSamples } from "./modules/list-sequencing-samples"
 include { mergePairedReads } from "./modules/merge-paired-reads"
 include { normalizeAmplicons } from "./modules/normalize-amplicons"
+include { publishMetadata } from "./modules/publish-metadata"
 include { splitAmpliconsYaml } from "./modules/split-amplicons-yaml"
 include { summarizeAlleles } from "./modules/summarize-alleles"
 include { trimPairedReads } from "./modules/trim-paired-reads"
@@ -28,6 +29,9 @@ workflow {
     normalizeAmplicons(isDeployed, file(params.amplicons))
     | alignAmpliconsToReference
     | determineReferenceCoordinates
+    | set { preparedAmplicons}
+
+    preparedAmplicons
     | splitAmpliconsYaml
     | set { amplicons }
 
@@ -94,6 +98,11 @@ workflow {
         aligned.info,
         counted | toOverlapInfo,
         summarizedAnalyses | toResultsInfo
+    )
+
+    // Publish metadata
+    publishMetadata(
+        preparedAmplicons
     )
 
     // Summarise identified allele frequency tables

@@ -12,6 +12,8 @@ use YAML::XS qw(LoadFile DumpFile);
 #     Bowtie2 reference/index path
 #   params.bowtie2.prefix)
 #     Reference file pattern/prefix
+#   params.genome)
+#     Reference genome ID
 #   ampliconsYaml)
 #     Amplicons YAML file
 #   task.ext.bowtie2)
@@ -43,8 +45,10 @@ while (<$out>) {
   my @fields = split(/\s/);
   my $name = $fields[0];
 
+  ${amplicons}->{$name}->{genome} = "!{params.genome}";
+
   ${amplicons}->{$name}->{chr} = $fields[2];
-  ${amplicons}->{$name}->{start} = $fields[3];
+  ${amplicons}->{$name}->{start} = $fields[3] - 1; # Use BED, not SAM, coord format
   ${amplicons}->{$name}->{CIGAR} = $fields[5];
 
   # See discussion at https://github.com/pfizer-rd/nf-gene-editing-ngs/pull/54#discussion_r1530285785

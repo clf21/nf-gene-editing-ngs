@@ -28,7 +28,9 @@ foreach my $i (1 .. $N) {
   my $amplicon = LoadFile("$i.yaml");
 
   my $info = $amplicon->{info};
-  my $amplicon_location = "$info->{chr}:$info->{start}-$info->{end}";
+
+  # Convert from BED to SAM format, for SAMtools
+  my $amplicon_location = "$info->{chr}:" . ($info->{start} + 1) . "-$info->{end}";
 
   my $amplicon_read_count;
   if ($info->{barcode}) {

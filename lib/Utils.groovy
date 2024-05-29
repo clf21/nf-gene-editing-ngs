@@ -1,4 +1,4 @@
-@Grab(group='org.codehaus.groovy', module='groovy-yaml', version='3.0.15')
+@Grab(group='org.codehaus.groovy', module='groovy-yaml', version='3.0.16')
 
 import java.util.regex.Pattern
 import java.util.regex.Matcher
@@ -13,26 +13,26 @@ class Utils {
   /* Input Validation *************************************************/
 
   // TODO The nf-validation plugin may be able to supplant this
-  static void preFlight(params, Boolean validate = true) {
+  static void preFlight(workflow, params, Boolean validate = true) {
     // NOTE This method updates params, passed as reference
     // Ensure all parameter values are serialisable
 
     // Show usage, if requested with --help
-    if (params.help) { this.usage(params) }
+    if (params.help) { this.usage(workflow, params) }
 
     // Set reference parameters
     if (params.genome && params._ref.containsKey(params.genome)) {
       params.bowtie2 = params._ref[params.genome].bowtie2
     } else {
-      this.usage(params, "No or invalid reference ID provided!")
+      this.usage(workflow, params, "No or invalid reference ID provided!")
     }
 
     // Return early, without validation, in certain contexts
     if (!validate) { return }
 
     // Check required parameters are set
-    if (!params.fastq_dir) { this.usage(params, "Path to sample FASTQs must be provided!") }
-    if (!params.amplicons) { this.usage(params, "Path to amplicons YAML must be provided!") }
+    if (!params.fastq_dir) { this.usage(workflow, params, "Path to sample FASTQs must be provided!") }
+    if (!params.amplicons) { this.usage(workflow, params, "Path to amplicons YAML must be provided!") }
 
     // Skip undetermined by default, unless --samples_process_undetermined is set
     if (params.samples_process_undetermined) { params._samples_skip_undetermined = false }
@@ -49,23 +49,24 @@ class Utils {
 
     // Validate amplicon names
     if (!this.validAmpliconNames(params.amplicons, *params._internal.forbidden)) {
-      this.usage(params, "Amplicon(s) detected with an invalid name; i.e., containing forbidden characters!")
+      this.usage(workflow, params, "Amplicon(s) detected with an invalid name; i.e., containing forbidden characters!")
     }
 
     // Validate merge mode
     try { params.merge_mode = MergeMode.from(params.merge_mode) }
-    catch(Exception err) { this.usage(params, "${err.message}") }
+    catch(Exception err) { this.usage(workflow, params, "${err.message}") }
 
     // Trim by default, unless --no_trimming is set
     if (params.no_trimming) { params._do_trimming = false }
   }
 
-  static void usage(params, failure = null) {
+  static void usage(workflow, params, failure = null) {
     // Write all output to stderr
     def println = System.err.&println
 
     // Print usage information and exit
-    println "\033[1;34mGENA Pipeline: Gene Editing NGS Analysis\033[0m"
+    println "\033[1;34m${workflow.manifest.description}\033[0m"
+    println "\033[0;34m${workflow.manifest.name} ${version(workflow)}\033[0m"
     println ""
     println "Usage:"
 
@@ -104,6 +105,22 @@ class Utils {
     } else {
       System.exit(0)
     }
+  }
+
+  // Generate workflow version string (taken from the nf-core template)
+  private static String version(workflow) {
+      String version_string = ""
+      if (workflow.manifest.version) {
+          def prefix_v = workflow.manifest.version[0] != 'v' ? 'v' : ''
+          version_string += "${prefix_v}${workflow.manifest.version}"
+      }
+
+      if (workflow.commitId) {
+          def git_shortsha = workflow.commitId.substring(0, 7)
+          version_string += "-g${git_shortsha}"
+      }
+
+      return version_string
   }
 
   private static Boolean validAmpliconNames(String ampliconsYaml, String... forbidden) {

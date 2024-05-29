@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 
+set -eu
+
 # Base directory containing this script and its current commit ID
 declare BASE_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 declare BASE_COMMIT_ID="$(git log --pretty=tformat:"%h" -n1 "${BASE_DIR}")"
+
+# Get image name from environment, or set a default
+declare IMAGE_NAME_DEFAULT="nf-gene-editing-ngs"
+declare IMAGE_NAME="${IMAGE_NAME-${IMAGE_NAME_DEFAULT}}"
 
 # Ensure Docker or Podman commands are available
 if ! command -v docker >/dev/null; then
@@ -17,7 +23,7 @@ fi
 
 # Build image
 docker build \
-  -t "crispr:${BASE_COMMIT_ID}" \
-  -t "crispr:latest" \
+  -t "${IMAGE_NAME}:${BASE_COMMIT_ID}" \
+  -t "${IMAGE_NAME}:latest" \
   -f "${BASE_DIR}/Dockerfile" \
   "${BASE_DIR}"
