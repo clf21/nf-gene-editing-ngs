@@ -6,9 +6,9 @@ process identifyAllelesCRISPResso {
 
     errorStrategy "ignore"
 
-    tag "${meta.id}"
+    tag "${meta.id()}"
     publishDir "${params.outdir}", mode: "copyNoFollow", overwrite: true, saveAs: {
-        it == "alleles_analysis" ? meta.publishDir : it
+        it == "alleles_analysis" ? "${meta.publishDir()}/alleles" : it
     }
 
     input:
@@ -52,12 +52,12 @@ process identifyAllelesCRISPResso {
 }
 
 process reportFailedAnalysis {
-    tag "${meta.id}"
-    publishDir "${params.outdir}/${meta.publishDir}", mode: "copy", overwrite: true
+    tag "${meta.id()}"
+    publishDir "${params.outdir}/${meta.publishDir()}/alleles", mode: "copy", overwrite: true
 
     input:
         // Failed analysis identifier
-        // (i.e., Meta<Sample name, Read ID, Amplicon name>)
+        // (i.e., Metadata<Sample name, Read ID, Amplicon name>)
         val meta
 
     output:
@@ -83,7 +83,7 @@ workflow identifyAlleles {
     take:
         // Channel of read, amplicon and overlap count. That is, tuples
         // of the form:
-        // * Meta<Sample name, Read ID, Amplicon name>
+        // * Metadata<Sample name, Read ID, Amplicon name>
         // * Aligned sample read (and corresponding index)
         // * Amplicon description YAML
         // * Overlap count
@@ -95,6 +95,21 @@ workflow identifyAlleles {
         readsWithAmpliconsAndOverlapCount
         | identifyAllelesCRISPResso
         | set { passedAnalyses }
+
+
+        passedAnalyses
+        | map { meta, analysis ->
+            // Add analysed amplicon publication directory to metadata
+            metaWithAnalysis = meta.clone()
+            metaWithAnalysis.sampleMetadata.analyzed_amplicons += [
+                amplicon: meta.ampliconName,
+                read: meta.readId,
+                analysis_dir: "${params.outdir}/${meta.publishDir()}"
+            ]
+
+            [ metaWithAnalysis, analysis ]
+        }
+        | set { passedAndAugmentedAnalyses }
 
         // To determine failures, we only care about the input
         // identifiers; so drop everything else
@@ -117,7 +132,7 @@ workflow identifyAlleles {
         // Channel of tuples of the form:
         // * Metadata<Sample name, Read ID, Amplicon name>
         // * CRISPResso analysis (and convenience symlinks) directory
-        passed = passedAnalyses
+        passed = passedAndAugmentedAnalyses
 
         // Channel of failed Metadata<Sample name, Read ID, Amplicon name>
         failed = failedAnalyses

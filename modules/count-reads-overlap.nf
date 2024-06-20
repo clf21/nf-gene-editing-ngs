@@ -10,6 +10,7 @@ process _countReadsOverlap {
         // * List of aligned sample BAM files
         // * List of associated BAM index files
         // * List of amplicon description YAML files
+        // * List of whether the combination is user specified
         //
         // Each amplicon YAML should have the following structure:
         // * name  String  Name of the amplicon
@@ -20,7 +21,8 @@ process _countReadsOverlap {
         tuple val(metas),
               path(alignedBams,   name: "?.bam"),
               path(bamIndices,    name: "?.bam.bai"),
-              path(ampliconYamls, name: "?.yaml")
+              path(ampliconYamls, name: "?.yaml"),
+              val(userSpecifieds)
 
     output:
         // Append the count of reads overlapping the region
@@ -29,6 +31,7 @@ process _countReadsOverlap {
               path(alignedBams),
               path(bamIndices),
               path(ampliconYamls),
+              val(userSpecifieds),
               stdout
 
     shell:
@@ -47,6 +50,7 @@ process _countReadsOverlap {
         assert N == alignedBams.size()
         assert alignedBams.size() == bamIndices.size()
         assert bamIndices.size() == ampliconYamls.size()
+        assert ampliconYamls.size() == userSpecifieds.size()
 
         // Template Tags:
         // * N                  Number of items
@@ -61,7 +65,7 @@ process _reportSkippedSamples {
         // The output filenames are N.yaml, where N matches the index
         // over skippedMetas, so we extract it to get the publishDir
         idx = (it - ".yaml") as Integer
-        "${skippedMetas[idx].publishDir}/skipped.yaml"
+        "${skippedMetas[idx].publishDir()}/skipped.yaml"
     }
 
     input:
@@ -108,6 +112,7 @@ workflow countReadOverlap {
         // * Metadata<Sample name, Read ID>
         // * [Aligned Read BAM, BAM Index]
         // * Amplicon YAML
+        // * Whether the combination is user-specified
         readsWithAmplicons
 
     main:
@@ -117,47 +122,56 @@ workflow countReadOverlap {
         // into an acceptable form, such that Nextflow will track files
         // correctly. Specifically:
         //
-        // 1a. Augment the sample identifier metadata with the amplicon
-        //     name (i.e., to make it an analysis identifier).
-        //  b. Split out the aligned BAM and its index into individual
-        //     elements in the input (i.e., flattening the input).
-        // 2.  Collect each input into a single list-of-tuples.
-        // 3.  Transpose this into tuples of lists; that is, the single
-        //     input to the process will be a tuple containing:
-        //     * A list of analysis identifiers
-        //     * A list of aligned read BAM files
-        //     * A list of the associated BAM index files
-        //     * A list of amplicon description YAML files
+        // 1. Split out the aligned BAM and its index into individual
+        //    elements in the input (i.e., flattening the input).
+        // 2. Collect each input into a single list-of-tuples.
+        // 3. Transpose this into a tuple of lists; that is, the single
+        //    input to the process will be a tuple containing:
+        //    * A list of analysis identifiers
+        //    * A list of aligned read BAM files
+        //    * A list of the associated BAM index files
+        //    * A list of amplicon description YAML files
         //
         // _countReadsOverlap returns the same input, with the counts
         // appended as a delimited string. This is split and the output
         // re-transposed and reassembled in a flatMap to "unbatch".
         readsWithAmplicons
-        | map { meta, alignedRead, ampliconYaml -> [ meta << ampliconYaml, alignedRead[0], alignedRead[1], ampliconYaml ] }
+        | map { meta, alignedRead, ampliconYaml, userSpecified -> [ meta, alignedRead[0], alignedRead[1], ampliconYaml, userSpecified ] }
         | collect(flat: false)
         | map { it.transpose() }
         | _countReadsOverlap
-        | flatMap { metas, alignedBams, bamIndices, ampliconYamls, counts ->
-            // Split delimited counts and cast to integers
+        | flatMap { metas, alignedBams, bamIndices, ampliconYamls, userSpecifieds, counts ->
+            // `counts` is a delimited string of counts per
+            // sample/amplicon pair. We split this and cast each to an
+            // integer.
             counts = counts.tokenize(params._internal.delimiter)
                            .collect { it as Integer }
 
-            [ metas, alignedBams, bamIndices, ampliconYamls, counts ]
+            [ metas, alignedBams, bamIndices, ampliconYamls, userSpecifieds, counts ]
                 .transpose()
-                .collect { meta, alignedBam, bamIndex, ampliconYaml, overlapCount ->
+                .collect { meta, alignedBam, bamIndex, ampliconYaml, userSpecified, overlapCount ->
                     // Put the BAM and its index back together
-                    [ meta, [alignedBam, bamIndex], ampliconYaml, overlapCount ]
+                    [ meta.clone(), [alignedBam, bamIndex], ampliconYaml, userSpecified, overlapCount ]
                 }
         }
-        | branch { _meta, _bam, _amplicon, overlapCount ->
-            toSkip:     overlapCount < params.min_reads_per_amplicon
-            toIdentify: true // Everything else
+        | branch { _meta, _bam, _amplicon, userSpecified, overlapCount ->
+            toIdentify: userSpecified || overlapCount >= params.min_reads_per_amplicon
+            toSkip: true // Everything else
         }
         | set { counted }
 
+        // Strip-out whether the combination is user-specified or not
+        counted.toIdentify
+        | map { meta, bam, amplicon, _userSpecified, overlapCount -> [ meta, bam, amplicon, overlapCount ] }
+        | set { toIdentify }
+
+        counted.toSkip
+        | map { meta, bam, amplicon, _userSpecified, overlapCount -> [ meta, bam, amplicon, overlapCount ] }
+        | set { toSkip }
+
     emit:
-        toSkip = counted.toSkip
-        toIdentify = counted.toIdentify
+        toIdentify = toIdentify
+        toSkip = toSkip
 }
 
 workflow reportSkippedSamples {
@@ -185,7 +199,7 @@ workflow reportSkippedSamples {
 
             [ metas, skippedYamls ]
                 .transpose()
-                .collect { meta, skippedYaml -> [ meta, "skipped", skippedYaml ] }
+                .collect { meta, skippedYaml -> [ meta.clone(), "skipped", skippedYaml ] }
         }
         | set { skippedSamples }
 

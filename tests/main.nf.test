@@ -29,39 +29,45 @@ nextflow_pipeline {
                 path("${launchDir}/output/summary.txt"),
                 path("${launchDir}/output/summary.yaml"),
                 path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/guide_position_base_counts.txt"),
 
+                path("${launchDir}/output/metadata.yaml"),
                 path("${launchDir}/output/params.yaml"),
                 path("${launchDir}/output/amplicons.yaml"),
 
-                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/base-counts/B2M_B2M-2_baseCounts.txt"),
                 path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/base-counts/FLAG_FLAG-KI_baseCounts.txt"),
                 path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/HPRT/HPRT-ctrl/info.yaml"),
-                path("${launchDir}/output/HPRT/HPRT-ctrl/HPRT_HPRT-ctrl_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/HPRT/HPRT-ctrl/alleles/info.yaml"),
+                path("${launchDir}/output/HPRT/HPRT-ctrl/alleles/HPRT_HPRT-ctrl_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/HPRT/HPRT-ctrl/base-counts/HPRT_HPRT-ctrl_baseCounts.txt"),
                 path("${launchDir}/output/HPRT/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/HPRT/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/HPRT/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/SNP/SNP-edit/info.yaml"),
-                path("${launchDir}/output/SNP/SNP-edit/SNP_SNP-edit_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/SNP/SNP-edit/alleles/info.yaml"),
+                path("${launchDir}/output/SNP/SNP-edit/alleles/SNP_SNP-edit_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/SNP/SNP-edit/base-counts/SNP_SNP-edit_baseCounts.txt"),
                 path("${launchDir}/output/SNP/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/SNP/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/SNP/FLAG-KI/skipped.yaml"),
             ).match()
-            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
-            assert path("${launchDir}/output/HPRT/HPRT-ctrl/CRISPResso_output").exists()
-            assert path("${launchDir}/output/SNP/SNP-edit/CRISPResso_output").exists()
-            assert ! path("${launchDir}/output/HPRT/HPRT-ctrl/HPRT_HPRT-ctrl_Frameshift_analysis.txt").exists()
-            assert ! path("${launchDir}/output/SNP/SNP-edit/SNP_SNP-edit_Frameshift_analysis.txt").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/HPRT/HPRT-ctrl/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/SNP/SNP-edit/alleles/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/HPRT/HPRT-ctrl/alleles/HPRT_HPRT-ctrl_Frameshift_analysis.txt").exists()
+            assert ! path("${launchDir}/output/SNP/SNP-edit/alleles/SNP_SNP-edit_Frameshift_analysis.txt").exists()
         }
     }
 
@@ -88,36 +94,39 @@ nextflow_pipeline {
                 path("${launchDir}/output/summary.txt"),
                 path("${launchDir}/output/summary.yaml"),
                 path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/guide_position_base_counts.txt"),
 
+                path("${launchDir}/output/metadata.yaml"),
                 path("${launchDir}/output/params.yaml"),
                 path("${launchDir}/output/amplicons.yaml"),
 
-                path("${launchDir}/output/B2M_Read1/B2M-2/error.yaml"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/alleles/error.yaml"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/base-counts/skipped.yaml"),
                 path("${launchDir}/output/B2M_Read1/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M_Read1/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M_Read1/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/FLAG_Read1/FLAG-KI/info.yaml"),
-                path("${launchDir}/output/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Frameshift_analysis.txt"),
-                path("${launchDir}/output/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/alleles/FLAG_Read1_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/alleles/FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt"),
                 path("${launchDir}/output/FLAG_Read1/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/FLAG_Read1/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG_Read1/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/HPRT_Read1/HPRT-ctrl/info.yaml"),
-                path("${launchDir}/output/HPRT_Read1/HPRT-ctrl/HPRT_Read1_HPRT-ctrl_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/HPRT_Read1/HPRT-ctrl/alleles/info.yaml"),
+                path("${launchDir}/output/HPRT_Read1/HPRT-ctrl/alleles/HPRT_Read1_HPRT-ctrl_Quantification_of_editing_frequency.txt"),
                 path("${launchDir}/output/HPRT_Read1/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/HPRT_Read1/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/HPRT_Read1/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/SNP_Read1/SNP-edit/info.yaml"),
-                path("${launchDir}/output/SNP_Read1/SNP-edit/SNP_Read1_SNP-edit_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/SNP_Read1/SNP-edit/alleles/info.yaml"),
+                path("${launchDir}/output/SNP_Read1/SNP-edit/alleles/SNP_Read1_SNP-edit_Quantification_of_editing_frequency.txt"),
                 path("${launchDir}/output/SNP_Read1/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/SNP_Read1/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/SNP_Read1/FLAG-KI/skipped.yaml"),
             ).match()
-            assert path("${launchDir}/output/FLAG_Read1/FLAG-KI/CRISPResso_output").exists()
-            assert path("${launchDir}/output/HPRT_Read1/HPRT-ctrl/CRISPResso_output").exists()
-            assert path("${launchDir}/output/SNP_Read1/SNP-edit/CRISPResso_output").exists()
-            assert ! path("${launchDir}/output/HPRT_Read1/HPRT-ctrl/HPRT_Read1_HPRT-ctrl_Frameshift_analysis.txt").exists()
-            assert ! path("${launchDir}/output/SNP_Read1/SNP-edit/SNP_Read1_SNP-edit_Frameshift_analysis.txt").exists()
+            assert path("${launchDir}/output/FLAG_Read1/FLAG-KI/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/HPRT_Read1/HPRT-ctrl/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/SNP_Read1/SNP-edit/alleles/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/HPRT_Read1/HPRT-ctrl/alleles/HPRT_Read1_HPRT-ctrl_Frameshift_analysis.txt").exists()
+            assert ! path("${launchDir}/output/SNP_Read1/SNP-edit/alleles/SNP_Read1_SNP-edit_Frameshift_analysis.txt").exists()
             assert ! path("${launchDir}/output/B2M").exists()
             assert ! path("${launchDir}/output/FLAG").exists()
             assert ! path("${launchDir}/output/HPRT").exists()
@@ -162,18 +171,21 @@ nextflow_pipeline {
                 path("${launchDir}/output/summary.txt"),
                 path("${launchDir}/output/summary.yaml"),
                 path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/guide_position_base_counts.txt"),
 
+                path("${launchDir}/output/metadata.yaml"),
                 path("${launchDir}/output/params.yaml"),
                 path("${launchDir}/output/amplicons.yaml"),
 
-                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/base-counts/B2M_B2M-2_baseCounts.txt"),
                 path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/alleles/CRISPResso_output").exists()
             assert ! path("${launchDir}/output/FLAG").exists()
             assert ! path("${launchDir}/output/HPRT").exists()
             assert ! path("${launchDir}/output/SNP").exists()
@@ -221,25 +233,29 @@ nextflow_pipeline {
                 path("${launchDir}/output/summary.txt"),
                 path("${launchDir}/output/summary.yaml"),
                 path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/guide_position_base_counts.txt"),
 
+                path("${launchDir}/output/metadata.yaml"),
                 path("${launchDir}/output/params.yaml"),
                 path("${launchDir}/output/amplicons.yaml"),
 
-                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/base-counts/B2M_B2M-2_baseCounts.txt"),
                 path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/base-counts/FLAG_FLAG-KI_baseCounts.txt"),
                 path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/alleles/CRISPResso_output").exists()
             assert ! path("${launchDir}/output/HPRT").exists()
             assert ! path("${launchDir}/output/SNP").exists()
         }
@@ -284,25 +300,29 @@ nextflow_pipeline {
                 path("${launchDir}/output/summary.txt"),
                 path("${launchDir}/output/summary.yaml"),
                 path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/guide_position_base_counts.txt"),
 
+                path("${launchDir}/output/metadata.yaml"),
                 path("${launchDir}/output/params.yaml"),
                 path("${launchDir}/output/amplicons.yaml"),
 
-                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/base-counts/B2M_B2M-2_baseCounts.txt"),
                 path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/base-counts/FLAG_FLAG-KI_baseCounts.txt"),
                 path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/alleles/CRISPResso_output").exists()
             assert ! path("${launchDir}/output/HPRT").exists()
             assert ! path("${launchDir}/output/SNP").exists()
         }
@@ -347,13 +367,16 @@ nextflow_pipeline {
                 path("${launchDir}/output/summary.txt"),
                 path("${launchDir}/output/summary.yaml"),
                 path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/guide_position_base_counts.txt"),
 
+                path("${launchDir}/output/metadata.yaml"),
                 path("${launchDir}/output/params.yaml"),
                 path("${launchDir}/output/amplicons.yaml"),
 
-                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/base-counts/B2M_B2M-2_baseCounts.txt"),
                 path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
@@ -362,8 +385,8 @@ nextflow_pipeline {
                 path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
-            assert ! path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/alleles/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/FLAG/FLAG-KI/alleles/CRISPResso_output").exists()
             assert ! path("${launchDir}/output/HPRT").exists()
             assert ! path("${launchDir}/output/SNP").exists()
         }
@@ -410,25 +433,29 @@ nextflow_pipeline {
                 path("${launchDir}/output/summary.txt"),
                 path("${launchDir}/output/summary.yaml"),
                 path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/guide_position_base_counts.txt"),
 
+                path("${launchDir}/output/metadata.yaml"),
                 path("${launchDir}/output/params.yaml"),
                 path("${launchDir}/output/amplicons.yaml"),
 
-                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/base-counts/B2M_B2M-2_baseCounts.txt"),
                 path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/base-counts/FLAG_FLAG-KI_baseCounts.txt"),
                 path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/alleles/CRISPResso_output").exists()
             assert ! path("${launchDir}/output/HPRT").exists()
             assert ! path("${launchDir}/output/SNP").exists()
         }
@@ -473,25 +500,29 @@ nextflow_pipeline {
                 path("${launchDir}/output/summary.txt"),
                 path("${launchDir}/output/summary.yaml"),
                 path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/guide_position_base_counts.txt"),
 
+                path("${launchDir}/output/metadata.yaml"),
                 path("${launchDir}/output/params.yaml"),
                 path("${launchDir}/output/amplicons.yaml"),
 
-                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/base-counts/B2M_B2M-2_baseCounts.txt"),
                 path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/base-counts/FLAG_FLAG-KI_baseCounts.txt"),
                 path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/alleles/CRISPResso_output").exists()
             assert ! path("${launchDir}/output/HPRT").exists()
             assert ! path("${launchDir}/output/SNP").exists()
         }
@@ -538,13 +569,16 @@ nextflow_pipeline {
                 path("${launchDir}/output/summary.txt"),
                 path("${launchDir}/output/summary.yaml"),
                 path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/guide_position_base_counts.txt"),
 
+                path("${launchDir}/output/metadata.yaml"),
                 path("${launchDir}/output/params.yaml"),
                 path("${launchDir}/output/amplicons.yaml"),
 
-                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/base-counts/B2M_B2M-2_baseCounts.txt"),
                 path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
@@ -556,9 +590,10 @@ nextflow_pipeline {
                 path("${launchDir}/output/B2M_Read2/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M_Read2/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M_Read2/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/base-counts/FLAG_FLAG-KI_baseCounts.txt"),
                 path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
@@ -566,16 +601,17 @@ nextflow_pipeline {
                 path("${launchDir}/output/FLAG_Read1/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/FLAG_Read1/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG_Read1/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/FLAG_Read2/FLAG-KI/info.yaml"),
-                path("${launchDir}/output/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Frameshift_analysis.txt"),
-                path("${launchDir}/output/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/alleles/FLAG_Read2_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/alleles/FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/base-counts/FLAG_Read2_FLAG-KI_baseCounts.txt"),
                 path("${launchDir}/output/FLAG_Read2/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/FLAG_Read2/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG_Read2/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
-            assert path("${launchDir}/output/FLAG_Read2/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG_Read2/FLAG-KI/alleles/CRISPResso_output").exists()
             assert ! path("${launchDir}/output/HPRT").exists()
             assert ! path("${launchDir}/output/HPRT_Read1").exists()
             assert ! path("${launchDir}/output/HPRT_Read2").exists()
@@ -624,53 +660,61 @@ nextflow_pipeline {
                 path("${launchDir}/output/summary.txt"),
                 path("${launchDir}/output/summary.yaml"),
                 path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/guide_position_base_counts.txt"),
 
+                path("${launchDir}/output/metadata.yaml"),
                 path("${launchDir}/output/params.yaml"),
                 path("${launchDir}/output/amplicons.yaml"),
 
-                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/base-counts/B2M_B2M-2_baseCounts.txt"),
                 path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/B2M_Read1/B2M-2/info.yaml"),
-                path("${launchDir}/output/B2M_Read1/B2M-2/B2M_Read1_B2M-2_Frameshift_analysis.txt"),
-                path("${launchDir}/output/B2M_Read1/B2M-2/B2M_Read1_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/alleles/B2M_Read1_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/alleles/B2M_Read1_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/base-counts/B2M_Read1_B2M-2_baseCounts.txt"),
                 path("${launchDir}/output/B2M_Read1/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M_Read1/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M_Read1/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/B2M_Read2/B2M-2/info.yaml"),
-                path("${launchDir}/output/B2M_Read2/B2M-2/B2M_Read2_B2M-2_Frameshift_analysis.txt"),
-                path("${launchDir}/output/B2M_Read2/B2M-2/B2M_Read2_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M_Read2/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M_Read2/B2M-2/alleles/B2M_Read2_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M_Read2/B2M-2/alleles/B2M_Read2_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M_Read2/B2M-2/base-counts/B2M_Read2_B2M-2_baseCounts.txt"),
                 path("${launchDir}/output/B2M_Read2/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M_Read2/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M_Read2/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/base-counts/FLAG_FLAG-KI_baseCounts.txt"),
                 path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/FLAG_Read1/FLAG-KI/info.yaml"),
-                path("${launchDir}/output/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Frameshift_analysis.txt"),
-                path("${launchDir}/output/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/alleles/FLAG_Read1_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/alleles/FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/base-counts/FLAG_Read1_FLAG-KI_baseCounts.txt"),
                 path("${launchDir}/output/FLAG_Read1/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/FLAG_Read1/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG_Read1/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/FLAG_Read2/FLAG-KI/info.yaml"),
-                path("${launchDir}/output/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Frameshift_analysis.txt"),
-                path("${launchDir}/output/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/alleles/FLAG_Read2_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/alleles/FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/base-counts/FLAG_Read2_FLAG-KI_baseCounts.txt"),
                 path("${launchDir}/output/FLAG_Read2/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/FLAG_Read2/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG_Read2/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${launchDir}/output/B2M_Read1/B2M-2/CRISPResso_output").exists()
-            assert path("${launchDir}/output/B2M_Read2/B2M-2/CRISPResso_output").exists()
-            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
-            assert path("${launchDir}/output/FLAG_Read1/FLAG-KI/CRISPResso_output").exists()
-            assert path("${launchDir}/output/FLAG_Read2/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M_Read1/B2M-2/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M_Read2/B2M-2/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG_Read1/FLAG-KI/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG_Read2/FLAG-KI/alleles/CRISPResso_output").exists()
             assert ! path("${launchDir}/output/HPRT").exists()
             assert ! path("${launchDir}/output/HPRT_Read1").exists()
             assert ! path("${launchDir}/output/HPRT_Read2").exists()
@@ -719,25 +763,29 @@ nextflow_pipeline {
                 path("${launchDir}/output/summary.txt"),
                 path("${launchDir}/output/summary.yaml"),
                 path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/guide_position_base_counts.txt"),
 
+                path("${launchDir}/output/metadata.yaml"),
                 path("${launchDir}/output/params.yaml"),
                 path("${launchDir}/output/amplicons.yaml"),
 
-                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/base-counts/B2M_B2M-2_baseCounts.txt"),
                 path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/base-counts/FLAG_FLAG-KI_baseCounts.txt"),
                 path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/alleles/CRISPResso_output").exists()
             assert ! path("${launchDir}/output/B2M_Read1").exists()
             assert ! path("${launchDir}/output/B2M_Read2").exists()
             assert ! path("${launchDir}/output/FLAG_Read1").exists()
@@ -790,39 +838,45 @@ nextflow_pipeline {
                 path("${launchDir}/output/summary.txt"),
                 path("${launchDir}/output/summary.yaml"),
                 path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/guide_position_base_counts.txt"),
 
+                path("${launchDir}/output/metadata.yaml"),
                 path("${launchDir}/output/params.yaml"),
                 path("${launchDir}/output/amplicons.yaml"),
 
-                path("${launchDir}/output/B2M_Read1/B2M-2/info.yaml"),
-                path("${launchDir}/output/B2M_Read1/B2M-2/B2M_Read1_B2M-2_Frameshift_analysis.txt"),
-                path("${launchDir}/output/B2M_Read1/B2M-2/B2M_Read1_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/alleles/B2M_Read1_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/alleles/B2M_Read1_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/base-counts/B2M_Read1_B2M-2_baseCounts.txt"),
                 path("${launchDir}/output/B2M_Read1/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M_Read1/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M_Read1/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/B2M_Read2/B2M-2/info.yaml"),
-                path("${launchDir}/output/B2M_Read2/B2M-2/B2M_Read2_B2M-2_Frameshift_analysis.txt"),
-                path("${launchDir}/output/B2M_Read2/B2M-2/B2M_Read2_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M_Read2/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M_Read2/B2M-2/alleles/B2M_Read2_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M_Read2/B2M-2/alleles/B2M_Read2_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M_Read2/B2M-2/base-counts/B2M_Read2_B2M-2_baseCounts.txt"),
                 path("${launchDir}/output/B2M_Read2/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M_Read2/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M_Read2/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/FLAG_Read1/FLAG-KI/info.yaml"),
-                path("${launchDir}/output/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Frameshift_analysis.txt"),
-                path("${launchDir}/output/FLAG_Read1/FLAG-KI/FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/alleles/FLAG_Read1_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/alleles/FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/base-counts/FLAG_Read1_FLAG-KI_baseCounts.txt"),
                 path("${launchDir}/output/FLAG_Read1/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/FLAG_Read1/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG_Read1/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/FLAG_Read2/FLAG-KI/info.yaml"),
-                path("${launchDir}/output/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Frameshift_analysis.txt"),
-                path("${launchDir}/output/FLAG_Read2/FLAG-KI/FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/alleles/FLAG_Read2_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/alleles/FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read2/FLAG-KI/base-counts/FLAG_Read2_FLAG-KI_baseCounts.txt"),
                 path("${launchDir}/output/FLAG_Read2/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/FLAG_Read2/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG_Read2/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${launchDir}/output/B2M_Read1/B2M-2/CRISPResso_output").exists()
-            assert path("${launchDir}/output/B2M_Read2/B2M-2/CRISPResso_output").exists()
-            assert path("${launchDir}/output/FLAG_Read1/FLAG-KI/CRISPResso_output").exists()
-            assert path("${launchDir}/output/FLAG_Read2/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M_Read1/B2M-2/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M_Read2/B2M-2/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG_Read1/FLAG-KI/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG_Read2/FLAG-KI/alleles/CRISPResso_output").exists()
             assert ! path("${launchDir}/output/B2M").exists()
             assert ! path("${launchDir}/output/FLAG").exists()
             assert ! path("${launchDir}/output/HPRT").exists()
@@ -875,25 +929,29 @@ nextflow_pipeline {
                 path("${launchDir}/output/summary.txt"),
                 path("${launchDir}/output/summary.yaml"),
                 path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/guide_position_base_counts.txt"),
 
+                path("${launchDir}/output/metadata.yaml"),
                 path("${launchDir}/output/params.yaml"),
                 path("${launchDir}/output/amplicons.yaml"),
 
-                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/base-counts/B2M_B2M-2_baseCounts.txt"),
                 path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/base-counts/FLAG_FLAG-KI_baseCounts.txt"),
                 path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/alleles/CRISPResso_output").exists()
             assert ! path("${launchDir}/output/HPRT").exists()
             assert ! path("${launchDir}/output/SNP").exists()
         }
@@ -939,28 +997,148 @@ nextflow_pipeline {
                 path("${launchDir}/output/summary.txt"),
                 path("${launchDir}/output/summary.yaml"),
                 path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/guide_position_base_counts.txt"),
 
+                path("${launchDir}/output/metadata.yaml"),
                 path("${launchDir}/output/params.yaml"),
                 path("${launchDir}/output/amplicons.yaml"),
 
-                path("${launchDir}/output/B2M/B2M-2/info.yaml"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Frameshift_analysis.txt"),
-                path("${launchDir}/output/B2M/B2M-2/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/base-counts/B2M_B2M-2_baseCounts.txt"),
                 path("${launchDir}/output/B2M/FLAG-KI/skipped.yaml"),
                 path("${launchDir}/output/B2M/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/B2M/SNP-edit/skipped.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/info.yaml"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Frameshift_analysis.txt"),
-                path("${launchDir}/output/FLAG/FLAG-KI/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/base-counts/FLAG_FLAG-KI_baseCounts.txt"),
                 path("${launchDir}/output/FLAG/B2M-2/skipped.yaml"),
                 path("${launchDir}/output/FLAG/HPRT-ctrl/skipped.yaml"),
                 path("${launchDir}/output/FLAG/SNP-edit/skipped.yaml"),
             ).match()
-            assert path("${launchDir}/output/B2M/B2M-2/CRISPResso_output").exists()
-            assert path("${launchDir}/output/FLAG/FLAG-KI/CRISPResso_output").exists()
+            assert path("${launchDir}/output/B2M/B2M-2/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/alleles/CRISPResso_output").exists()
             assert ! path("${launchDir}/output/HPRT").exists()
             assert ! path("${launchDir}/output/SNP").exists()
         }
     }
 
+    /* Metadata tests ***************************************************/
+
+    test("Pipeline Defaults, Paired-end, with Experiment and Sample Metadata") {
+        tag "pipeline_defaults_pe_metadata"
+        tag "pipeline_defaults"
+        tag "paired_end"
+        tag "metadata"
+
+        when {
+            params {
+                fastq_dir  = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/fastq")
+                genome     = "hg19"
+                genome_dir = RelativeDir.to(launchDir, "${baseDir}/ref_genomes")
+                amplicons  = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/amplicons.yaml")
+                metadata   = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/metadata.yaml")
+                outdir     = "output"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                path("${launchDir}/output/info.txt"),
+                path("${launchDir}/output/info.yaml"),
+                path("${launchDir}/output/summary.txt"),
+                path("${launchDir}/output/summary.yaml"),
+                path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/guide_position_base_counts.txt"),
+
+                path("${launchDir}/output/metadata.yaml"),
+                path("${launchDir}/output/params.yaml"),
+                path("${launchDir}/output/amplicons.yaml"),
+
+                path("${launchDir}/output/B2M/B2M-2/alleles/info.yaml"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Frameshift_analysis.txt"),
+                path("${launchDir}/output/B2M/B2M-2/alleles/B2M_B2M-2_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/B2M/B2M-2/base-counts/B2M_B2M-2_baseCounts.txt"),
+                path("${launchDir}/output/B2M/FLAG-KI/alleles/error.yaml"),
+                path("${launchDir}/output/B2M/FLAG-KI/base-counts/error.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/alleles/FLAG_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG/FLAG-KI/base-counts/FLAG_FLAG-KI_baseCounts.txt"),
+                path("${launchDir}/output/HPRT/SNP-edit/alleles/error.yaml"),
+                path("${launchDir}/output/HPRT/SNP-edit/base-counts/error.yaml"),
+                path("${launchDir}/output/SNP/SNP-edit/alleles/info.yaml"),
+                path("${launchDir}/output/SNP/SNP-edit/alleles/SNP_SNP-edit_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/SNP/SNP-edit/base-counts/SNP_SNP-edit_baseCounts.txt"),
+                path("${launchDir}/output/SNP/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/SNP/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/SNP/FLAG-KI/skipped.yaml"),
+            ).match()
+            assert path("${launchDir}/output/B2M/B2M-2/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/FLAG/FLAG-KI/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/SNP/SNP-edit/alleles/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/SNP/SNP-edit/alleles/SNP_SNP-edit_Frameshift_analysis.txt").exists()
+        }
+    }
+
+    test("Pipeline Defaults, Single-end, with Experiment and Sample Metadata") {
+        tag "pipeline_defaults_se_metadata"
+        tag "pipeline_defaults"
+        tag "single_end"
+        tag "metadata"
+
+        when {
+            params {
+                fastq_dir  = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/fastq_single-end")
+                genome     = "hg19"
+                genome_dir = RelativeDir.to(launchDir, "${baseDir}/ref_genomes")
+                amplicons  = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/amplicons_single-end.yaml")
+                metadata   = RelativeDir.to(launchDir, "${baseDir}/${testDataDir}/metadata.yaml")
+                outdir     = "output"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert snapshot(
+                path("${launchDir}/output/info.txt"),
+                path("${launchDir}/output/info.yaml"),
+                path("${launchDir}/output/summary.txt"),
+                path("${launchDir}/output/summary.yaml"),
+                path("${launchDir}/output/alleles_frequency_table.txt.gz"), // nf-test unzips file before hashing
+                path("${launchDir}/output/guide_position_base_counts.txt"),
+
+                path("${launchDir}/output/metadata.yaml"),
+                path("${launchDir}/output/params.yaml"),
+                path("${launchDir}/output/amplicons.yaml"),
+
+                path("${launchDir}/output/B2M_Read1/B2M-2/alleles/error.yaml"),
+                path("${launchDir}/output/B2M_Read1/B2M-2/base-counts/skipped.yaml"),
+                path("${launchDir}/output/B2M_Read1/FLAG-KI/alleles/error.yaml"),
+                path("${launchDir}/output/B2M_Read1/FLAG-KI/base-counts/error.yaml"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/alleles/info.yaml"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/alleles/FLAG_Read1_FLAG-KI_Frameshift_analysis.txt"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/alleles/FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/FLAG_Read1/FLAG-KI/base-counts/FLAG_Read1_FLAG-KI_baseCounts.txt"),
+                path("${launchDir}/output/HPRT_Read1/SNP-edit/alleles/error.yaml"),
+                path("${launchDir}/output/HPRT_Read1/SNP-edit/base-counts/error.yaml"),
+                path("${launchDir}/output/SNP_Read1/SNP-edit/alleles/info.yaml"),
+                path("${launchDir}/output/SNP_Read1/SNP-edit/alleles/SNP_Read1_SNP-edit_Quantification_of_editing_frequency.txt"),
+                path("${launchDir}/output/SNP_Read1/B2M-2/skipped.yaml"),
+                path("${launchDir}/output/SNP_Read1/HPRT-ctrl/skipped.yaml"),
+                path("${launchDir}/output/SNP_Read1/FLAG-KI/skipped.yaml"),
+            ).match()
+            assert path("${launchDir}/output/FLAG_Read1/FLAG-KI/alleles/CRISPResso_output").exists()
+            assert path("${launchDir}/output/SNP_Read1/SNP-edit/alleles/CRISPResso_output").exists()
+            assert ! path("${launchDir}/output/HPRT_Read1/HPRT-ctrl/alleles/HPRT_Read1_HPRT-ctrl_Frameshift_analysis.txt").exists()
+            assert ! path("${launchDir}/output/SNP_Read1/SNP-edit/alleles/SNP_Read1_SNP-edit_Frameshift_analysis.txt").exists()
+            assert ! path("${launchDir}/output/B2M").exists()
+            assert ! path("${launchDir}/output/FLAG").exists()
+            assert ! path("${launchDir}/output/HPRT").exists()
+            assert ! path("${launchDir}/output/SNP").exists()
+        }
+    }
 }

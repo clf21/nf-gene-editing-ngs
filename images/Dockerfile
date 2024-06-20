@@ -12,6 +12,7 @@ RUN apk --no-cache add \
       libtbb-dev \
       ncurses-dev \
       openblas-dev \
+      openjdk11 \
       perl-app-cpanminus \
       perl-dev \
       python2-dev \
@@ -86,6 +87,14 @@ FROM build-base AS build-perl_dependencies
 
 RUN cpanm YAML::XS
 
+# Build guide position base counting tool
+FROM build-base AS build-base-count
+
+COPY baseCounts /tmp/baseCounts
+
+RUN cd /tmp/baseCounts \
+ && ./mvnw clean package
+
 ## Runtime Phase #######################################################
 
 FROM alpine:3.15
@@ -93,6 +102,7 @@ FROM alpine:3.15
 # Install runtime dependencies
 RUN apk --no-cache add \
       bash \
+      coreutils \
       freetype \
       graphviz \
       libbz2 \
@@ -152,11 +162,21 @@ COPY --chmod=755 <<'EOF' /opt/trimmomatic/bin/trimmomatic
 exec java -jar /opt/trimmomatic/trimmomatic-0.39.jar "$@"
 EOF
 
+# Install guide position base counting tool
+COPY --from=build-base-count \
+  /tmp/baseCounts/target/GeneEditing-*-jar-with-dependencies.jar \
+  /opt/base-counts/lib/GeneEditing.jar
+
+COPY --chmod=755 <<'EOF' /opt/base-counts/bin/computeBaseCounts
+#!/bin/sh
+exec java -jar /opt/base-counts/lib/GeneEditing.jar "$@"
+EOF
+
 # Install Perl dependencies
 COPY --from=build-perl_dependencies /usr/local/lib/perl5/site_perl /usr/local/lib/perl5/site_perl
 
 # Add binaries to PATH
-ENV PATH $PATH:/opt/bowtie2/bin:/opt/CRISPResso/bin:/opt/emboss/bin:/opt/samtools/bin:/opt/trimmomatic/bin
+ENV PATH $PATH:/opt/bowtie2/bin:/opt/CRISPResso/bin:/opt/emboss/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
 
 # Run CRISPResso once to have Matplotlib generate its font cache
 RUN CRISPResso -h >/dev/null

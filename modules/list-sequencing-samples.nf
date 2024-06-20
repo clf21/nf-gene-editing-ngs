@@ -6,14 +6,34 @@ workflow listSequencingSamples {
         // Path to sequencing samples
         samplePath
 
+        // Channel of sample metadata
+        sampleMetadata
+
     main:
+        // Because of the way the join works, we need to construct a
+        // channel that will give us the information we need to merge
+        // what metadata we've been provided downstream.
+        sampleMetadata
+        | map { meta -> [ meta.sampleName, meta ] }
+        | set { sampleMetadataForJoin }
+
         // NOTE We have to combine the isDeployed channel for
         // synchronisation purposes; hence the useless-looking
         // combine-then-map. It is otherwise functionally redundant.
-        Channel.fromFilePairs("${samplePath}/*", size: -1) { new Metadata(it, params.samples_pattern) }
+        Channel.fromFilePairs("${samplePath}/*", size: -1) { Utils.getSampleName(it, params.samples_pattern) }
         | combine(isDeployed)
-        | map { meta, samples, _deployed -> [ meta, samples ] }
-        | filter { meta, samples -> params.samplesFilter.filter(meta.sampleName, samples) }
+        | map { sampleName, samples, _deployed -> [ sampleName, samples ] }
+        | filter { sampleName, samples -> params.samplesFilter.filter(sampleName, samples) }
+        | join(sampleMetadataForJoin, remainder: true)
+        | filter { _sampleName, samples, _metadata -> samples != null }
+        | map { sampleName, samples, metaWithMetadata ->
+            // Take the richest source of metadata and augment it with
+            // the sample input FASTQ files
+            meta = metaWithMetadata ?: new Metadata(sampleName)
+            meta.sampleMetadata.sampleFastqs = samples.collect { "${samplePath}/${it.name}" }
+
+            [ meta, samples ]
+        }
         | set { samples }
 
         samples

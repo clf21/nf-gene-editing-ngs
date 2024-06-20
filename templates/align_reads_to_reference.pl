@@ -13,8 +13,8 @@ use YAML::XS qw(DumpFile);
 #     Sample FASTQ filename
 #   params.bowtie2.prefix)
 #     Reference file pattern/prefix
-#   task.ext.bowtie2)
-#     Bowtie2 command definition
+#   task.ext.bowtie2_read)
+#     Bowtie2 command definition for read alignment
 #   task.ext.samtools)
 #     Samtools command definition
 #
@@ -28,7 +28,7 @@ my $genome_base = "!{bt2IndexPath}/!{params.bowtie2.prefix}";
 my $sample_name = "!{meta.sampleName}";
 my $fastq = "!{sampleFastq}";
 
-my @bowtie2_cmd = !{Escape.cmdAsPerlList(task.ext.bowtie2,
+my @bowtie2_cmd = !{Escape.cmdAsPerlList(task.ext.bowtie2_read,
   '-U', '$fastq',
   '-x', '$genome_base',
   '--rg-id', '$sample_name',

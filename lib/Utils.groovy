@@ -4,6 +4,7 @@ import java.util.regex.Pattern
 import java.util.regex.Matcher
 import java.nio.file.Path
 import groovy.yaml.YamlSlurper
+import nextflow.Nextflow
 
 import MergeMode
 import SampleFilter
@@ -13,26 +14,35 @@ class Utils {
   /* Input Validation *************************************************/
 
   // TODO The nf-validation plugin may be able to supplant this
-  static void preFlight(workflow, params, Boolean validate = true) {
+  static void preFlight(workflow, params) {
     // NOTE This method updates params, passed as reference
     // Ensure all parameter values are serialisable
 
     // Show usage, if requested with --help
-    if (params.help) { this.usage(workflow, params) }
+    if (params.help) { usage(workflow, params) }
 
     // Set reference parameters
     if (params.genome && params._ref.containsKey(params.genome)) {
       params.bowtie2 = params._ref[params.genome].bowtie2
     } else {
-      this.usage(workflow, params, "No or invalid reference ID provided!")
+      usage(workflow, params, "No or invalid reference ID provided!")
     }
 
-    // Return early, without validation, in certain contexts
-    if (!validate) { return }
-
     // Check required parameters are set
-    if (!params.fastq_dir) { this.usage(workflow, params, "Path to sample FASTQs must be provided!") }
-    if (!params.amplicons) { this.usage(workflow, params, "Path to amplicons YAML must be provided!") }
+    if (!params.fastq_dir) { usage(workflow, params, "Path to sample FASTQs must be provided!") }
+    if (!params.amplicons) { usage(workflow, params, "Path to amplicons YAML must be provided!") }
+
+    // Validate aligner profile
+    if (!params._aligner.containsKey(params.aligner_profile)) {
+      usage(workflow, params, "The '${params.aligner_profile}' aligner profile is not defined!")
+    }
+
+    if (
+      (params.aligner_profile == "custom" && !(params.aligner_custom_read_args || params.aligner_custom_amplicon_args)) ||
+      (params.aligner_profile != "custom" && (params.aligner_custom_read_args || params.aligner_custom_amplicon_args))
+    ) {
+      usage(workflow, params, "The 'custom' aligner profile must be used with --aligner_custom_read_args and/or --aligner_custom_amplicon_args!")
+    }
 
     // Skip undetermined by default, unless --samples_process_undetermined is set
     if (params.samples_process_undetermined) { params._samples_skip_undetermined = false }
@@ -48,13 +58,20 @@ class Utils {
     )
 
     // Validate amplicon names
-    if (!this.validAmpliconNames(params.amplicons, *params._internal.forbidden)) {
-      this.usage(workflow, params, "Amplicon(s) detected with an invalid name; i.e., containing forbidden characters!")
+    if (!validNames(getAmpliconNames(params.amplicons), *params._internal.forbidden)) {
+      usage(workflow, params, "Amplicon(s) detected with an invalid name; i.e., containing forbidden characters!")
+    }
+
+    // Validate sample names in metadata (if any)
+    // NOTE The metadata makes references to amplicons and samples.
+    // These are not validated for consistency (but they could be...)
+    if (params.metadata && !validNames(getSampleNamesFromMetadata(params.metadata), *params._internal.forbidden)) {
+      usage(workflow, params, "Sample(s) in metadata detected with an invalid name; i.e., containing forbidden characters!")
     }
 
     // Validate merge mode
     try { params.merge_mode = MergeMode.from(params.merge_mode) }
-    catch(Exception err) { this.usage(workflow, params, "${err.message}") }
+    catch(Exception err) { usage(workflow, params, "${err.message}") }
 
     // Trim by default, unless --no_trimming is set
     if (params.no_trimming) { params._do_trimming = false }
@@ -98,6 +115,17 @@ class Utils {
     println "Valid paired sample merge strategies:"
     MergeMode.help()
 
+    // Output all aligner profiles
+    println ""
+    println "Valid aligner profiles:"
+    int _bowtie2_align = params._aligner.keySet()
+                                        .collect { it.size() }
+                                        .max()
+
+    params._aligner.each { name, profile -> {
+      println "* ${name.padRight(_bowtie2_align)}   ${profile._help}"
+    }}
+
     if (failure) {
       println ""
       println "\033[0;31m${failure}\033[0m"
@@ -123,9 +151,18 @@ class Utils {
       return version_string
   }
 
-  private static Boolean validAmpliconNames(String ampliconsYaml, String... forbidden) {
-    Object amplicons = new YamlSlurper().parse(ampliconsYaml as File);
-    !amplicons.keySet().any { amplicon -> forbidden.any { amplicon.contains(it) } }
+  private static List<String> getAmpliconNames(String ampliconsYaml) {
+    Object amplicons = new YamlSlurper().parse(Nextflow.file(ampliconsYaml));
+    amplicons.keySet() as List
+  }
+
+  private static List<String> getSampleNamesFromMetadata(String metadataYaml) {
+    Object metadata = new YamlSlurper().parse(Nextflow.file(metadataYaml));
+    (metadata.samples ?: [:]).keySet() as List
+  }
+
+  private static Boolean validNames(List<String> names, String... forbidden) {
+    !names.any { name -> forbidden.any { name.contains(it) } }
   }
 
   /* Sample Name Management *******************************************/

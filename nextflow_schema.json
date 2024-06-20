@@ -16,19 +16,25 @@
             "properties": {
                 "fastq_dir": {
                     "type": "string",
-                    "description": "Path to sample FASTQs",
+                    "title": "Path to sample FASTQs",
                     "format": "directory-path"
+                },
+                "metadata": {
+                    "type": "string",
+                    "title": "Path to sample and experiment metadata YAML",
+                    "format": "file-path",
+                    "mimetype": "application/yaml"
                 },
                 "amplicons": {
                     "type": "string",
-                    "description": "Path to amplicons YAML",
+                    "title": "Path to amplicons YAML",
                     "format": "file-path",
                     "mimetype": "application/yaml"
                 },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
-                    "description": "Output directory",
+                    "title": "Output directory",
                     "default": "output"
                 }
             }
@@ -41,7 +47,7 @@
             "properties": {
                 "genome": {
                     "type": "string",
-                    "description": "Reference genome ID",
+                    "title": "Reference genome ID",
                     "enum": [
                         "hg19",
                         "hg38",
@@ -51,7 +57,7 @@
                 },
                 "genome_dir": {
                     "type": "string",
-                    "description": "Reference genome base directory",
+                    "title": "Reference genome base directory",
                     "default": "ref_genomes",
                     "format": "directory-path"
                 }
@@ -69,30 +75,32 @@
                 "samples_pattern": {
                     "type": "string",
                     "default": "Illumina",
-                    "description": "Sample filename pattern",
+                    "title": "Sample filename pattern",
                     "enum": [
                         "Illumina"
                     ]
                 },
                 "samples_include": {
                     "type": "string",
-                    "description": "Included sample filenames (exact match, comma-separated)"
+                    "title": "Included sample filenames (exact match, comma-separated)"
                 },
                 "samples_include_regex": {
                     "type": "string",
-                    "description": "Included sample filenames (regular expression)"
+                    "title": "Included sample filenames (regular expression)"
                 },
                 "samples_exclude": {
                     "type": "string",
-                    "description": "Excluded sample filenames (exact match, comma-separated)"
+                    "title": "Excluded sample filenames (exact match, comma-separated)"
                 },
                 "samples_exclude_regex": {
                     "type": "string",
-                    "description": "Excluded sample filenames (regular expression)"
+                    "title": "Excluded sample filenames (regular expression)"
                 },
                 "samples_process_undetermined": {
                     "type": "boolean",
-                    "description": "Process undetermined samples (leave unset to skip undetermined samples)"
+                    "title": "Process undetermined samples",
+                    "description": "leave unset to skip undetermined samples",
+                    "default": false
                 },
                 "_samples_skip_undetermined": {
                     "type": "boolean",
@@ -111,17 +119,17 @@
                 "max_reads": {
                     "type": "integer",
                     "default": 20000,
-                    "description": "Read count threshold to trigger downsampling (unset to disable)"
+                    "title": "Read count threshold to trigger downsampling (unset to disable)"
                 },
                 "min_reads_per_amplicon": {
                     "type": "integer",
                     "default": 500,
-                    "description": "Minimum amplicon read overlap count"
+                    "title": "Minimum amplicon read overlap count"
                 },
                 "max_reads_per_amplicon": {
                     "type": "integer",
                     "default": 10000,
-                    "description": "Maximum amplicon read overlap count"
+                    "title": "Maximum amplicon read overlap count"
                 }
             },
             "required": []
@@ -141,17 +149,17 @@
                         "both",
                         "no-merge"
                     ],
-                    "description": "Paired-end sequences merging strategy"
+                    "title": "Paired-end sequences merging strategy"
                 },
                 "merge_min_overlap": {
                     "type": "integer",
                     "default": 4,
-                    "description": "Minimum read overlap count"
+                    "title": "Minimum read overlap count"
                 },
                 "merge_max_overlap": {
                     "type": "integer",
                     "default": 150,
-                    "description": "Maximum read overlap count"
+                    "title": "Maximum read overlap count"
                 }
             },
             "required": []
@@ -164,12 +172,14 @@
             "properties": {
                 "no_trimming": {
                     "type": "boolean",
-                    "description": "Do not perform trimming (unset to trim)"
+                    "title": "Do not perform trimming",
+                    "description": "Leave unset to trim",
+                    "default": false
                 },
                 "trim_bases": {
                     "type": "integer",
                     "default": 6,
-                    "description": "Number of bases to trim"
+                    "title": "Number of bases to trim"
                 },
                 "_do_trimming": {
                     "type": "boolean",
@@ -178,6 +188,31 @@
                 }
             },
             "required": []
+        },
+        "aligner_configuration": {
+            "title": "Aligner Configuration",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "aligner_profile": {
+                    "type": "string",
+                    "default": "standard",
+                    "enum": [
+                        "standard",
+                        "custom"
+                    ],
+                    "title": "Aligner profile"
+                },
+                "aligner_custom_read_args": {
+                    "type": "string",
+                    "title": "Custom aligner profile arguments for read alignment"
+                },
+                "aligner_custom_amplicon_args": {
+                    "type": "string",
+                    "title": "Custom aligner profile arguments for amplicon alignment"
+                }
+            }
         },
         "crispresso_configuration": {
             "title": "CRISPResso Configuration",
@@ -188,11 +223,30 @@
                 "crispresso_window": {
                     "type": "integer",
                     "default": 6,
-                    "description": "Window (bp) around sgRNA"
+                    "title": "Window (bp) around sgRNA"
                 },
                 "crispresso_extra_args": {
                     "type": "string",
-                    "description": "Additional arguments passed to CRISPResso"
+                    "title": "Additional arguments passed to CRISPResso"
+                }
+            },
+            "required": []
+        },
+        "base_editing_configuration": {
+            "title": "Base Editing Configuration",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "base_count_window_before": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "Window (bp) before sgRNA"
+                },
+                "base_count_window_after": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "Window (bp) after sgRNA"
                 }
             },
             "required": []
@@ -206,22 +260,22 @@
                 "frameshift_threshold": {
                     "type": "integer",
                     "default": 85,
-                    "description": "Percentage of frameshift reads necessary to call a knockout genotype"
+                    "title": "Percentage of frameshift reads necessary to call a knockout genotype"
                 },
                 "hdr_threshold": {
                     "type": "integer",
                     "default": 85,
-                    "description": "Percentage of HDR reads necessary to call an HDR genotype"
+                    "title": "Percentage of HDR reads necessary to call an HDR genotype"
                 },
                 "unmodified_threshold": {
                     "type": "integer",
                     "default": 85,
-                    "description": "Percentage of unmodified reads necessary to call a wildtype genotype"
+                    "title": "Percentage of unmodified reads necessary to call a wildtype genotype"
                 },
                 "wt_frameshift_max": {
                     "type": "integer",
                     "default": 5,
-                    "description": "Maximum number of frameshift reads that can be present and still call a wildtype genotype"
+                    "title": "Maximum number of frameshift reads that can be present and still call a wildtype genotype"
                 }
             },
             "required": []
@@ -247,7 +301,13 @@
             "$ref": "#/definitions/trimming_configuration"
         },
         {
+            "$ref": "#/definitions/aligner_configuration"
+        },
+        {
             "$ref": "#/definitions/crispresso_configuration"
+        },
+        {
+            "$ref": "#/definitions/base_editing_configuration"
         },
         {
             "$ref": "#/definitions/summary_configuration"

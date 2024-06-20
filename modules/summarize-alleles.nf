@@ -1,7 +1,7 @@
 // Nextflow wrapper to summarize_alleles.pl
 process summarizeAlleles {
-    tag "${meta.id}"
-    publishDir "${params.outdir}/${meta.publishDir}", mode: "copy", overwrite: true
+    tag "${meta.id()}"
+    publishDir "${params.outdir}/${meta.publishDir()}/alleles", mode: "copy", overwrite: true
 
     // This shouldn't fail, but if it does, we don't want it to take out
     // the entire pipeline in the process!

@@ -6,7 +6,7 @@ process _alignReadsToReference {
 
     errorStrategy "ignore"
 
-    tag "${meta.id}"
+    tag "${meta.id()}"
 
     input:
         // Bowtie2 Index Path Prefix
@@ -37,7 +37,7 @@ process _alignReadsToReference {
         // * sampleFastq             Sample FASTQ filename
         // * meta.sampleName         Sample name
         // * params.bowtie2.prefix   Reference file prefix
-        // * task.ext.bowtie2        Bowtie2 command definition
+        // * task.ext.bowtie2_read   Bowtie2 command definition for read alignment
         // * task.ext.samtools       Samtools command definition
         template "align_reads_to_reference.pl"
 }

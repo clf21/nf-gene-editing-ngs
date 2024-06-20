@@ -1,10 +1,13 @@
 reports:
   summary.txt:
     display: Gene Editing Summary
-    mimeType: text/tab-separated-values
+    mimeType: text/tsv
   info.txt:
     display: Pipeline Details
-    mimeType: text/tab-separated-values
+    mimeType: text/tsv
   alleles_frequency_table.txt.gz:
     display: Allele frequency table
     mimeType: application/gzip
+  guide_position_base_counts.txt:
+    display: Base counts by guide position
+    mimeType: text/tsv

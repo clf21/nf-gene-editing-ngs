@@ -51,6 +51,6 @@ enum MergeMode {
   static void help() {
     this.values()
         .collectEntries { [ it.mode, it.helpText ] }
-        .each { mode, help -> println "* ${mode.padRight(width)}  ${help}" }
+        .each { mode, help -> println "* ${mode.padRight(width)}   ${help}" }
   }
 }

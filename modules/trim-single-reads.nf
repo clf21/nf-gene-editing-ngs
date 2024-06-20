@@ -2,7 +2,7 @@
 process _trimSingleReads {
     label "usesTrimmomatic"
 
-    tag "${meta.id}"
+    tag "${meta.id()}"
 
     input:
         // Sample Read (Metadata<Sample name> and FASTQ pair)
@@ -51,7 +51,7 @@ workflow trimSingleReads {
 
         // Augment the metadata with a read ID of "Read1"
         reads
-        | map { meta, trimmed -> [ meta << "Read1", trimmed ] }
+        | map { meta, trimmed -> [ meta.cloneWithReadId("Read1"), trimmed ] }
         | set { readsWithReadId }
 
     emit:

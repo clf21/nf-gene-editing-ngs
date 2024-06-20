@@ -6,9 +6,12 @@
             "summary.txt:md5,c3c89d2d9dd0ee42689e8397028d58f0",
             "summary.yaml:md5,d1138f1869ace4f72fccc487d428f345",
             "alleles_frequency_table.txt.gz:md5,bd5b00734ec74354eb8a3884f4a4f975",
-            "params.yaml:md5,3a6200e9c62dbbcdca6d78d184fa2d17",
+            "guide_position_base_counts.txt:md5,743c12deb50eba35139e6da4170bdd3d",
+            "metadata.yaml:md5,f7d42417eb9a00e3195e7910d0dd9bae",
+            "params.yaml:md5,86551f488eb387aec73671580de1178c",
             "amplicons.yaml:md5,0bb5bc761c0f44bacd7463a34a7a8125",
             "error.yaml:md5,08808dd2b8ed5222eb21b77a67d9ed0c",
+            "skipped.yaml:md5,d2299bcb625e9177ac5a2d52cb7d8d42",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,767427569edb8ccda9c72c8bffac71dd",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
@@ -30,10 +33,10 @@
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec"
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "22.10.6"
+            "nf-test": "0.9.2",
+            "nextflow": "23.04.2"
         },
-        "timestamp": "2024-06-10T11:47:22.174934308"
+        "timestamp": "2024-11-13T17:02:28.882466"
     },
     "CRISPResso Parameters - Extra Arguments, Paired-end": {
         "content": [
@@ -42,26 +45,66 @@
             "summary.txt:md5,cc055918b3a4b59768f67f171aa1b4c9",
             "summary.yaml:md5,b788bd50c4c7b4562b6d4aec6f6af712",
             "alleles_frequency_table.txt.gz:md5,693b63cf1f55624871b5f582cab462a0",
-            "params.yaml:md5,bf2b8ee4e95515c24ef1d6866b742d93",
+            "guide_position_base_counts.txt:md5,a5f8858fb02d5e0c6d8bc3074b1c3056",
+            "metadata.yaml:md5,74e74dc476227ff5c80484bc2df3e48f",
+            "params.yaml:md5,7c5bf5383534b8ccea48ba8b043cc04d",
             "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,cd148a04d9ec8efe28119757d50550bc",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,fd676d7432da008894e6e9620ce0f250",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,2b1636718871456d4c09bf10133ae1bb",
+            "B2M_B2M-2_baseCounts.txt:md5,9faf42fae19c0d5ca072d574629c84aa",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,610e9b63e857ac30b68b509f1653392c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,8988bc7e63e4d2dc283c91abdf23a618",
             "FLAG_FLAG-KI_Frameshift_analysis.txt:md5,9487a09e5070ba5e483eb1d789d4b1f9",
             "FLAG_FLAG-KI_Quantification_of_editing_frequency.txt:md5,ea2a94f0a5dc73ccffc88c6fb3a3c410",
+            "FLAG_FLAG-KI_baseCounts.txt:md5,bd477ca862f1b9abfd472e1d4c1f3342",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec"
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "22.10.6"
+            "nf-test": "0.9.2",
+            "nextflow": "23.04.2"
         },
-        "timestamp": "2024-06-10T12:02:39.954492544"
+        "timestamp": "2024-11-13T17:31:55.834412"
+    },
+    "Pipeline Defaults, Paired-end, with Experiment and Sample Metadata": {
+        "content": [
+            "info.txt:md5,bb119618e49996963e92fbb9b0653cbe",
+            "info.yaml:md5,49931632396abeed18cc0faa94536568",
+            "summary.txt:md5,95af04cecadae0816917ca93e9ff6166",
+            "summary.yaml:md5,763a9e104c26e565023783b62720b1bc",
+            "alleles_frequency_table.txt.gz:md5,6ef71695d679f048d9708b559a7b4e05",
+            "guide_position_base_counts.txt:md5,b1506eaf9287043d82d0c6cef21fa768",
+            "metadata.yaml:md5,a507919587835445aef91178dc468eb3",
+            "params.yaml:md5,a8d9074e8bb1b45f4552c1aa7a5ca265",
+            "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
+            "info.yaml:md5,3d804c8ede85ac247ef70d696fb5ede9",
+            "B2M_B2M-2_Frameshift_analysis.txt:md5,6c4585004b868f2d41ce6e82fc7ef76e",
+            "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,be254d1fb52486b518f571433e86aa5d",
+            "B2M_B2M-2_baseCounts.txt:md5,78ddc73e133a4925174b8f9967faf722",
+            "error.yaml:md5,08808dd2b8ed5222eb21b77a67d9ed0c",
+            "error.yaml:md5,08808dd2b8ed5222eb21b77a67d9ed0c",
+            "info.yaml:md5,ed6dc12c94f8496d8b5d9f4dc1c947bf",
+            "FLAG_FLAG-KI_Frameshift_analysis.txt:md5,a087a121ee293621f135bdd1005bb99e",
+            "FLAG_FLAG-KI_Quantification_of_editing_frequency.txt:md5,c64bceb7605caa0fad655837fce9c6c9",
+            "FLAG_FLAG-KI_baseCounts.txt:md5,35283ac3cd50eec09a416e099ad902cd",
+            "error.yaml:md5,08808dd2b8ed5222eb21b77a67d9ed0c",
+            "error.yaml:md5,08808dd2b8ed5222eb21b77a67d9ed0c",
+            "info.yaml:md5,1ac5dd69384b1203bcab61cbba0fbb3a",
+            "SNP_SNP-edit_Quantification_of_editing_frequency.txt:md5,cac11e6136e6f132718879e55e70f903",
+            "SNP_SNP-edit_baseCounts.txt:md5,ab5994cb80b43e59f20232b09e2beb26",
+            "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
+            "skipped.yaml:md5,58a8150875a6e5539f8f1607f29d40fa",
+            "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec"
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "23.04.2"
+        },
+        "timestamp": "2024-11-13T17:48:13.449728"
     },
     "Read Count Control - No Max Reads, Paired-end": {
         "content": [
@@ -70,26 +113,30 @@
             "summary.txt:md5,b8b2c3ea5a1a0c60aa2e6d28a4e5545d",
             "summary.yaml:md5,ae502d25eb163f0fc4418b93876df4e8",
             "alleles_frequency_table.txt.gz:md5,2f759e94522adb89923389bfa28e3cb2",
-            "params.yaml:md5,f0629c53227d788ba916d465fb34be6b",
+            "guide_position_base_counts.txt:md5,e13c387fa58c28ea6ae8d9f4620b1000",
+            "metadata.yaml:md5,74e74dc476227ff5c80484bc2df3e48f",
+            "params.yaml:md5,1690c7a42043dd494592e855a97caf3f",
             "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,92f9df85ad012193fa2b6a78fb1cce3a",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,4ec8cd6bcbb5a20e876b41ff5761f522",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,76f2c96ff3c07a5433a66d79b1a03008",
+            "B2M_B2M-2_baseCounts.txt:md5,9f34b84a096768a22aa19997dd43f0cd",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,598d85383f899834b8ab521826770d7c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,61c334a17073615587bfd4778e1db130",
             "FLAG_FLAG-KI_Frameshift_analysis.txt:md5,b0836c92b00c62a6c61bdeffa28de78d",
             "FLAG_FLAG-KI_Quantification_of_editing_frequency.txt:md5,1b13f7dac7ffc3cdd7061ec6dc3ef387",
+            "FLAG_FLAG-KI_baseCounts.txt:md5,6b1ac1864a25f167cae19b5ebc61487f",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec"
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "22.10.6"
+            "nf-test": "0.9.2",
+            "nextflow": "23.04.2"
         },
-        "timestamp": "2024-06-10T11:50:17.392368118"
+        "timestamp": "2024-11-13T17:06:16.314919"
     },
     "Read Count Control - 5000 Min Reads per Amplicon, Paired-end": {
         "content": [
@@ -98,11 +145,14 @@
             "summary.txt:md5,04b669ca8cdaa39131fbc3c0d28b3294",
             "summary.yaml:md5,099af15d4e57d3204e4515c5b8684790",
             "alleles_frequency_table.txt.gz:md5,deb75e9266a44ad6813f72b73d4bcfb4",
-            "params.yaml:md5,82280833261090cb2e36623126c7150e",
+            "guide_position_base_counts.txt:md5,9faf42fae19c0d5ca072d574629c84aa",
+            "metadata.yaml:md5,48bf3e42d8be6fc4cc05ce8bf4178d48",
+            "params.yaml:md5,5369e86e1fed0293dec56ab3e703ac4b",
             "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,cd148a04d9ec8efe28119757d50550bc",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,fd676d7432da008894e6e9620ce0f250",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,2b1636718871456d4c09bf10133ae1bb",
+            "B2M_B2M-2_baseCounts.txt:md5,9faf42fae19c0d5ca072d574629c84aa",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,610e9b63e857ac30b68b509f1653392c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
@@ -112,10 +162,10 @@
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec"
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "22.10.6"
+            "nf-test": "0.9.2",
+            "nextflow": "23.04.2"
         },
-        "timestamp": "2024-06-10T11:52:14.709908013"
+        "timestamp": "2024-11-13T17:10:12.540989"
     },
     "One Sample 1000 Reads, Paired-end": {
         "content": [
@@ -124,20 +174,23 @@
             "summary.txt:md5,6544d48f95125e7f6060d7352f83bf86",
             "summary.yaml:md5,dc4427ee9f8e6d86c65aa43a6b6786b6",
             "alleles_frequency_table.txt.gz:md5,7a5b611051fe0ef445abf33f532086d1",
-            "params.yaml:md5,3f81e570fcd0b058a96b4d3363f7f26b",
+            "guide_position_base_counts.txt:md5,e9552c0031b64f38f582255ae0da842b",
+            "metadata.yaml:md5,ccd3414ddcec6a43fcdd1e0976e26d54",
+            "params.yaml:md5,693300652ffaa2359fa49f39b240e480",
             "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,021b51c0cde7b3c0a4fc495d9762337b",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,8e423cd342173ef08e7863a4ed124a89",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,d3448bb6f051bee522c1660735a80b8a",
+            "B2M_B2M-2_baseCounts.txt:md5,e9552c0031b64f38f582255ae0da842b",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,5bea9bd607d2f23f0eb36385fe81d481",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec"
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "22.10.6"
+            "nf-test": "0.9.2",
+            "nextflow": "23.04.2"
         },
-        "timestamp": "2024-06-10T11:47:54.726617572"
+        "timestamp": "2024-11-13T17:03:32.17857"
     },
     "Merge mode - no-merge, Paired-end": {
         "content": [
@@ -146,38 +199,44 @@
             "summary.txt:md5,9aa1dddbe91403bd205231b3a63343b2",
             "summary.yaml:md5,5344e88e93b2ba082bf410862992aa7a",
             "alleles_frequency_table.txt.gz:md5,6a1d93e166bd86c5c4061fc4626a611b",
-            "params.yaml:md5,cdf3359155a2933a1b43af3e488f6e62",
+            "guide_position_base_counts.txt:md5,d36046f5e54baa272a19c8511e0605fd",
+            "metadata.yaml:md5,79cce1701eb07581eba64da366ca3f06",
+            "params.yaml:md5,37f93672b350efbdd07b88d2bda574a0",
             "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,1d50aa0d7fa12cf2b3e032d486219377",
             "B2M_Read1_B2M-2_Frameshift_analysis.txt:md5,1d0aedca8e0570864ca49f7c0a15db34",
             "B2M_Read1_B2M-2_Quantification_of_editing_frequency.txt:md5,89081a1bd78fa2adf3511c9e78a1e6b1",
+            "B2M_Read1_B2M-2_baseCounts.txt:md5,b119ad3d5394548d0a9bb77997760991",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,610e9b63e857ac30b68b509f1653392c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,af711d81cc16621d7c46be0231ba0790",
             "B2M_Read2_B2M-2_Frameshift_analysis.txt:md5,ec953e63873a5bb47d334e27dc9fa108",
             "B2M_Read2_B2M-2_Quantification_of_editing_frequency.txt:md5,bced9fa246e9c8db9cc5e7cea4baf4f6",
+            "B2M_Read2_B2M-2_baseCounts.txt:md5,bce7c6f2c48c7d1de00ca891212c575e",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,610e9b63e857ac30b68b509f1653392c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,7038eb1305258187a2d8a188af5ea875",
             "FLAG_Read1_FLAG-KI_Frameshift_analysis.txt:md5,7f179517eb0b79316692b3c8688f4d2d",
             "FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt:md5,447e502ab3de7aae1c365c3eec7f9274",
+            "FLAG_Read1_FLAG-KI_baseCounts.txt:md5,846028e593bbbb5ae101072c4de4f4ac",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,03c88abaf6afe99a1044e56e3388d919",
             "FLAG_Read2_FLAG-KI_Frameshift_analysis.txt:md5,3f81326eea25f404123df4b8ad3703d8",
             "FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt:md5,f6f493a8e479287475be67fe8a24e051",
+            "FLAG_Read2_FLAG-KI_baseCounts.txt:md5,ac44ca8ca93aa8c3230d7b08cb153d4c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec"
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "22.10.6"
+            "nf-test": "0.9.2",
+            "nextflow": "23.04.2"
         },
-        "timestamp": "2024-06-10T12:00:24.344628996"
+        "timestamp": "2024-11-13T17:27:58.548584"
     },
     "Read Count Control - 1000 Max Reads per Amplicon, Paired-end": {
         "content": [
@@ -186,26 +245,30 @@
             "summary.txt:md5,8eb37d67c18be9c11827bdac54c1e6cb",
             "summary.yaml:md5,9b3c938c6f81bf128e83d50ab47f3f85",
             "alleles_frequency_table.txt.gz:md5,9a8a511ce3aec919a6666b86808758a4",
-            "params.yaml:md5,a7e5fef0aa74d69117db96ad6e8ebf59",
+            "guide_position_base_counts.txt:md5,a5f8858fb02d5e0c6d8bc3074b1c3056",
+            "metadata.yaml:md5,74e74dc476227ff5c80484bc2df3e48f",
+            "params.yaml:md5,b39279666a1e5b9ffb9a146ef59a797e",
             "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,1bfbf33455026200ab40d3c24ce2255e",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,5a777e6ccf59e0d03d1d868eae1d302f",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,dc702e6666ddce87b2f69c460e2c4319",
+            "B2M_B2M-2_baseCounts.txt:md5,9faf42fae19c0d5ca072d574629c84aa",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,610e9b63e857ac30b68b509f1653392c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,2b25dfa344a9edc0e1a54e470ae9f3ef",
             "FLAG_FLAG-KI_Frameshift_analysis.txt:md5,7a5068f98a79395324498ff7e3346ec7",
             "FLAG_FLAG-KI_Quantification_of_editing_frequency.txt:md5,51b2584de83d29efeb6a6f665570cf02",
+            "FLAG_FLAG-KI_baseCounts.txt:md5,bd477ca862f1b9abfd472e1d4c1f3342",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec"
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "22.10.6"
+            "nf-test": "0.9.2",
+            "nextflow": "23.04.2"
         },
-        "timestamp": "2024-06-10T11:51:10.552502556"
+        "timestamp": "2024-11-13T17:08:19.07261"
     },
     "Merge mode - auto, Paired-end": {
         "content": [
@@ -214,11 +277,14 @@
             "summary.txt:md5,fde0e39536d06c59a6a202dc720fba8e",
             "summary.yaml:md5,d68f95a439a7b02582923aafc09cda32",
             "alleles_frequency_table.txt.gz:md5,322cf091fa36b084c8776cbfb3fcd4d0",
-            "params.yaml:md5,749fe5946f0c89ad800fb9734a41d42f",
+            "guide_position_base_counts.txt:md5,7b586ed9a05b40b4704f1925cba38afc",
+            "metadata.yaml:md5,d9655416627962f61c45691154e5d856",
+            "params.yaml:md5,3bf586cb51a7f4b2ef490d996aa54d8d",
             "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,cd148a04d9ec8efe28119757d50550bc",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,fd676d7432da008894e6e9620ce0f250",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,2b1636718871456d4c09bf10133ae1bb",
+            "B2M_B2M-2_baseCounts.txt:md5,9faf42fae19c0d5ca072d574629c84aa",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,610e9b63e857ac30b68b509f1653392c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
@@ -233,6 +299,7 @@
             "info.yaml:md5,dbbd9a2edb1c49bb0e24b5ecb2435b6e",
             "FLAG_FLAG-KI_Frameshift_analysis.txt:md5,9487a09e5070ba5e483eb1d789d4b1f9",
             "FLAG_FLAG-KI_Quantification_of_editing_frequency.txt:md5,3db22bac04c011aafd5c90e622939c35",
+            "FLAG_FLAG-KI_baseCounts.txt:md5,bd477ca862f1b9abfd472e1d4c1f3342",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
@@ -243,15 +310,16 @@
             "info.yaml:md5,9f48c5aec70bc051b245438a65fc6a72",
             "FLAG_Read2_FLAG-KI_Frameshift_analysis.txt:md5,7ac0d9f5469ce97f269d6d9bc7dc7c03",
             "FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt:md5,ab27c05f92c6fb8092b6cd9d52db18fb",
+            "FLAG_Read2_FLAG-KI_baseCounts.txt:md5,b0d2677245548d04706b609088db8bb5",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec"
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "22.10.6"
+            "nf-test": "0.9.2",
+            "nextflow": "23.04.2"
         },
-        "timestamp": "2024-06-10T11:55:56.235277991"
+        "timestamp": "2024-11-13T17:17:02.512311"
     },
     "Trimming - Trim Without Headcrop, Paired-end": {
         "content": [
@@ -260,26 +328,30 @@
             "summary.txt:md5,2095c92617df6e79db1620a7a6e42261",
             "summary.yaml:md5,edc1c3edc6be40d41fba9cc428baae9f",
             "alleles_frequency_table.txt.gz:md5,53f844d871e3e8a4efeaf2861aeda0ea",
-            "params.yaml:md5,d890af9207d6c6e81c0f5a383eac7094",
+            "guide_position_base_counts.txt:md5,701598bc19049e15de5318c7a3dc439a",
+            "metadata.yaml:md5,74e74dc476227ff5c80484bc2df3e48f",
+            "params.yaml:md5,804c01c7603f83d564f117c52b1b5377",
             "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,9425ce46e168e27287eb5973c4e36a23",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,2c6a86cda41ae271364b5d9dd0992c0c",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,c947c0de87f024ac44f4df54f4df420d",
+            "B2M_B2M-2_baseCounts.txt:md5,6aac5e3cf38af156c667eb83de709943",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,610e9b63e857ac30b68b509f1653392c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,be06c3dd3423db3049057b36ada76d9b",
             "FLAG_FLAG-KI_Frameshift_analysis.txt:md5,1ac85215bebd980ea19ae4af30117eb5",
             "FLAG_FLAG-KI_Quantification_of_editing_frequency.txt:md5,1577e8bebba185543ffebf063c103b4d",
+            "FLAG_FLAG-KI_baseCounts.txt:md5,2c501eb73960329d00c1ead2dc1eebea",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec"
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "22.10.6"
+            "nf-test": "0.9.2",
+            "nextflow": "23.04.2"
         },
-        "timestamp": "2024-06-10T11:54:38.465318126"
+        "timestamp": "2024-11-13T17:14:56.284105"
     },
     "CRISPResso Parameters - 4bp Window, Paired-end": {
         "content": [
@@ -288,26 +360,63 @@
             "summary.txt:md5,2b8bdf951c5dc7c6fa6ae8f76ffd4397",
             "summary.yaml:md5,4386bb881c7222aaebb7d66fae12cd71",
             "alleles_frequency_table.txt.gz:md5,26f032a10be19954519b6cd36f663bd5",
-            "params.yaml:md5,ad5f0b2b5870f25db142021787235a0d",
+            "guide_position_base_counts.txt:md5,a5f8858fb02d5e0c6d8bc3074b1c3056",
+            "metadata.yaml:md5,74e74dc476227ff5c80484bc2df3e48f",
+            "params.yaml:md5,ebf03c87dfa3696a9f61428ebbef1169",
             "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,fca848195dfa3d611e8fee3e8d25b577",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,3eddd952bd50016eb1514aa61afa8abc",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,e1335d9fec0a44d06081c5477d2681fc",
+            "B2M_B2M-2_baseCounts.txt:md5,9faf42fae19c0d5ca072d574629c84aa",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,610e9b63e857ac30b68b509f1653392c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,62062fb7f5b4f3e76f3daa572351125e",
             "FLAG_FLAG-KI_Frameshift_analysis.txt:md5,5109905477799516146120430a4df730",
             "FLAG_FLAG-KI_Quantification_of_editing_frequency.txt:md5,da804fc5578510c526fd6efb87e2701a",
+            "FLAG_FLAG-KI_baseCounts.txt:md5,bd477ca862f1b9abfd472e1d4c1f3342",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec"
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "22.10.6"
+            "nf-test": "0.9.2",
+            "nextflow": "23.04.2"
         },
-        "timestamp": "2024-06-10T12:01:31.238133015"
+        "timestamp": "2024-11-13T17:29:53.864441"
+    },
+    "Pipeline Defaults, Single-end, with Experiment and Sample Metadata": {
+        "content": [
+            "info.txt:md5,28f59c8c9a1aa207905f7326aa7d4237",
+            "info.yaml:md5,de35f36631a36a0ce1828c71803d0117",
+            "summary.txt:md5,449b69732508bc5f610827b4e7fc2881",
+            "summary.yaml:md5,36d55787636fc817341a40ca683c6936",
+            "alleles_frequency_table.txt.gz:md5,aea5f2306d7b400aca475b2ea1a68bbe",
+            "guide_position_base_counts.txt:md5,ae216d708417624e7c8b328102121bef",
+            "metadata.yaml:md5,4bad2a1ca39e2dc5a7bfd5afab8e9bfc",
+            "params.yaml:md5,c69cfe77c9cb9a9db9f2dbe9aabe577b",
+            "amplicons.yaml:md5,0bb5bc761c0f44bacd7463a34a7a8125",
+            "error.yaml:md5,08808dd2b8ed5222eb21b77a67d9ed0c",
+            "skipped.yaml:md5,d2299bcb625e9177ac5a2d52cb7d8d42",
+            "error.yaml:md5,08808dd2b8ed5222eb21b77a67d9ed0c",
+            "error.yaml:md5,08808dd2b8ed5222eb21b77a67d9ed0c",
+            "info.yaml:md5,7de94a1ed9bca87ada70e25e8a0dc87c",
+            "FLAG_Read1_FLAG-KI_Frameshift_analysis.txt:md5,1611e2f45edd25875e235a435c216af4",
+            "FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt:md5,4eb244cc93d8787b3faa66ddea40f665",
+            "FLAG_Read1_FLAG-KI_baseCounts.txt:md5,46551bbd934fb05988463b298b8f5bf2",
+            "error.yaml:md5,08808dd2b8ed5222eb21b77a67d9ed0c",
+            "error.yaml:md5,08808dd2b8ed5222eb21b77a67d9ed0c",
+            "info.yaml:md5,6ce305167aa70a87a23c31cb44db5da2",
+            "SNP_Read1_SNP-edit_Quantification_of_editing_frequency.txt:md5,d21d0e691d1ef313e3e4e1f2652da721",
+            "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
+            "skipped.yaml:md5,d36732bf9c97ebb18b89ed825428a048",
+            "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec"
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "23.04.2"
+        },
+        "timestamp": "2024-11-13T17:49:18.365001"
     },
     "Pipeline Defaults, Paired-end": {
         "content": [
@@ -316,36 +425,42 @@
             "summary.txt:md5,e76ca813b84cac2fe5647d66921a11ec",
             "summary.yaml:md5,99ff6f2d03823676f77a14ec20dec9f6",
             "alleles_frequency_table.txt.gz:md5,4f4b01981e722ee8ee774afb605d0fda",
-            "params.yaml:md5,0737afba72af4f090713b4b5273d47ac",
+            "guide_position_base_counts.txt:md5,a1322b183e3eb651adf3c06d3c63476c",
+            "metadata.yaml:md5,050e7adcdb837c39650a7774a205a1be",
+            "params.yaml:md5,42a3d154b40af6e2a3bbe3beb283905c",
             "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,3d804c8ede85ac247ef70d696fb5ede9",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,6c4585004b868f2d41ce6e82fc7ef76e",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,be254d1fb52486b518f571433e86aa5d",
+            "B2M_B2M-2_baseCounts.txt:md5,78ddc73e133a4925174b8f9967faf722",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,6f093233bd43e1526d44af209b4bf0e9",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,ed6dc12c94f8496d8b5d9f4dc1c947bf",
             "FLAG_FLAG-KI_Frameshift_analysis.txt:md5,a087a121ee293621f135bdd1005bb99e",
             "FLAG_FLAG-KI_Quantification_of_editing_frequency.txt:md5,c64bceb7605caa0fad655837fce9c6c9",
+            "FLAG_FLAG-KI_baseCounts.txt:md5,35283ac3cd50eec09a416e099ad902cd",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,8a063ec6766d3679f3f68fd7f9120f1a",
             "HPRT_HPRT-ctrl_Quantification_of_editing_frequency.txt:md5,97f339d62abff9ccc776f60e7fbb867b",
+            "HPRT_HPRT-ctrl_baseCounts.txt:md5,3c5ba34846d656462cc029a7b610b6e4",
             "skipped.yaml:md5,d9d8d4efd0f4b9aacfea26aa374ed613",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,1ac5dd69384b1203bcab61cbba0fbb3a",
             "SNP_SNP-edit_Quantification_of_editing_frequency.txt:md5,cac11e6136e6f132718879e55e70f903",
+            "SNP_SNP-edit_baseCounts.txt:md5,ab5994cb80b43e59f20232b09e2beb26",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,58a8150875a6e5539f8f1607f29d40fa",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec"
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "22.10.6"
+            "nf-test": "0.9.2",
+            "nextflow": "23.04.2"
         },
-        "timestamp": "2024-06-10T11:46:11.73078264"
+        "timestamp": "2024-11-13T16:59:53.111545"
     },
     "Merge mode - both, Paired-end": {
         "content": [
@@ -354,50 +469,58 @@
             "summary.txt:md5,faf710f2b8b5a11bdb568433a84e43f2",
             "summary.yaml:md5,015270d660eb744fc00a4ec90522bee8",
             "alleles_frequency_table.txt.gz:md5,0767574a8445926d430b04e199cb60a7",
-            "params.yaml:md5,ab4aaeed72fc229309be29fa61ebba32",
+            "guide_position_base_counts.txt:md5,86a953278cf3b225be4804e3337041fb",
+            "metadata.yaml:md5,5347da1333783c93f07236fc2f8c4ee5",
+            "params.yaml:md5,c7563cbd1cbaa50b28f80715170e9b17",
             "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,cd148a04d9ec8efe28119757d50550bc",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,fd676d7432da008894e6e9620ce0f250",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,2b1636718871456d4c09bf10133ae1bb",
+            "B2M_B2M-2_baseCounts.txt:md5,9faf42fae19c0d5ca072d574629c84aa",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,610e9b63e857ac30b68b509f1653392c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,1d50aa0d7fa12cf2b3e032d486219377",
             "B2M_Read1_B2M-2_Frameshift_analysis.txt:md5,1d0aedca8e0570864ca49f7c0a15db34",
             "B2M_Read1_B2M-2_Quantification_of_editing_frequency.txt:md5,89081a1bd78fa2adf3511c9e78a1e6b1",
+            "B2M_Read1_B2M-2_baseCounts.txt:md5,b119ad3d5394548d0a9bb77997760991",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,610e9b63e857ac30b68b509f1653392c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,af711d81cc16621d7c46be0231ba0790",
             "B2M_Read2_B2M-2_Frameshift_analysis.txt:md5,ec953e63873a5bb47d334e27dc9fa108",
             "B2M_Read2_B2M-2_Quantification_of_editing_frequency.txt:md5,bced9fa246e9c8db9cc5e7cea4baf4f6",
+            "B2M_Read2_B2M-2_baseCounts.txt:md5,bce7c6f2c48c7d1de00ca891212c575e",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,610e9b63e857ac30b68b509f1653392c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,dbbd9a2edb1c49bb0e24b5ecb2435b6e",
             "FLAG_FLAG-KI_Frameshift_analysis.txt:md5,9487a09e5070ba5e483eb1d789d4b1f9",
             "FLAG_FLAG-KI_Quantification_of_editing_frequency.txt:md5,3db22bac04c011aafd5c90e622939c35",
+            "FLAG_FLAG-KI_baseCounts.txt:md5,bd477ca862f1b9abfd472e1d4c1f3342",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,7038eb1305258187a2d8a188af5ea875",
             "FLAG_Read1_FLAG-KI_Frameshift_analysis.txt:md5,7f179517eb0b79316692b3c8688f4d2d",
             "FLAG_Read1_FLAG-KI_Quantification_of_editing_frequency.txt:md5,447e502ab3de7aae1c365c3eec7f9274",
+            "FLAG_Read1_FLAG-KI_baseCounts.txt:md5,846028e593bbbb5ae101072c4de4f4ac",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,03c88abaf6afe99a1044e56e3388d919",
             "FLAG_Read2_FLAG-KI_Frameshift_analysis.txt:md5,3f81326eea25f404123df4b8ad3703d8",
             "FLAG_Read2_FLAG-KI_Quantification_of_editing_frequency.txt:md5,f6f493a8e479287475be67fe8a24e051",
+            "FLAG_Read2_FLAG-KI_baseCounts.txt:md5,ac44ca8ca93aa8c3230d7b08cb153d4c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec"
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "22.10.6"
+            "nf-test": "0.9.2",
+            "nextflow": "23.04.2"
         },
-        "timestamp": "2024-06-10T11:57:55.73948218"
+        "timestamp": "2024-11-13T17:22:13.422486"
     },
     "Trimming - No Trimming, Paired-end": {
         "content": [
@@ -406,26 +529,30 @@
             "summary.txt:md5,d9368c5c3c5e8e243bebbaf7a160285e",
             "summary.yaml:md5,e7800f79ece4b83cdfd23ec037501377",
             "alleles_frequency_table.txt.gz:md5,0713624a2eaf0f51fb9ea95c8b7d2fe0",
-            "params.yaml:md5,2b68e3f92f978ea8bd88ecafad458a3c",
+            "guide_position_base_counts.txt:md5,a5f8858fb02d5e0c6d8bc3074b1c3056",
+            "metadata.yaml:md5,74e74dc476227ff5c80484bc2df3e48f",
+            "params.yaml:md5,e1206659095c56e403440747ece127ad",
             "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,cd148a04d9ec8efe28119757d50550bc",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,fd676d7432da008894e6e9620ce0f250",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,2b1636718871456d4c09bf10133ae1bb",
+            "B2M_B2M-2_baseCounts.txt:md5,9faf42fae19c0d5ca072d574629c84aa",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,610e9b63e857ac30b68b509f1653392c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,dbbd9a2edb1c49bb0e24b5ecb2435b6e",
             "FLAG_FLAG-KI_Frameshift_analysis.txt:md5,9487a09e5070ba5e483eb1d789d4b1f9",
             "FLAG_FLAG-KI_Quantification_of_editing_frequency.txt:md5,3db22bac04c011aafd5c90e622939c35",
+            "FLAG_FLAG-KI_baseCounts.txt:md5,bd477ca862f1b9abfd472e1d4c1f3342",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec"
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "22.10.6"
+            "nf-test": "0.9.2",
+            "nextflow": "23.04.2"
         },
-        "timestamp": "2024-06-10T11:53:25.690861693"
+        "timestamp": "2024-11-13T17:12:53.151092"
     },
     "Merge mode - merge, Paired-end": {
         "content": [
@@ -434,25 +561,29 @@
             "summary.txt:md5,d9368c5c3c5e8e243bebbaf7a160285e",
             "summary.yaml:md5,e7800f79ece4b83cdfd23ec037501377",
             "alleles_frequency_table.txt.gz:md5,0713624a2eaf0f51fb9ea95c8b7d2fe0",
-            "params.yaml:md5,bc79f61e812edfdce075369fbaea2e8d",
+            "guide_position_base_counts.txt:md5,a5f8858fb02d5e0c6d8bc3074b1c3056",
+            "metadata.yaml:md5,74e74dc476227ff5c80484bc2df3e48f",
+            "params.yaml:md5,348782a05a15332fc7170234345b86bf",
             "amplicons.yaml:md5,fb222a43017616bd238002a49838790c",
             "info.yaml:md5,cd148a04d9ec8efe28119757d50550bc",
             "B2M_B2M-2_Frameshift_analysis.txt:md5,fd676d7432da008894e6e9620ce0f250",
             "B2M_B2M-2_Quantification_of_editing_frequency.txt:md5,2b1636718871456d4c09bf10133ae1bb",
+            "B2M_B2M-2_baseCounts.txt:md5,9faf42fae19c0d5ca072d574629c84aa",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,610e9b63e857ac30b68b509f1653392c",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "info.yaml:md5,dbbd9a2edb1c49bb0e24b5ecb2435b6e",
             "FLAG_FLAG-KI_Frameshift_analysis.txt:md5,9487a09e5070ba5e483eb1d789d4b1f9",
             "FLAG_FLAG-KI_Quantification_of_editing_frequency.txt:md5,3db22bac04c011aafd5c90e622939c35",
+            "FLAG_FLAG-KI_baseCounts.txt:md5,bd477ca862f1b9abfd472e1d4c1f3342",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec",
             "skipped.yaml:md5,ec3fdca3e3006d6be0c85e8a0846d4ec"
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "22.10.6"
+            "nf-test": "0.9.2",
+            "nextflow": "23.04.2"
         },
-        "timestamp": "2024-06-10T11:59:03.315818239"
+        "timestamp": "2024-11-13T17:24:38.902644"
     }
 }

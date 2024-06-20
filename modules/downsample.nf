@@ -1,6 +1,6 @@
 // Nextflow Wrapper to downsample_fastq.pl
 process _downsampleSingleRead {
-  tag "${meta.id}"
+  tag "${meta.id()}"
 
   input:
     // Single read tuple: Metadata<Sample name> and its FASTQ file

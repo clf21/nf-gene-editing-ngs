@@ -14,12 +14,17 @@ class Escape {
 
   static String cmdAsPerlList(extCommand, Object... args) {
     // Serialises a command defined in the ext scope as a Perl list
-    "(${this.cmdBuilder("\"", extCommand, args).join(", ")})"
+    "(${cmdBuilder("\"", extCommand, args).join(", ")})"
   }
 
   static String cmdAsPerlString(extCommand, Object... args) {
     // Serialises a command defined in the ext scope as a Perl string
-    "\"${this.cmdBuilder("\\\"", extCommand, args).join(" ")}\""
+    "\"${cmdBuilder("\\\"", extCommand, args).join(" ")}\""
+  }
+
+  static String cmdAsBash(extCommand, Object... args) {
+    // Serialises a command defined in the ext scope for Bash
+    cmdBuilder("\"", extCommand, args).join(" ")
   }
 
   private static List cmdBuilder(String quote, extCommand, Object... args) {

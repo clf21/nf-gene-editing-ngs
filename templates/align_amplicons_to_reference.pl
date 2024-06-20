@@ -16,8 +16,8 @@ use YAML::XS qw(LoadFile DumpFile);
 #     Reference genome ID
 #   ampliconsYaml)
 #     Amplicons YAML file
-#   task.ext.bowtie2)
-#     Bowtie2 command definition
+#   task.ext.bowtie2_amplicon)
+#     Bowtie2 command definition for amplicon alignment
 #
 # Output - Files stored in `$PWD`:
 #   `alignments.yaml`)
@@ -26,7 +26,7 @@ use YAML::XS qw(LoadFile DumpFile);
 my $genome_base = "!{bt2IndexPath}/!{params.bowtie2.prefix}";
 my $amplicons = LoadFile("!{ampliconsYaml}");
 
-my @cmd = !{Escape.cmdAsPerlList(task.ext.bowtie2,
+my @cmd = !{Escape.cmdAsPerlList(task.ext.bowtie2_amplicon,
   '-x', '$genome_base',
   '--no-hd', /* Suppress SAM header lines (starting with @) */
   '-f',      /* Bowtie2 input will be in FASTA format */

@@ -2,7 +2,7 @@
 process _trimPairedReads {
     label "usesTrimmomatic"
 
-    tag "${meta.id}"
+    tag "${meta.id()}"
 
     input:
         // Sample Read (Metadata<Sample name> and FASTQ pair)

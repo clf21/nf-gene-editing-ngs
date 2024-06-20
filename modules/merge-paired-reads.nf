@@ -2,7 +2,7 @@
 process _mergePairedReads {
     label "usesFLASH"
 
-    tag "${meta.id}"
+    tag "${meta.id()}"
 
     input:
         // Sample Read (Metadata<Sample name> and FASTQ pair)
@@ -89,9 +89,9 @@ workflow mergePairedReads {
             }
 
             [
-                [ meta << "Merged", merged ],
-                [ meta << "Read1",  read1 ],
-                [ meta << "Read2",  read2 ]
+                [ meta.cloneWithReadId("Merged"), merged ],
+                [ meta.cloneWithReadId("Read1"),  read1 ],
+                [ meta.cloneWithReadId("Read2"),  read2 ]
             ]
         }
         | filter { _meta, sample -> sample != null }

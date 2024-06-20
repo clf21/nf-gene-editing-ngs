@@ -1,7 +1,13 @@
+@Grab(group='org.codehaus.groovy', module='groovy-yaml', version='3.0.16')
+
 import java.nio.file.Path
+import groovy.transform.AutoClone
+import groovy.transform.AutoCloneStyle
+import groovy.yaml.YamlBuilder
+import groovy.yaml.YamlSlurper
 
-import Utils
-
+// NOTE This is required for deep cloning
+@AutoClone(style = AutoCloneStyle.SERIALIZATION)
 class Metadata
   extends HashMap
   implements Comparable<Metadata> {
@@ -11,70 +17,94 @@ class Metadata
   // Construct from sample name
   Metadata(String sampleName) {
     this.sampleName = sampleName
-
-    // ID: ${sampleName}"
-    this.id = sampleName
+    this.sampleMetadata = [ amplicons: [], analyzed_amplicons: [] ]
   }
 
-  // Construct from sample file and platform identifier
-  Metadata(Path sampleFile, String platform) {
-    this(Utils.getSampleName(sampleFile, platform))
+  // Construct from sample metadata YAML
+  Metadata(Path sampleMetadataYaml) {
+    Object sampleMetadata = new YamlSlurper().parse(sampleMetadataYaml)
+
+    // NOTE Groovy forbids `this(sampleMetadata.name)` at anywhere other
+    // than the first statement, so we have to be explicit about it here
+    assert sampleMetadata.containsKey("name")
+    this.sampleName = sampleMetadata.name
+
+    // We have to materialise the `groovy.json.internal.LazyMap`, if we
+    // have one from our YAML misadventures, into a bona fide `HashMap`
+    // to allow deep cloning via serialisation
+    this.sampleMetadata = (sampleMetadata?.metadata ?: [:]) as HashMap
+
+    // Set `amplicons` to an empty list if it's not a list already
+    if (this.sampleMetadata?.amplicons !instanceof List) {
+      this.sampleMetadata.amplicons = []
+    }
+
+    // Set `analyzed_amplicons` to an empty list, overriding if it was
+    // erroneously provided in the YAML
+    this.sampleMetadata.analyzed_amplicons = []
   }
-
-  // Construct from sample name and read ID
-  Metadata(String sampleName, String readId) {
-    this(sampleName)
-
-    assert readId =~ /^(?:Read[12]|Merged)$/
-    this.readId = readId
-
-    // ID: ${sampleName}_${readId}
-    this.id += "_${readId}"
-  }
-
-  // Construct from sample name, read ID and amplicon name strings
-  Metadata(String sampleName, String readId, String ampliconName) {
-    this(sampleName, readId)
-    this.ampliconName = ampliconName
-
-    // ID: ${sampleName}_${readId}/${ampliconName}
-    this.id += "/${ampliconName}"
-
-    // Publication directory
-    String prefix = this.readId == "Merged" ? "${this.sampleName}"
-                                            : "${this.sampleName}_${this.readId}"
-
-    this.publishDir = "${prefix}/${ampliconName}"
-  }
-
-  // Convenience constructor if given an amplicon YAML file
-  Metadata(String sampleName, String readId, Path ampliconYaml) {
-    // The amplicon name is the same as the filename, with the YAML
-    // extension stripped from the end
-    this(sampleName, readId, ampliconYaml.name - ~/\.ya?ml$/)
-  }
-
-  // TODO Construct from arbitrary maps
 
   /* Augmentation *****************************************************/
 
-  // The left shift operator is used as an idiomatic way to augment
-  // the metadata with additional information. The operator is
-  // overloaded to perform this based on the type of the RHS.
-  // TODO Make this less rigid
+  // Add a read ID and return the augmented object
+  Metadata cloneWithReadId(String readId) {
+    assert !hasKeys(Keys.ReadId)
+    assert readId =~ /^(?:Read[12]|Merged)$/
 
-  // SampleName -> SampleId
-  // e.g.: new Metadata("foo") << "Read1" == new Metadata("foo", "Read1")
-  Metadata leftShift(String readId) {
-    assert hasKeys(Keys.SampleName) && !hasKeys(Keys.ReadId)
-    new Metadata(this.sampleName, readId)
+    Metadata cloned = this.clone()
+    cloned.readId = readId
+
+    cloned
   }
 
-  // SampleId -> AnalysisId
-  // e.g.: new Metadata("foo", "Read2") << ampliconYaml == new Metadata("foo", "Read2", ampliconYaml)
-  Metadata leftShift(Path ampliconYaml) {
-    assert hasKeys(Keys.SampleId) && !hasKeys(Keys.AmpliconName)
-    new Metadata(this.sampleName, this.readId, ampliconYaml)
+  // Add an amplicon name and return the augmented object
+  Metadata cloneWithAmpliconName(String ampliconName) {
+    assert !hasKeys(Keys.AmpliconName)
+
+    Metadata cloned = this.clone()
+    cloned.ampliconName = ampliconName
+
+    cloned
+  }
+
+  /* Generated Values *************************************************/
+
+  // Metadata ID (used for, e.g., process tagging)
+  String id() {
+    if (hasKeys(Keys.AnalysisId)) {
+      return "${this.sampleName}_${this.readId}/${this.ampliconName}"
+
+    } else if (hasKeys(Keys.SampleId)) {
+      return "${this.sampleName}_${this.readId}"
+
+    } else {
+      assert hasKeys(Keys.SampleName)
+      return this.sampleName
+    }
+  }
+
+  // Publication directory for analyses
+  String publishDir() {
+    assert hasKeys(Keys.AnalysisId)
+
+    String prefix =
+      this.readId == "Merged" ? "${this.sampleName}"
+                              : "${this.sampleName}_${this.readId}"
+
+    "${prefix}/${this.ampliconName}"
+  }
+
+  // Sample metadata YAML
+  String toSampleMetadataYaml() {
+    assert hasKeys(Keys.SampleName)
+
+    YamlBuilder yamlBuilder = new YamlBuilder()
+
+    Map sampleMetadata = [ samples: [:] ]
+    sampleMetadata.samples[this.sampleName] = this.sampleMetadata
+
+    yamlBuilder sampleMetadata
+    yamlBuilder.toString()
   }
 
   /* Distinguishers ***************************************************/

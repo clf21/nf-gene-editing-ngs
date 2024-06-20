@@ -125,6 +125,47 @@ Valid sample filename pattern presets are:
 > Sample files must not contain `|` or `/`-characters in their
 > filenames.
 
+#### Sample and Experiment Metadata
+
+* **`metadata`** \
+  Path to the sample and experiment metadata YAML
+
+The sample and experiment metadata YAML file should have the following
+schema:
+
+```yaml
+samples:
+  # Object where each key is the sample name, matching that extracted
+  # from the input sample FASTQ files
+  <SAMPLE NAME>:
+    # List of controls (sample names)
+    controls:
+    - <SAMPLE NAME>
+    # etc.
+
+    # List of amplicons (amplicon names) relevant to the sample
+    # If none are specified, or this key is missing, then the pipeline
+    # will try all combinations
+    amplicons:
+    - <AMPLICON NAME>
+    # etc.
+
+experiment:
+  project: <PROJECT NAME>
+
+  # List of contacts responsible for the experiment
+  contacts:
+  - name: <NAME>
+    role: <ROLE>
+    email: <E-MAIL ADDRESS>
+  # etc.
+```
+
+> [!NOTE]
+> Other sample or experiment metadata keys, beyond those described
+> above, may be included. They will not be dropped from the published
+> output.
+
 #### Amplicons
 
 * **`amplicons`** (required) \
@@ -270,6 +311,32 @@ Valid paired sample merging strategies are:
 * **`trim_bases`** (default `6`) \
   Number of bases to trim
 
+#### Aligner Configuration
+
+* **`aligner_profile`** (default `standard`) \
+  Profile to apply to the aligner (Bowtie2)
+
+* **`aligner_custom_read_args`** \
+  Custom profile arguments passed to the aligner (i.e., when using the
+  `custom` profile) for read alignment
+
+* **`aligner_custom_amplicon_args`** \
+  Custom profile arguments passed to the aligner (i.e., when using the
+  `custom` profile) for amplicon alignment
+
+Valid aligner profiles are:
+
+ | Profile    | Description                                                 |
+ | :--------- | :---------------------------------------------------------- |
+ | `standard` | Standard aligner invocation                                 |
+ | `custom`   | Custom profile, allowing arbitrary arguments to the aligner |
+
+
+> [!NOTE]
+> If the `custom` profile is used, at least one of
+> `aligner_custom_read_args` and `aligner_custom_amplicon_args` must be
+> set. When not set, the `default` profile values are used.
+
 #### CRISPResso Configuration
 
 * **`crispresso_window`** (default `6`) \
@@ -277,6 +344,14 @@ Valid paired sample merging strategies are:
 
 * **`crispresso_extra_args`** \
   Additional arguments passed to CRISPResso for tuning
+
+#### Base Editing Configuration
+
+* **`base_count_window_before`** (default `0`) \
+  Window (bp) before sgRNA
+
+* **`base_count_window_after`** (default `0`) \
+  Window (bp) after sgRNA
 
 #### Summary Configuration
 
@@ -384,6 +459,7 @@ flowchart TD
   summaryOutput((Summary\nOutput))
   afTable((Allele\nFrequency\nTable))
   crispressoOutput((CRISPResso\nOutput))
+  baseCountOutput((Base Count\nTable))
 
   %% Prepare amplicons
   normalizeAmplicons[Normalize]
@@ -413,12 +489,12 @@ flowchart TD
   %% Align reads
   alignReads[Align reads to reference]
 
-  _joiner(( ))
-  trimSingle ---> _joiner
-  mergePaired --> _joiner
+  _joinReads(( ))
+  trimSingle ---> _joinReads
+  mergePaired --> _joinReads
 
   ref --> alignReads
-  _joiner --> alignReads
+  _joinReads --> alignReads
 
   %% Count overlap
   countOverlap[Count read overlap]
@@ -428,8 +504,13 @@ flowchart TD
 
   %% Analyze
   identifyAlleles[Identify alleles]
+  countGuidePositionBases["Count bases by\nguide position"]
 
-  countOverlap --> |Exceeds Threshold|identifyAlleles
+  _joinAnalysis(( ))
+  _joinAnalysis --> countGuidePositionBases
+  _joinAnalysis --> identifyAlleles
+
+  countOverlap --> |Exceeds Threshold|_joinAnalysis
 
   %% Summarize
   summarizeAlleles["Summarize alleles\n(inc. skipped and failed)"]
@@ -438,9 +519,13 @@ flowchart TD
   identifyAlleles --> summarizeAlleles
 
   %% Output
+  countGuidePositionBases --> baseCountOutput
   identifyAlleles --> afTable
   identifyAlleles --> crispressoOutput
   summarizeAlleles --> summaryOutput
+
+  %% Layout
+  countGuidePositionBases ~~~ identifyAlleles
 ```
 
 > [!TIP]
@@ -485,6 +570,20 @@ alphabetically.
 > is used to signal that these operations are implementation details and
 > don't form part of the "public" API.
 
+##### `acquireMetadata` (in `modules/acquire-metadata.nf`)
+
+Inputs:
+1. Sample and experiment metadata YAML path, as a string (or null).
+
+Outputs:
+* `samples`: Channel of sample metadata objects, extracted from the
+  source YAML file, with the appropriate sample name and embedded
+  metadata.
+* `experiment`: Channel of experiment metadata YAML file.
+
+> [!NOTE]
+> The input can be empty, in which case, the outputs will also be empty.
+
 ##### `alignAmpliconsToReference` (in `modules/align-amplicons-to-reference.nf`)
 
 Inputs:
@@ -526,6 +625,50 @@ Published:
   the CRISPResso analyses, is published to the root of the output
   directory.
 
+##### `collectBaseCounts` (in `modules/count-bases-by-guide-position.nf`)
+
+Inputs:
+* Channel of guide position base counts. That is, tuples of the form:
+  * Analysis identifier (sample name, read ID and amplicon name).
+  * Guide position base count file.
+
+Outputs:
+* (None)
+
+Published:
+* `guide_position_base_counts_counts.txt`, concatenated guide position
+  base counts from the base counting analysis, is published to the root
+  of the output directory.
+
+##### `countGuidePositionBases` (in `modules/count-bases-by-guide-position.nf`)
+
+Inputs:
+1. Channel of sample read, amplicon and overlap. That is, tuples of the
+   form:
+   * Analysis identifier (sample name, read ID and amplicon name).
+   * Aligned reads (BAM and associated index).
+   * Single amplicon description YAML file.
+   * Read overlap count.
+
+Outputs:
+* Channel of guide position base counts. That is, tuples of the form:
+  * Analysis identifier (sample name, read ID and amplicon name).
+  * Guide position base count file.
+
+Published:
+* The guide position base count file is published to the `base-counts`
+  subdirectory of the respective analysis subdirectory (named after the
+  sample name, read ID and amplicon name, under the output directory).
+
+  If no overlapping guides are found for the amplicon, or if the process
+  fails, then a `skipped.yaml` or `error.yaml`, respectively, will be
+  written in its place.
+
+> [!TIP]
+> The `base-counts` subdirectory may seem superfluous, but is there to
+> avoid race conditions where contemporary processes can publish their
+> output over each other.
+
 ##### `countReadOverlap` (in `modules/count-reads-overlap.nf`)
 
 Inputs:
@@ -533,10 +676,12 @@ Inputs:
    * Sample identifier (sample name and read ID).
    * Aligned reads (BAM and associated index).
    * Single amplicon description YAML file.
+   * Whether the combination was user-specified.
 
 Outputs:
 * `toIdentify`: Channel of inputs, augmented with the amplicon overlap
-  count, that exceed the overlap threshold. That is, tuples of the form:
+  count, that are either user-specified or exceed the overlap threshold.
+  That is, tuples of the form:
   * Analysis identifier (sample name, read ID and amplicon name).
   * Aligned reads (BAM and associated index).
   * Single amplicon description YAML file.
@@ -668,7 +813,9 @@ Inputs:
 Outputs:
 * `passed`: Channel of CRISPResso analysis directories. That is, tuples
   of the form:
-  * Analysis identifier (sample name, read ID and amplicon name).
+  * Analysis identifier (sample name, read ID and amplicon name), with
+    the sample metadata augmented to indicate a successful analysis
+    against the given amplicon.
   * CRISPResso analysis directory.
 * `failed`: Channel of failed analyses identifiers.
 
@@ -693,9 +840,10 @@ Outputs:
    * CRISPResso analysis directory.
 
 Published:
-* The CRISPResso analysis directory (`CRISPResso_output`) is published
-  under the appropriate analysis subdirectory of the output directory
-  (named after the sample name, read ID and amplicon name).
+* The CRISPResso analysis directory (`CRISPResso_output` and symlinks to
+  its most important contents) is published to the `alleles`
+  subdirectory of the respective analysis subdirectory (named after the
+  sample name, read ID and amplicon name, under the output directory).
 
 > [!NOTE]
 > This process is called by the `identifyAlleles` subworkflow (see
@@ -704,6 +852,11 @@ Published:
 
 > [!NOTE]
 > A further round of deterministic downsampling can occur at this step.
+
+> [!TIP]
+> The `alleles` subdirectory may seem superfluous, but is there to avoid
+> race conditions where contemporary processes can publish their output
+> over each other.
 
 ##### `listSequencingSamples` (in `modules/list-sequencing-samples.nf`)
 
@@ -745,9 +898,13 @@ Outputs:
 ##### `publishMetadata` (in `modules/publish-metadata.nf`)
 
 Inputs:
-1. Prepared amplicons YAML file.
+1. All sample metadata YAML files concatenated into a single YAML file.
+2. Experiment metadata YAML file.
+3. Prepared amplicons YAML file.
 
 Published:
+* The sample and experiment metadata YAML, as `metadata.yaml`, insofar
+  as it existed in the input.
 * The prepared (i.e., normalized and aligned) amplicons YAML, as
   `amplicons.yaml`.
 * The input parameters for the pipeline run, as `params.yaml`.
@@ -767,8 +924,14 @@ Outputs:
 
 Published:
 * `error.yaml` files, marking failed analysis processes, are published
-  under the appropriate analysis subdirectory of the output directory
-  (named after the sample name, read ID and amplicon name).
+  to the `alleles` subdirectory of the respective analysis subdirectory
+  (named after the sample name, read ID and amplicon name, under the
+  output directory).
+
+> [!TIP]
+> The `alleles` subdirectory may seem superfluous, but is there to avoid
+> race conditions where contemporary processes can publish their output
+> over each other.
 
 ##### `reportSkippedSamples` (in `modules/count-reads-overlap.nf`)
 
@@ -792,13 +955,35 @@ Published:
   published under the appropriate analysis subdirectory of the output
   directory (named after the sample name, read ID and amplicon name).
 
+##### `selectAmplicons` (in `modules/select-amplicons.nf`)
+
+Inputs:
+1. Channel of samples. That is, tuples of the form:
+   * Sample identifier (sample name and read ID).
+   * Aligned reads (BAM and associated index).
+
+2. Channel of amplicons. That is, tuples of the form:
+   * Amplicon name.
+   * Amplicon description YAML.
+
+Outputs:
+1. Channel of sample/amplicon pairs for downstream analysis. That is,
+   tuples of the form:
+   * Analysis identifier (sample name, read ID and amplicon name).
+   * Aligned reads (BAM and associated index).
+   * Single amplicon description YAML file.
+   * Whether the combination is user-specified (i.e., `true` or
+     `false`).
+
 ##### `splitAmpliconsYaml` (in `modules/split-amplicons-yaml.nf`)
 
 Inputs:
 1. Channel of amplicons manifest YAML file.
 
 Outputs:
-1. Channel of each amplicon in the manifest as an individual YAML file.
+1. Channel of each amplicon. That is, tuples of the form:
+   * Amplicon name (extracted from the input manifest).
+   * Amplicon description YAML file.
 
 ##### `summarizeAlleles` (in `modules/summarize-alleles.nf`)
 
@@ -815,9 +1000,34 @@ Outputs:
    * Analysis summary YAML file.
 
 Published:
-* `info.yaml`, individual analysis summaries, are published under the
-  appropriate analysis subdirectory of the output directory (named after
-  the sample name, read ID and amplicon name).
+* `info.yaml`, individual analysis summaries, are published to the
+  `alleles` subdirectory of the respective analysis subdirectory (named
+  after the sample name, read ID and amplicon name, under the output
+  directory).
+
+> [!TIP]
+> The `alleles` subdirectory may seem superfluous, but is there to avoid
+> race conditions where contemporary processes can publish their output
+> over each other.
+
+##### `toSampleMetadata` (in `modules/publish-metadata.nf`)
+
+Inputs:
+1. Channel of single-end samples. That is, tuples of the form:
+   * Sample name.
+   * Sample FASTQ.
+
+2. Channel of paired-end samples. That is, tuples of the form:
+   * Sample name.
+   * Sample FASTQ.
+
+3. Channel of successful allele analyses. That is, tuples of the form:
+   * Analysis identifier (sample name, read ID and amplicon name).
+   * Analysis directory.
+
+Outputs:
+1. A multi-document YAML file; that is, all the input sample metadata
+   YAML files concatenated into a single YAML file.
 
 ##### `trimPairedReads` (in `modules/trim-paired-reads.nf`)
 
