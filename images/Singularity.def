@@ -2,9 +2,9 @@ Bootstrap: docker
 From: alpine:3.21
 
 %files
-    bowtie2.patch /tmp/bowtie2/bowtie2.patch
-    install-CRISPResso.sh /tmp/CRISPResso/install-CRISPResso.sh
-    CRISPResso.patch /tmp/CRISPResso/CRISPResso.patch
+    bowtie2.patch /tmp/bowtie2.patch
+    install-CRISPResso.sh /tmp/install-CRISPResso.sh
+    CRISPResso.patch /tmp/CRISPResso.patch
     baseCounts /tmp/baseCounts
 
 %post
@@ -27,7 +27,9 @@ From: alpine:3.21
         zlib-dev
 
     # Build Bowtie2 2.5.5
+    mkdir -p /tmp/bowtie2
     cd /tmp/bowtie2
+    cp /tmp/bowtie2.patch .
     wget -O bowtie2.tar.gz https://github.com/BenLangmead/bowtie2/archive/refs/tags/v2.5.5.tar.gz
     tar -xf bowtie2.tar.gz
     patch -p0 < bowtie2.patch
@@ -37,7 +39,10 @@ From: alpine:3.21
     cp bowtie2* /opt/bowtie2/bin/
 
     # Build CRISPResso (master)
+    mkdir -p /tmp/CRISPResso
     cd /tmp/CRISPResso
+    cp /tmp/CRISPResso.patch .
+    cp /tmp/install-CRISPResso.sh .
     wget -O CRISPResso.zip https://github.com/lucapinello/CRISPResso/archive/master.zip
     unzip CRISPResso.zip
     patch -p0 < CRISPResso.patch
