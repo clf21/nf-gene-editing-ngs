@@ -67,7 +67,7 @@ From: alpine:3.21
     cd /tmp/trimmomatic
     wget -O trimmomatic.zip http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.39.zip
     unzip -o trimmomatic.zip
-    mkdir -p /opt/trimmomatic
+    mkdir -p /opt/trimmomatic/bin
     cp -r Trimmomatic-0.39/* /opt/trimmomatic/
 
     # Install Perl dependencies
