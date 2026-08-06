@@ -135,9 +135,9 @@ EOF
     # Run CRISPResso2 once to generate font cache
     /opt/CRISPResso2/bin/CRISPResso -h >/dev/null || true
 
-    # Cleanup
-    rm -rf /tmp/*
-    rm -rf /opt/build-files
+    # Cleanup (non-fatal for builds without fakeroot)
+    rm -rf /tmp/* 2>/dev/null || true
+    rm -rf /opt/build-files 2>/dev/null || true
 
 %environment
     export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso2/bin:/opt/samtools/bin:/opt/trimmomatic/bin
