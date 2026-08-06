@@ -44,17 +44,7 @@ RUN mkdir -p /tmp/CRISPResso2 \
  && pip install --upgrade pip \
  && pip install -e .
 
-# Download, build and install EMBOSS 6.6.0
-FROM build-base AS build-emboss
-
-RUN mkdir -p /tmp/emboss \
- && cd /tmp/emboss \
- && wget -O emboss.tar.gz ftp://emboss.open-bio.org/pub/EMBOSS/EMBOSS-6.6.0.tar.gz \
- && tar -xf emboss.tar.gz \
- && cd EMBOSS-6.6.0 \
- && ./configure --prefix=/opt/emboss --without-x \
- && make \
- && make install
+# Skip EMBOSS - not used in pipeline and FTP server unreliable
 
 # Download, build and install Samtools 1.23.1
 FROM build-base AS build-samtools
@@ -141,9 +131,6 @@ RUN cd /opt/CRISPResso2/bin \
  && ln -s _crispresso CRISPRessoPooled \
  && ln -s _crispresso CRISPRessoAggregate
 
-# Install EMBOSS
-COPY --from=build-emboss /opt/emboss /opt/emboss
-
 # Install Samtools
 COPY --from=build-samtools /opt/samtools /opt/samtools
 
@@ -169,7 +156,7 @@ EOF
 COPY --from=build-perl_dependencies /usr/local/lib/perl5/site_perl /usr/local/lib/perl5/site_perl
 
 # Add binaries to PATH
-ENV PATH $PATH:/opt/bowtie2/bin:/opt/CRISPResso2/bin:/opt/emboss/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
+ENV PATH $PATH:/opt/bowtie2/bin:/opt/CRISPResso2/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
 
 # Run CRISPResso2 once to have Matplotlib generate its font cache
 RUN CRISPResso -h >/dev/null

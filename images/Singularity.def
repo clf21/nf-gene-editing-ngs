@@ -50,15 +50,7 @@ From: alpine:3.21
     pip install -e .
     deactivate
 
-    # Build EMBOSS 6.6.0
-    mkdir -p /tmp/emboss
-    cd /tmp/emboss
-    wget -O emboss.tar.gz ftp://emboss.open-bio.org/pub/EMBOSS/EMBOSS-6.6.0.tar.gz
-    tar -xf emboss.tar.gz
-    cd EMBOSS-6.6.0
-    ./configure --prefix=/opt/emboss --without-x
-    make
-    make install
+    # Skip EMBOSS - not used in pipeline and FTP server unreliable
 
     # Build Samtools 1.23.1
     mkdir -p /tmp/samtools
@@ -143,7 +135,7 @@ EOF
     rm -rf /opt/build-files
 
 %environment
-    export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso2/bin:/opt/emboss/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
+    export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso2/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
 
 %labels
     Author nf-gene-editing-ngs
