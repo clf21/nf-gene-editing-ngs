@@ -58,12 +58,12 @@ RUN mkdir -p /tmp/samtools \
  && make \
  && make install
 
-# Download Trimmomatic 0.41
+# Download Trimmomatic 0.39
 FROM build-base AS build-trimmomatic
 
 RUN mkdir -p /tmp/trimmomatic \
  && cd /tmp/trimmomatic \
- && wget -O trimmomatic.zip https://github.com/usadellab/Trimmomatic/files/14508250/Trimmomatic-0.41.zip \
+ && wget -O trimmomatic.zip http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.39.zip \
  && unzip trimmomatic.zip
 
 # Install Perl dependencies
@@ -135,11 +135,11 @@ RUN cd /opt/CRISPResso2/bin \
 COPY --from=build-samtools /opt/samtools /opt/samtools
 
 # Install Trimmomatic
-COPY --from=build-trimmomatic /tmp/trimmomatic/Trimmomatic-0.41 /opt/trimmomatic
+COPY --from=build-trimmomatic /tmp/trimmomatic/Trimmomatic-0.39 /opt/trimmomatic
 
 COPY --chmod=755 <<'EOF' /opt/trimmomatic/bin/trimmomatic
 #!/bin/sh
-exec java -jar /opt/trimmomatic/trimmomatic-0.41.jar "$@"
+exec java -jar /opt/trimmomatic/trimmomatic-0.39.jar "$@"
 EOF
 
 # Install guide position base counting tool

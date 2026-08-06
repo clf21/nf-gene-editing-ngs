@@ -62,13 +62,13 @@ From: alpine:3.21
     make
     make install
 
-    # Download Trimmomatic 0.41
+    # Download Trimmomatic 0.39 (latest stable release)
     mkdir -p /tmp/trimmomatic
     cd /tmp/trimmomatic
-    wget -O trimmomatic.zip https://github.com/usadellab/Trimmomatic/files/14508250/Trimmomatic-0.41.zip
-    unzip trimmomatic.zip
+    wget -O trimmomatic.zip http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.39.zip
+    unzip -o trimmomatic.zip
     mkdir -p /opt/trimmomatic
-    cp -r Trimmomatic-0.41/* /opt/trimmomatic/
+    cp -r Trimmomatic-0.39/* /opt/trimmomatic/
 
     # Install Perl dependencies
     cpanm YAML::XS
@@ -117,7 +117,7 @@ EOF
 
     cat > /opt/trimmomatic/bin/trimmomatic <<'EOF'
 #!/bin/sh
-exec java -jar /opt/trimmomatic/trimmomatic-0.41.jar "$@"
+exec java -jar /opt/trimmomatic/trimmomatic-0.39.jar "$@"
 EOF
     chmod 755 /opt/trimmomatic/bin/trimmomatic
 
