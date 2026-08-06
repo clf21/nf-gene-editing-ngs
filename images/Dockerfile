@@ -31,12 +31,18 @@ RUN mkdir -p /tmp/bowtie2 \
  && make
 # Note: Removed bowtie2.patch - it was for 2.3.4.3 and only fixed trailing whitespace
 
-# Install CRISPResso2 (Python 3 compatible)
+# Install CRISPResso2 from source (Python 3 compatible)
 FROM build-base AS build-crispresso
 
-RUN python3 -m venv /opt/CRISPResso2/venv \
+RUN mkdir -p /tmp/CRISPResso2 \
+ && cd /tmp/CRISPResso2 \
+ && wget -O CRISPResso2.zip https://github.com/pinellolab/CRISPResso2/archive/refs/heads/master.zip \
+ && unzip CRISPResso2.zip \
+ && cd CRISPResso2-master \
+ && python3 -m venv /opt/CRISPResso2/venv \
  && . /opt/CRISPResso2/venv/bin/activate \
- && pip install --no-cache-dir CRISPResso2
+ && pip install --upgrade pip \
+ && pip install -e .
 
 # Download, build and install EMBOSS 6.6.0
 FROM build-base AS build-emboss
