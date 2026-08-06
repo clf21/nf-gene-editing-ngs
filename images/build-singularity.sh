@@ -25,16 +25,16 @@ if command -v apptainer >/dev/null; then
   SINGULARITY_CMD="apptainer"
 fi
 
-echo "Building Singularity image from definition file..."
+echo "Building Singularity/Apptainer image from definition file..."
 echo "Output: ${OUTPUT_FILE}"
 echo ""
-echo "Note: This requires sudo or --fakeroot for building"
+echo "Note: Using --ignore-fakeroot-command for HPC compatibility"
 echo ""
 
-# Build Singularity image from definition file
-# Use --fakeroot if running without sudo (requires user namespaces)
+# Build image with --force and --ignore-fakeroot-command for HPC
 ${SINGULARITY_CMD} build \
   --force \
+  --ignore-fakeroot-command \
   "${OUTPUT_FILE}" \
   "${BASE_DIR}/Singularity.def"
 
