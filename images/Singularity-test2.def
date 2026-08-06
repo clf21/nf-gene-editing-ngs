@@ -5,7 +5,8 @@ From: alpine:3.23
     # Install build dependencies
     apk --no-cache add \
         build-base \
-        wget
+        wget \
+        zlib-dev
 
     # Build Bowtie2 2.5.5
     mkdir -p /tmp/bowtie2
