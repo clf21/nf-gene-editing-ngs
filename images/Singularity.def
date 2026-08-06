@@ -74,14 +74,14 @@ From: alpine:3.21
     cpanm YAML::XS
 
     # Build guide position base counting tool
-    cd /opt/build-files/baseCounts
-    # Increase Maven timeout and add retries for flaky HPC proxy
-    export MAVEN_OPTS="-Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.httpconnectionManager.ttlSeconds=120"
-    ./mvnw clean package -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false || \
-    ./mvnw clean package -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false || \
-    ./mvnw clean package -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false
-    mkdir -p /opt/base-counts/lib
-    cp target/GeneEditing-*-jar-with-dependencies.jar /opt/base-counts/lib/GeneEditing.jar
+    # TODO: HPC proxy blocks Maven Central - need to build this separately
+    # and copy pre-built JAR into container, or build on system with direct internet
+    # cd /opt/build-files/baseCounts
+    # export MAVEN_OPTS="-Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.httpconnectionManager.ttlSeconds=120"
+    # ./mvnw clean package -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false
+    # mkdir -p /opt/base-counts/lib
+    # cp target/GeneEditing-*-jar-with-dependencies.jar /opt/base-counts/lib/GeneEditing.jar
+    echo "WARNING: baseCounts not built due to Maven Central access issues on HPC"
 
     # Install runtime dependencies
     apk --no-cache add \
@@ -125,11 +125,12 @@ exec java -jar /opt/trimmomatic/trimmomatic-0.39.jar "$@"
 EOF
     chmod 755 /opt/trimmomatic/bin/trimmomatic
 
-    cat > /opt/base-counts/bin/computeBaseCounts <<'EOF'
-#!/bin/sh
-exec java -jar /opt/base-counts/lib/GeneEditing.jar "$@"
-EOF
-    chmod 755 /opt/base-counts/bin/computeBaseCounts
+    # Commented out - baseCounts not built
+    # cat > /opt/base-counts/bin/computeBaseCounts <<'EOF'
+    # #!/bin/sh
+    # exec java -jar /opt/base-counts/lib/GeneEditing.jar "$@"
+    # EOF
+    # chmod 755 /opt/base-counts/bin/computeBaseCounts
 
     # Run CRISPResso2 once to generate font cache
     /opt/CRISPResso2/bin/CRISPResso -h >/dev/null || true
@@ -139,7 +140,8 @@ EOF
     rm -rf /opt/build-files
 
 %environment
-    export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso2/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
+    export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso2/bin:/opt/samtools/bin:/opt/trimmomatic/bin
+    # Note: /opt/base-counts/bin not included - baseCounts not built due to HPC Maven restrictions
 
 %labels
     Author nf-gene-editing-ngs
