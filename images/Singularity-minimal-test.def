@@ -1,0 +1,9 @@
+Bootstrap: docker
+From: alpine:3.23
+
+%post
+    apk --no-cache add bash
+    echo "Minimal test build"
+
+%environment
+    export PATH=/usr/local/bin:$PATH
