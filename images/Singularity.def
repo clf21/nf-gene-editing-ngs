@@ -2,10 +2,10 @@ Bootstrap: docker
 From: alpine:3.21
 
 %files
-    bowtie2.patch /tmp/bowtie2.patch
-    install-CRISPResso.sh /tmp/install-CRISPResso.sh
-    CRISPResso.patch /tmp/CRISPResso.patch
-    baseCounts /tmp/baseCounts
+    bowtie2.patch /opt/build-files/bowtie2.patch
+    install-CRISPResso.sh /opt/build-files/install-CRISPResso.sh
+    CRISPResso.patch /opt/build-files/CRISPResso.patch
+    baseCounts /opt/build-files/baseCounts
 
 %post
     # Install build dependencies
@@ -29,7 +29,7 @@ From: alpine:3.21
     # Build Bowtie2 2.5.5
     mkdir -p /tmp/bowtie2
     cd /tmp/bowtie2
-    cp /tmp/bowtie2.patch .
+    cp /opt/build-files/bowtie2.patch .
     wget -O bowtie2.tar.gz https://github.com/BenLangmead/bowtie2/archive/refs/tags/v2.5.5.tar.gz
     tar -xf bowtie2.tar.gz
     patch -p0 < bowtie2.patch
@@ -41,8 +41,8 @@ From: alpine:3.21
     # Build CRISPResso (master)
     mkdir -p /tmp/CRISPResso
     cd /tmp/CRISPResso
-    cp /tmp/CRISPResso.patch .
-    cp /tmp/install-CRISPResso.sh .
+    cp /opt/build-files/CRISPResso.patch .
+    cp /opt/build-files/install-CRISPResso.sh .
     wget -O CRISPResso.zip https://github.com/lucapinello/CRISPResso/archive/master.zip
     unzip CRISPResso.zip
     patch -p0 < CRISPResso.patch
@@ -90,7 +90,7 @@ From: alpine:3.21
     cpanm YAML::XS
 
     # Build guide position base counting tool
-    cd /tmp/baseCounts
+    cd /opt/build-files/baseCounts
     ./mvnw clean package
     mkdir -p /opt/base-counts/lib
     cp target/GeneEditing-*-jar-with-dependencies.jar /opt/base-counts/lib/GeneEditing.jar
@@ -146,6 +146,7 @@ EOF
 
     # Cleanup
     rm -rf /tmp/*
+    rm -rf /opt/build-files
 
 %environment
     export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso/bin:/opt/emboss/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
