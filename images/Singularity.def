@@ -29,11 +29,10 @@ From: alpine:3.21
     # Build Bowtie2 2.5.5
     mkdir -p /tmp/bowtie2
     cd /tmp/bowtie2
-    cp /opt/build-files/bowtie2.patch .
     wget -O bowtie2.tar.gz https://github.com/BenLangmead/bowtie2/archive/refs/tags/v2.5.5.tar.gz
     tar -xf bowtie2.tar.gz
-    patch -p0 < bowtie2.patch
     cd bowtie2-2.5.5
+    # Note: Skip bowtie2.patch - it's for 2.3.4.3 and just fixes trailing whitespace
     make
     mkdir -p /opt/bowtie2/bin
     cp bowtie2* /opt/bowtie2/bin/

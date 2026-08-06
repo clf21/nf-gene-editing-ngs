@@ -20,17 +20,16 @@ RUN apk --no-cache add \
       xz-dev \
       zlib-dev
 
-# Download, patch and build Bowtie2 2.5.5
+# Download and build Bowtie2 2.5.5
 FROM build-base AS build-bowtie2
 
-COPY bowtie2.patch /tmp/bowtie2/bowtie2.patch
-
-RUN cd /tmp/bowtie2 \
+RUN mkdir -p /tmp/bowtie2 \
+ && cd /tmp/bowtie2 \
  && wget -O bowtie2.tar.gz https://github.com/BenLangmead/bowtie2/archive/refs/tags/v2.5.5.tar.gz \
  && tar -xf bowtie2.tar.gz \
- && patch -p0 < bowtie2.patch \
  && cd bowtie2-2.5.5 \
  && make
+# Note: Removed bowtie2.patch - it was for 2.3.4.3 and only fixed trailing whitespace
 
 # Download, patch and build CRISPResso `master` (and its vendored dependencies)
 FROM build-base AS build-crispresso
