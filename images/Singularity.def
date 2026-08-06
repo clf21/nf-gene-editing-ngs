@@ -2,9 +2,6 @@ Bootstrap: docker
 From: alpine:3.21
 
 %files
-    bowtie2.patch /opt/build-files/bowtie2.patch
-    install-CRISPResso.sh /opt/build-files/install-CRISPResso.sh
-    CRISPResso.patch /opt/build-files/CRISPResso.patch
     baseCounts /opt/build-files/baseCounts
 
 %post
@@ -22,6 +19,8 @@ From: alpine:3.21
         perl-app-cpanminus \
         perl-dev \
         python3-dev \
+        py3-pip \
+        py3-virtualenv \
         wget \
         xz-dev \
         zlib-dev
@@ -37,25 +36,11 @@ From: alpine:3.21
     mkdir -p /opt/bowtie2/bin
     cp bowtie2* /opt/bowtie2/bin/
 
-    # Build CRISPResso (master)
-    mkdir -p /tmp/CRISPResso
-    cd /tmp/CRISPResso
-    cp /opt/build-files/CRISPResso.patch .
-    cp /opt/build-files/install-CRISPResso.sh .
-    wget -O CRISPResso.zip https://github.com/lucapinello/CRISPResso/archive/master.zip
-    unzip CRISPResso.zip
-    patch -p0 < CRISPResso.patch
-    cd CRISPResso-master/dependencies
-    tar -xf FLASH-1.2.11.tar.gz
-    cd FLASH-1.2.11
-    make
-    cd ../../..
-    python -m ensurepip
-    pip install virtualenv
-    chmod +x install-CRISPResso.sh
-    ./install-CRISPResso.sh /tmp/CRISPResso/CRISPResso-master /opt/CRISPResso/venv
-    mkdir -p /opt/CRISPResso/bin
-    cp /tmp/CRISPResso/CRISPResso-master/dependencies/FLASH-1.2.11/flash /opt/CRISPResso/bin/
+    # Install CRISPResso2 (Python 3 compatible)
+    python3 -m venv /opt/CRISPResso2/venv
+    . /opt/CRISPResso2/venv/bin/activate
+    pip install --no-cache-dir CRISPResso2==2.3.4
+    deactivate
 
     # Build EMBOSS 6.6.0
     mkdir -p /tmp/emboss
@@ -109,24 +94,26 @@ From: alpine:3.21
         openjdk11-jre-headless \
         perl \
         python3 \
+        py3-pip \
         xz-libs \
         zlib
 
-    # Create wrapper scripts
-    cat > /opt/CRISPResso/bin/_crispresso <<'EOF'
+    # Create wrapper scripts for CRISPResso2
+    mkdir -p /opt/CRISPResso2/bin
+    cat > /opt/CRISPResso2/bin/_crispresso <<'EOF'
 #!/bin/sh
-. /opt/CRISPResso/venv/bin/activate
+. /opt/CRISPResso2/venv/bin/activate
 "$(basename "$0")" "$@"
 EOF
-    chmod 755 /opt/CRISPResso/bin/_crispresso
+    chmod 755 /opt/CRISPResso2/bin/_crispresso
 
-    cd /opt/CRISPResso/bin
+    cd /opt/CRISPResso2/bin
     ln -s _crispresso CRISPResso
+    ln -s _crispresso CRISPResso2
     ln -s _crispresso CRISPRessoCompare
-    ln -s _crispresso CRISPRessoCount
-    ln -s _crispresso CRISPRessoPooled
-    ln -s _crispresso CRISPRessoPooledWGSCompare
     ln -s _crispresso CRISPRessoWGS
+    ln -s _crispresso CRISPRessoPooled
+    ln -s _crispresso CRISPRessoAggregate
 
     cat > /opt/trimmomatic/bin/trimmomatic <<'EOF'
 #!/bin/sh
@@ -140,16 +127,17 @@ exec java -jar /opt/base-counts/lib/GeneEditing.jar "$@"
 EOF
     chmod 755 /opt/base-counts/bin/computeBaseCounts
 
-    # Run CRISPResso once to generate font cache
-    /opt/CRISPResso/bin/CRISPResso -h >/dev/null || true
+    # Run CRISPResso2 once to generate font cache
+    /opt/CRISPResso2/bin/CRISPResso -h >/dev/null || true
 
     # Cleanup
     rm -rf /tmp/*
     rm -rf /opt/build-files
 
 %environment
-    export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso/bin:/opt/emboss/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
+    export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso2/bin:/opt/emboss/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
 
 %labels
     Author nf-gene-editing-ngs
-    Version 1.3.0-phase1
+    Version 2.0.0
+    Description Phase 2 - Full migration to CRISPResso2 and Python 3

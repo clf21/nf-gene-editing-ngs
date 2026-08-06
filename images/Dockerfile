@@ -31,23 +31,12 @@ RUN mkdir -p /tmp/bowtie2 \
  && make
 # Note: Removed bowtie2.patch - it was for 2.3.4.3 and only fixed trailing whitespace
 
-# Download, patch and build CRISPResso `master` (and its vendored dependencies)
+# Install CRISPResso2 (Python 3 compatible)
 FROM build-base AS build-crispresso
 
-COPY install-CRISPResso.sh CRISPResso.patch /tmp/CRISPResso/
-
-RUN cd /tmp/CRISPResso \
- && wget -O CRISPResso.zip https://github.com/lucapinello/CRISPResso/archive/master.zip \
- && unzip CRISPResso.zip \
- && patch -p0 < CRISPResso.patch \
- && cd CRISPResso-master/dependencies \
- && tar -xf FLASH-1.2.11.tar.gz \
- && cd FLASH-1.2.11 \
- && make \
- && cd ../../.. \
- && python -m ensurepip \
- && pip install virtualenv \
- && ./install-CRISPResso.sh /tmp/CRISPResso/CRISPResso-master /opt/CRISPResso/venv
+RUN python3 -m venv /opt/CRISPResso2/venv \
+ && . /opt/CRISPResso2/venv/bin/activate \
+ && pip install --no-cache-dir CRISPResso2==2.3.4
 
 # Download, build and install EMBOSS 6.6.0
 FROM build-base AS build-emboss
@@ -129,23 +118,22 @@ COPY --from=build-bowtie2 \
   /tmp/bowtie2/bowtie2-2.5.5/bowtie2-inspect-l \
   /opt/bowtie2/bin/
 
-# Install CRISPResso
-COPY --from=build-crispresso /tmp/CRISPResso/CRISPResso-master/dependencies/FLASH-1.2.11/flash /opt/CRISPResso/bin/
-COPY --from=build-crispresso /opt/CRISPResso/venv /opt/CRISPResso/venv
+# Install CRISPResso2
+COPY --from=build-crispresso /opt/CRISPResso2/venv /opt/CRISPResso2/venv
 
-COPY --chmod=755 <<'EOF' /opt/CRISPResso/bin/_crispresso
+COPY --chmod=755 <<'EOF' /opt/CRISPResso2/bin/_crispresso
 #!/bin/sh
-. /opt/CRISPResso/venv/bin/activate
+. /opt/CRISPResso2/venv/bin/activate
 "$(basename "$0")" "$@"
 EOF
 
-RUN cd /opt/CRISPResso/bin \
+RUN cd /opt/CRISPResso2/bin \
  && ln -s _crispresso CRISPResso \
+ && ln -s _crispresso CRISPResso2 \
  && ln -s _crispresso CRISPRessoCompare \
- && ln -s _crispresso CRISPRessoCount \
+ && ln -s _crispresso CRISPRessoWGS \
  && ln -s _crispresso CRISPRessoPooled \
- && ln -s _crispresso CRISPRessoPooledWGSCompare \
- && ln -s _crispresso CRISPRessoWGS
+ && ln -s _crispresso CRISPRessoAggregate
 
 # Install EMBOSS
 COPY --from=build-emboss /opt/emboss /opt/emboss
@@ -175,7 +163,7 @@ EOF
 COPY --from=build-perl_dependencies /usr/local/lib/perl5/site_perl /usr/local/lib/perl5/site_perl
 
 # Add binaries to PATH
-ENV PATH $PATH:/opt/bowtie2/bin:/opt/CRISPResso/bin:/opt/emboss/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
+ENV PATH $PATH:/opt/bowtie2/bin:/opt/CRISPResso2/bin:/opt/emboss/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
 
-# Run CRISPResso once to have Matplotlib generate its font cache
+# Run CRISPResso2 once to have Matplotlib generate its font cache
 RUN CRISPResso -h >/dev/null
