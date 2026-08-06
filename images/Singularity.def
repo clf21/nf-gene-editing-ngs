@@ -140,7 +140,8 @@ EOF
     export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso2/bin:/opt/samtools/bin:/opt/trimmomatic/bin
     # Note: /opt/base-counts/bin not included - baseCounts not built due to HPC Maven restrictions
 
-%labels
-    Author nf-gene-editing-ngs
-    Version 2.0.0
-    Description Phase 2 - CRISPResso2 and Python 3 migration
+# Temporarily removing %labels to diagnose build issue
+# %labels
+#     Author nf-gene-editing-ngs
+#     Version 2.0.0
+#     Description Phase 2 - CRISPResso2 and Python 3 migration
