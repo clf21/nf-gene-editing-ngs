@@ -2,7 +2,7 @@ Bootstrap: docker
 From: alpine:3.21
 
 %files
-    baseCounts /opt/build-files/baseCounts
+    baseCounts /build/baseCounts
 
 %post
     # Install build dependencies
@@ -73,12 +73,10 @@ From: alpine:3.21
     # Install Perl dependencies
     cpanm YAML::XS
 
-    # Build guide position base counting tool
-    # TODO: HPC proxy blocks Maven Central - need to build this separately
-    # and copy pre-built JAR into container, or build on system with direct internet
-    # cd /opt/build-files/baseCounts
-    # export MAVEN_OPTS="-Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.httpconnectionManager.ttlSeconds=120"
-    # ./mvnw clean package -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false
+    # Build guide position base counting tool (commented out - HPC Maven issues)
+    # cd /build/baseCounts
+    # export MAVEN_OPTS="-Dmaven.wagon.http.retryHandler.count=3"
+    # ./mvnw clean package
     # mkdir -p /opt/base-counts/lib
     # cp target/GeneEditing-*-jar-with-dependencies.jar /opt/base-counts/lib/GeneEditing.jar
     echo "WARNING: baseCounts not built due to Maven Central access issues on HPC"
@@ -135,14 +133,14 @@ EOF
     # Run CRISPResso2 once to generate font cache
     /opt/CRISPResso2/bin/CRISPResso -h >/dev/null || true
 
-    # Cleanup (non-fatal for builds without fakeroot)
-    rm -rf /tmp/* 2>/dev/null || true
-    rm -rf /opt/build-files 2>/dev/null || true
+    # Cleanup
+    rm -rf /tmp/* /build 2>/dev/null || true
 
 %environment
     export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso2/bin:/opt/samtools/bin:/opt/trimmomatic/bin
     # Note: /opt/base-counts/bin not included - baseCounts not built due to HPC Maven restrictions
 
-# Labels removed - cause build failures without fakeroot support
-# Version: 2.0.0
-# Description: Phase 2 - Full migration to CRISPResso2 and Python 3
+%labels
+    Author nf-gene-editing-ngs
+    Version 2.0.0
+    Description Phase 2 - CRISPResso2 and Python 3 migration
