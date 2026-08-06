@@ -1,0 +1,24 @@
+Bootstrap: docker
+From: alpine:3.23
+
+%post
+    # Install build dependencies
+    apk --no-cache add \
+        build-base \
+        wget
+
+    # Build Bowtie2 2.5.5
+    mkdir -p /tmp/bowtie2
+    cd /tmp/bowtie2
+    wget -O bowtie2.tar.gz https://github.com/BenLangmead/bowtie2/archive/refs/tags/v2.5.5.tar.gz
+    tar -xf bowtie2.tar.gz
+    cd bowtie2-2.5.5
+    make
+    mkdir -p /opt/bowtie2/bin
+    cp bowtie2* /opt/bowtie2/bin/
+
+    # Cleanup
+    rm -rf /tmp/*
+
+%environment
+    export PATH=/opt/bowtie2/bin:$PATH
