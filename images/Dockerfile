@@ -36,7 +36,7 @@ FROM build-base AS build-crispresso
 
 RUN python3 -m venv /opt/CRISPResso2/venv \
  && . /opt/CRISPResso2/venv/bin/activate \
- && pip install --no-cache-dir CRISPResso2==2.3.4
+ && pip install --no-cache-dir CRISPResso2
 
 # Download, build and install EMBOSS 6.6.0
 FROM build-base AS build-emboss

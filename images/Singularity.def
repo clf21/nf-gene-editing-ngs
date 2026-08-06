@@ -37,9 +37,10 @@ From: alpine:3.21
     cp bowtie2* /opt/bowtie2/bin/
 
     # Install CRISPResso2 (Python 3 compatible)
+    # Use latest available version from PyPI
     python3 -m venv /opt/CRISPResso2/venv
     . /opt/CRISPResso2/venv/bin/activate
-    pip install --no-cache-dir CRISPResso2==2.3.4
+    pip install --no-cache-dir CRISPResso2
     deactivate
 
     # Build EMBOSS 6.6.0
