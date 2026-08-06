@@ -75,7 +75,11 @@ From: alpine:3.21
 
     # Build guide position base counting tool
     cd /opt/build-files/baseCounts
-    ./mvnw clean package
+    # Increase Maven timeout and add retries for flaky HPC proxy
+    export MAVEN_OPTS="-Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.httpconnectionManager.ttlSeconds=120"
+    ./mvnw clean package -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false || \
+    ./mvnw clean package -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false || \
+    ./mvnw clean package -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false
     mkdir -p /opt/base-counts/lib
     cp target/GeneEditing-*-jar-with-dependencies.jar /opt/base-counts/lib/GeneEditing.jar
 

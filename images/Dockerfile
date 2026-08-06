@@ -77,7 +77,10 @@ FROM build-base AS build-base-count
 COPY baseCounts /tmp/baseCounts
 
 RUN cd /tmp/baseCounts \
- && ./mvnw clean package
+ && export MAVEN_OPTS="-Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.httpconnectionManager.ttlSeconds=120" \
+ && (./mvnw clean package -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false || \
+     ./mvnw clean package -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false || \
+     ./mvnw clean package -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false)
 
 ## Runtime Phase #######################################################
 
