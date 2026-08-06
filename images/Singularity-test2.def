@@ -18,8 +18,7 @@ From: alpine:3.23
     mkdir -p /opt/bowtie2/bin
     cp bowtie2* /opt/bowtie2/bin/
 
-    # Cleanup (non-fatal)
-    rm -rf /tmp/* 2>/dev/null || true
+    # Skip cleanup - causes permission issues with --ignore-fakeroot-command
 
 %environment
     export PATH=/opt/bowtie2/bin:$PATH
