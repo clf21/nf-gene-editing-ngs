@@ -1,6 +1,6 @@
 ## Build Phase #########################################################
 
-FROM alpine:3.15 AS build-base
+FROM alpine:3.21 AS build-base
 
 # Install build dependencies
 RUN apk --no-cache add \
@@ -15,21 +15,21 @@ RUN apk --no-cache add \
       openjdk11 \
       perl-app-cpanminus \
       perl-dev \
-      python2-dev \
+      python3-dev \
       wget \
       xz-dev \
       zlib-dev
 
-# Download, patch and build Bowtie2 2.3.4.3
+# Download, patch and build Bowtie2 2.5.5
 FROM build-base AS build-bowtie2
 
 COPY bowtie2.patch /tmp/bowtie2/bowtie2.patch
 
 RUN cd /tmp/bowtie2 \
- && wget -O bowtie2.zip https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.3.4.3/bowtie2-2.3.4.3-source.zip \
- && unzip bowtie2.zip \
+ && wget -O bowtie2.tar.gz https://github.com/BenLangmead/bowtie2/archive/refs/tags/v2.5.5.tar.gz \
+ && tar -xf bowtie2.tar.gz \
  && patch -p0 < bowtie2.patch \
- && cd bowtie2-2.3.4.3 \
+ && cd bowtie2-2.5.5 \
  && make
 
 # Download, patch and build CRISPResso `master` (and its vendored dependencies)
@@ -62,24 +62,24 @@ RUN mkdir -p /tmp/emboss \
  && make \
  && make install
 
-# Download, build and install Samtools 1.9
+# Download, build and install Samtools 1.23.1
 FROM build-base AS build-samtools
 
 RUN mkdir -p /tmp/samtools \
  && cd /tmp/samtools \
- && wget -O samtools.tar.gz https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2 \
- && tar -xf samtools.tar.gz \
- && cd samtools-1.9 \
+ && wget -O samtools.tar.bz2 https://github.com/samtools/samtools/releases/download/1.23.1/samtools-1.23.1.tar.bz2 \
+ && tar -xf samtools.tar.bz2 \
+ && cd samtools-1.23.1 \
  && ./configure --prefix=/opt/samtools \
  && make \
  && make install
 
-# Download Trimmomatic 0.39
+# Download Trimmomatic 0.41
 FROM build-base AS build-trimmomatic
 
 RUN mkdir -p /tmp/trimmomatic \
  && cd /tmp/trimmomatic \
- && wget -O trimmomatic.zip https://github.com/usadellab/Trimmomatic/files/5854859/Trimmomatic-0.39.zip \
+ && wget -O trimmomatic.zip https://github.com/usadellab/Trimmomatic/files/14508250/Trimmomatic-0.41.zip \
  && unzip trimmomatic.zip
 
 # Install Perl dependencies
@@ -97,7 +97,7 @@ RUN cd /tmp/baseCounts \
 
 ## Runtime Phase #######################################################
 
-FROM alpine:3.15
+FROM alpine:3.21
 
 # Install runtime dependencies
 RUN apk --no-cache add \
@@ -113,21 +113,21 @@ RUN apk --no-cache add \
       openblas \
       openjdk11-jre-headless \
       perl \
-      python2 \
+      python3 \
       xz-libs \
       zlib
 
 # Install Bowtie2
 COPY --from=build-bowtie2 \
-  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2 \
-  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2-align-s \
-  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2-align-l \
-  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2-build \
-  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2-build-s \
-  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2-build-l \
-  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2-inspect \
-  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2-inspect-s \
-  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2-inspect-l \
+  /tmp/bowtie2/bowtie2-2.5.5/bowtie2 \
+  /tmp/bowtie2/bowtie2-2.5.5/bowtie2-align-s \
+  /tmp/bowtie2/bowtie2-2.5.5/bowtie2-align-l \
+  /tmp/bowtie2/bowtie2-2.5.5/bowtie2-build \
+  /tmp/bowtie2/bowtie2-2.5.5/bowtie2-build-s \
+  /tmp/bowtie2/bowtie2-2.5.5/bowtie2-build-l \
+  /tmp/bowtie2/bowtie2-2.5.5/bowtie2-inspect \
+  /tmp/bowtie2/bowtie2-2.5.5/bowtie2-inspect-s \
+  /tmp/bowtie2/bowtie2-2.5.5/bowtie2-inspect-l \
   /opt/bowtie2/bin/
 
 # Install CRISPResso
@@ -155,11 +155,11 @@ COPY --from=build-emboss /opt/emboss /opt/emboss
 COPY --from=build-samtools /opt/samtools /opt/samtools
 
 # Install Trimmomatic
-COPY --from=build-trimmomatic /tmp/trimmomatic/Trimmomatic-0.39 /opt/trimmomatic
+COPY --from=build-trimmomatic /tmp/trimmomatic/Trimmomatic-0.41 /opt/trimmomatic
 
 COPY --chmod=755 <<'EOF' /opt/trimmomatic/bin/trimmomatic
 #!/bin/sh
-exec java -jar /opt/trimmomatic/trimmomatic-0.39.jar "$@"
+exec java -jar /opt/trimmomatic/trimmomatic-0.41.jar "$@"
 EOF
 
 # Install guide position base counting tool
