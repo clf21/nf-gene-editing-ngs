@@ -37,7 +37,7 @@ FROM build-base AS build-crispresso
 RUN mkdir -p /tmp/CRISPResso2 \
  && cd /tmp/CRISPResso2 \
  && wget -O CRISPResso2.zip https://github.com/pinellolab/CRISPResso2/archive/refs/heads/master.zip \
- && unzip CRISPResso2.zip \
+ && unzip -o CRISPResso2.zip \
  && cd CRISPResso2-master \
  && python3 -m venv /opt/CRISPResso2/venv \
  && . /opt/CRISPResso2/venv/bin/activate \
