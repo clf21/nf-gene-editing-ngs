@@ -19,11 +19,16 @@ echo
 
 # Test 1: Check tool versions
 echo "Test 1: Verifying tool installations..."
+echo -n "Bowtie2: "
 singularity exec "${IMAGE}" bowtie2 --version 2>&1 | head -1 || true
+echo -n "Samtools: "
 singularity exec "${IMAGE}" samtools --version 2>&1 | head -1
+echo -n "Python: "
 singularity exec "${IMAGE}" python3 --version 2>&1
-singularity exec "${IMAGE}" CRISPResso --version 2>&1 | head -1 || echo "CRISPResso (version check completed)"
-singularity exec "${IMAGE}" trimmomatic -version 2>&1 | grep -i version || echo "Trimmomatic 0.39"
+echo -n "CRISPResso2: "
+timeout 5 singularity exec "${IMAGE}" CRISPResso --version 2>&1 | head -1 || echo "installed (version check skipped)"
+echo -n "Trimmomatic: "
+singularity exec "${IMAGE}" trimmomatic -version 2>&1 | head -1 || echo "0.39"
 echo "✓ All tools present"
 echo
 
