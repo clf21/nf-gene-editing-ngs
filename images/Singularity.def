@@ -47,7 +47,7 @@ From: alpine:3.23
     python3 -m venv /opt/CRISPResso2/venv
     . /opt/CRISPResso2/venv/bin/activate
     pip install --upgrade pip
-    pip install -e .
+    pip install .
     deactivate
 
     # Skip EMBOSS - not used in pipeline and FTP server unreliable
