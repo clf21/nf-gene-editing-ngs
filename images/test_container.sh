@@ -14,6 +14,9 @@ if [[ ! -f "${IMAGE}" ]]; then
   exit 1
 fi
 
+# Convert to absolute path before changing directories
+IMAGE="$(realpath "${IMAGE}")"
+
 echo "=== Testing Container: ${IMAGE} ==="
 echo
 
