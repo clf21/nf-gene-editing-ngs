@@ -54,8 +54,9 @@ in-chroot() {
 }
 
 # Check if LMOD is available and load nextflow in HPC environment
-if has module; then
-  module load nextflow-23.04.2-gcc-11.2.0-4kkzswp
+# Only load if nextflow is not already available
+if ! has nextflow && has module; then
+  module load nextflow-23.04.2-gcc-11.2.0-4kkzswp 2>/dev/null || echo "Using nextflow from PATH instead"
 fi
 
 if ! has nextflow; then
