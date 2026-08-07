@@ -33,7 +33,25 @@ apptainer build --force --ignore-fakeroot-command nf-gene-editing-ngs_v2.0.0.sif
 
 ## Verification Steps
 
-Test that tools are installed and working:
+### Quick Smoke Test (Recommended)
+
+Run the automated container test script:
+
+```bash
+cd images
+./test_container.sh nf-gene-editing-ngs_v2.0.0.sif
+```
+
+This script tests:
+- All tools are installed and accessible
+- CRISPResso2 runs correctly with `--crispresso1_mode`
+- Bowtie2 can build indexes and align reads
+- Samtools can process BAM files
+- Creates synthetic test data and verifies complete workflow
+
+### Manual Version Check
+
+Alternatively, check versions manually:
 
 ```bash
 # Check versions
@@ -112,11 +130,12 @@ Before production use, validate:
 
 ## Next Steps
 
-1. **Run test suite**: `./run_tests tests/main.nf.test`
-2. **Test on small dataset**: Validate outputs match expected results
-3. **Scientific validation**: Compare with v1.2 outputs
-4. **Address baseCounts**: If needed for your analyses
-5. **Tag as v2.0.0**: If validation passes
+1. **Run smoke test**: `cd images && ./test_container.sh nf-gene-editing-ngs_v2.0.0.sif`
+2. **Run test suite** (when test data available): `./run_tests tests/main.nf.test`
+3. **Test on small dataset**: Validate outputs match expected results
+4. **Scientific validation**: Compare with v1.2 outputs
+5. **Address baseCounts**: If needed for your analyses
+6. **Tag as v2.0.0**: If validation passes
 
 ## Troubleshooting
 
