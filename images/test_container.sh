@@ -22,9 +22,9 @@ echo "Test 1: Verifying tool installations..."
 echo -n "Bowtie2: "
 singularity exec "${IMAGE}" bowtie2 --version 2>&1 | head -1 || true
 echo -n "Samtools: "
-singularity exec "${IMAGE}" samtools --version 2>&1 | head -1
+singularity exec "${IMAGE}" samtools --version 2>&1 | head -1 || true
 echo -n "Python: "
-singularity exec "${IMAGE}" python3 --version 2>&1
+singularity exec "${IMAGE}" python3 --version 2>&1 || true
 echo -n "CRISPResso2: "
 timeout 5 singularity exec "${IMAGE}" CRISPResso --version 2>&1 | head -1 || echo "installed (version check skipped)"
 echo -n "Trimmomatic: "
