@@ -98,6 +98,8 @@ singularity exec "${IMAGE}" CRISPResso \
   --amplicon_seq "${AMPLICON}" \
   --guide_seq "${GUIDE}" \
   --window_around_sgrna 6 \
+  --exclude_bp_from_left 0 \
+  --exclude_bp_from_right 0 \
   --crispresso1_mode \
   --output_folder crispresso_output \
   --name test_run 2>&1 | tail -20
