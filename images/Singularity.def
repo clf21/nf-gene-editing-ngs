@@ -2,10 +2,10 @@ Bootstrap: docker
 From: alpine:3.15
 
 %files
-    bowtie2.patch /tmp/bowtie2/bowtie2.patch
-    install-CRISPResso.sh /tmp/CRISPResso/install-CRISPResso.sh
-    CRISPResso.patch /tmp/CRISPResso/CRISPResso.patch
-    baseCounts /tmp/baseCounts
+    bowtie2.patch /build/bowtie2.patch
+    install-CRISPResso.sh /build/install-CRISPResso.sh
+    CRISPResso.patch /build/CRISPResso.patch
+    baseCounts /build/baseCounts
 
 %post
     # Install build dependencies
@@ -27,20 +27,22 @@ From: alpine:3.15
         zlib-dev
 
     # Build Bowtie2 2.3.4.3
+    mkdir -p /tmp/bowtie2
     cd /tmp/bowtie2
     wget -O bowtie2.zip https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.3.4.3/bowtie2-2.3.4.3-source.zip
     unzip bowtie2.zip
-    patch -p0 < bowtie2.patch
+    patch -p0 < /build/bowtie2.patch
     cd bowtie2-2.3.4.3
     make
     mkdir -p /opt/bowtie2/bin
     cp bowtie2 bowtie2-align-s bowtie2-align-l bowtie2-build bowtie2-build-s bowtie2-build-l bowtie2-inspect bowtie2-inspect-s bowtie2-inspect-l /opt/bowtie2/bin/
 
     # Build CRISPResso v1 with custom patches
+    mkdir -p /tmp/CRISPResso
     cd /tmp/CRISPResso
     wget -O CRISPResso.zip https://github.com/lucapinello/CRISPResso/archive/master.zip
     unzip CRISPResso.zip
-    patch -p0 < CRISPResso.patch
+    patch -p0 < /build/CRISPResso.patch
     cd CRISPResso-master/dependencies
     tar -xf FLASH-1.2.11.tar.gz
     cd FLASH-1.2.11
@@ -50,8 +52,8 @@ From: alpine:3.15
     cd /tmp/CRISPResso
     python -m ensurepip
     pip install virtualenv
-    chmod +x install-CRISPResso.sh
-    ./install-CRISPResso.sh /tmp/CRISPResso/CRISPResso-master /opt/CRISPResso/venv
+    chmod +x /build/install-CRISPResso.sh
+    /build/install-CRISPResso.sh /tmp/CRISPResso/CRISPResso-master /opt/CRISPResso/venv
 
     # Build EMBOSS 6.6.0
     mkdir -p /tmp/emboss
@@ -85,7 +87,7 @@ From: alpine:3.15
     cpanm YAML::XS
 
     # Build guide position base counting tool
-    cd /tmp/baseCounts
+    cd /build/baseCounts
     ./mvnw clean package
     mkdir -p /opt/base-counts/lib
     cp target/GeneEditing-*-jar-with-dependencies.jar /opt/base-counts/lib/GeneEditing.jar
