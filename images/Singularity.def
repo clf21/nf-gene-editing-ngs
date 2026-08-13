@@ -30,7 +30,7 @@ From: alpine:3.15
     mkdir -p /tmp/bowtie2
     cd /tmp/bowtie2
     wget -O bowtie2.zip https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.3.4.3/bowtie2-2.3.4.3-source.zip
-    unzip bowtie2.zip
+    unzip -o bowtie2.zip
     patch -p0 < /build/bowtie2.patch
     cd bowtie2-2.3.4.3
     make
@@ -41,7 +41,7 @@ From: alpine:3.15
     mkdir -p /tmp/CRISPResso
     cd /tmp/CRISPResso
     wget -O CRISPResso.zip https://github.com/lucapinello/CRISPResso/archive/master.zip
-    unzip CRISPResso.zip
+    unzip -o CRISPResso.zip
     patch -p0 < /build/CRISPResso.patch
     cd CRISPResso-master/dependencies
     tar -xf FLASH-1.2.11.tar.gz
