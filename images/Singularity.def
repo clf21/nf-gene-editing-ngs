@@ -79,11 +79,17 @@ From: alpine:3.15
     # Install Perl dependencies
     cpanm YAML::XS
 
-    # Build guide position base counting tool
+    # Build guide position base counting tool (optional - may fail on HPC without Maven Central access)
     cd /build/baseCounts
-    ./mvnw clean package
-    mkdir -p /opt/base-counts/lib
-    cp target/GeneEditing-*-jar-with-dependencies.jar /opt/base-counts/lib/GeneEditing.jar
+    if ./mvnw clean package; then
+        echo "INFO: baseCounts built successfully"
+        mkdir -p /opt/base-counts/lib
+        cp target/GeneEditing-*-jar-with-dependencies.jar /opt/base-counts/lib/GeneEditing.jar
+    else
+        echo "WARNING: baseCounts build failed - Maven Central may be blocked"
+        echo "WARNING: Guide position base counting will not be available"
+        echo "WARNING: Build continues without baseCounts"
+    fi
 
     # Install runtime dependencies
     apk --no-cache add \
@@ -126,11 +132,18 @@ exec java -jar /opt/trimmomatic/trimmomatic-0.39.jar "$@"
 EOF
     chmod 755 /opt/trimmomatic/bin/trimmomatic
 
-    cat > /opt/base-counts/bin/computeBaseCounts <<'EOF'
+    # Create wrapper only if JAR was built
+    if [ -f /opt/base-counts/lib/GeneEditing.jar ]; then
+        mkdir -p /opt/base-counts/bin
+        cat > /opt/base-counts/bin/computeBaseCounts <<'EOF'
 #!/bin/sh
 exec java -jar /opt/base-counts/lib/GeneEditing.jar "$@"
 EOF
-    chmod 755 /opt/base-counts/bin/computeBaseCounts
+        chmod 755 /opt/base-counts/bin/computeBaseCounts
+        echo "INFO: computeBaseCounts wrapper created"
+    else
+        echo "WARNING: Skipping computeBaseCounts wrapper (JAR not built)"
+    fi
 
     # Run CRISPResso once to generate font cache
     /opt/CRISPResso/bin/CRISPResso -h >/dev/null || true
