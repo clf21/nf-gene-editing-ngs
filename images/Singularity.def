@@ -55,8 +55,30 @@ From: alpine:3.15
     chmod +x /build/install-CRISPResso.sh
     /build/install-CRISPResso.sh /tmp/CRISPResso/CRISPResso-master /opt/CRISPResso/venv
 
-    # Skip EMBOSS - not used in pipeline and FTP server unreliable
-    echo "INFO: Skipping EMBOSS build (not used in pipeline)"
+    # Build EMBOSS 6.6.0 (required by CRISPResso v1 for needle alignment)
+    # Using GitHub mirror instead of unreliable FTP server
+    mkdir -p /tmp/emboss
+    cd /tmp/emboss
+    # Try multiple sources in order of preference
+    if wget -O emboss.tar.gz https://github.com/kimrutherford/EMBOSS/archive/refs/tags/EMBOSS-6.6.0.tar.gz 2>/dev/null; then
+        echo "INFO: Downloaded EMBOSS from GitHub"
+        tar -xf emboss.tar.gz
+        cd EMBOSS-EMBOSS-6.6.0
+    elif wget -O emboss.tar.gz http://emboss.open-bio.org/rel/EMBOSS/EMBOSS-6.6.0.tar.gz 2>/dev/null; then
+        echo "INFO: Downloaded EMBOSS from HTTP mirror"
+        tar -xf emboss.tar.gz
+        cd EMBOSS-6.6.0
+    elif wget -O emboss.tar.gz ftp://emboss.open-bio.org/pub/EMBOSS/EMBOSS-6.6.0.tar.gz 2>/dev/null; then
+        echo "INFO: Downloaded EMBOSS from FTP"
+        tar -xf emboss.tar.gz
+        cd EMBOSS-6.6.0
+    else
+        echo "ERROR: Could not download EMBOSS from any source"
+        exit 1
+    fi
+    ./configure --prefix=/opt/emboss --without-x
+    make
+    make install
 
     # Build Samtools 1.9
     mkdir -p /tmp/samtools
@@ -155,7 +177,7 @@ EOF
     echo "INFO: Skipping cleanup to ensure successful build"
 
 %environment
-    export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
+    export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso/bin:/opt/emboss/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
 
 %labels
     Author nf-gene-editing-ngs

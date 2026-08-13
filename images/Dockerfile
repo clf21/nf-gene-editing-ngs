@@ -50,7 +50,20 @@ RUN cd /tmp/CRISPResso \
  && pip install virtualenv \
  && ./install-CRISPResso.sh /tmp/CRISPResso/CRISPResso-master /opt/CRISPResso/venv
 
-# Skip EMBOSS - not used in pipeline and FTP server unreliable
+# Download, build and install EMBOSS 6.6.0 (required by CRISPResso v1)
+FROM build-base AS build-emboss
+
+RUN mkdir -p /tmp/emboss \
+ && cd /tmp/emboss \
+ && (wget -O emboss.tar.gz https://github.com/kimrutherford/EMBOSS/archive/refs/tags/EMBOSS-6.6.0.tar.gz \
+     && tar -xf emboss.tar.gz && cd EMBOSS-EMBOSS-6.6.0 \
+     || (wget -O emboss.tar.gz http://emboss.open-bio.org/rel/EMBOSS/EMBOSS-6.6.0.tar.gz \
+         && tar -xf emboss.tar.gz && cd EMBOSS-6.6.0) \
+     || (wget -O emboss.tar.gz ftp://emboss.open-bio.org/pub/EMBOSS/EMBOSS-6.6.0.tar.gz \
+         && tar -xf emboss.tar.gz && cd EMBOSS-6.6.0)) \
+ && ./configure --prefix=/opt/emboss --without-x \
+ && make \
+ && make install
 
 # Download, build and install Samtools 1.9
 FROM build-base AS build-samtools
@@ -138,7 +151,8 @@ RUN cd /opt/CRISPResso/bin \
  && ln -s _crispresso CRISPRessoPooledWGSCompare \
  && ln -s _crispresso CRISPRessoWGS
 
-# EMBOSS skipped - not used in pipeline
+# Install EMBOSS
+COPY --from=build-emboss /opt/emboss /opt/emboss
 
 # Install Samtools
 COPY --from=build-samtools /opt/samtools /opt/samtools
