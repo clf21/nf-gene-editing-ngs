@@ -55,15 +55,8 @@ From: alpine:3.15
     chmod +x /build/install-CRISPResso.sh
     /build/install-CRISPResso.sh /tmp/CRISPResso/CRISPResso-master /opt/CRISPResso/venv
 
-    # Build EMBOSS 6.6.0
-    mkdir -p /tmp/emboss
-    cd /tmp/emboss
-    wget -O emboss.tar.gz ftp://emboss.open-bio.org/pub/EMBOSS/EMBOSS-6.6.0.tar.gz
-    tar -xf emboss.tar.gz
-    cd EMBOSS-6.6.0
-    ./configure --prefix=/opt/emboss --without-x
-    make
-    make install
+    # Skip EMBOSS - not used in pipeline and FTP server unreliable
+    echo "INFO: Skipping EMBOSS build (not used in pipeline)"
 
     # Build Samtools 1.9
     mkdir -p /tmp/samtools
@@ -146,7 +139,7 @@ EOF
     rm -rf /tmp/*
 
 %environment
-    export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso/bin:/opt/emboss/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
+    export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
 
 %labels
     Author nf-gene-editing-ngs
