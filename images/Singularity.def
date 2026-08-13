@@ -1,8 +1,11 @@
 Bootstrap: docker
-From: alpine:3.23
+From: alpine:3.15
 
 %files
-    baseCounts /build/baseCounts
+    bowtie2.patch /tmp/bowtie2/bowtie2.patch
+    install-CRISPResso.sh /tmp/CRISPResso/install-CRISPResso.sh
+    CRISPResso.patch /tmp/CRISPResso/CRISPResso.patch
+    baseCounts /tmp/baseCounts
 
 %post
     # Install build dependencies
@@ -18,54 +21,62 @@ From: alpine:3.23
         openjdk11 \
         perl-app-cpanminus \
         perl-dev \
-        python3-dev \
-        py3-pip \
-        py3-virtualenv \
+        python2-dev \
         wget \
         xz-dev \
         zlib-dev
 
-    # Build Bowtie2 2.5.5
-    mkdir -p /tmp/bowtie2
+    # Build Bowtie2 2.3.4.3
     cd /tmp/bowtie2
-    wget -O bowtie2.tar.gz https://github.com/BenLangmead/bowtie2/archive/refs/tags/v2.5.5.tar.gz
-    tar -xf bowtie2.tar.gz
-    cd bowtie2-2.5.5
-    # Note: Skip bowtie2.patch - it's for 2.3.4.3 and just fixes trailing whitespace
+    wget -O bowtie2.zip https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.3.4.3/bowtie2-2.3.4.3-source.zip
+    unzip bowtie2.zip
+    patch -p0 < bowtie2.patch
+    cd bowtie2-2.3.4.3
     make
     mkdir -p /opt/bowtie2/bin
-    cp bowtie2* /opt/bowtie2/bin/
+    cp bowtie2 bowtie2-align-s bowtie2-align-l bowtie2-build bowtie2-build-s bowtie2-build-l bowtie2-inspect bowtie2-inspect-s bowtie2-inspect-l /opt/bowtie2/bin/
 
-    # Install CRISPResso2 from source (Python 3 compatible)
-    mkdir -p /tmp/CRISPResso2
-    cd /tmp/CRISPResso2
-    wget -O CRISPResso2.zip https://github.com/pinellolab/CRISPResso2/archive/refs/heads/master.zip
-    unzip -o CRISPResso2.zip
-    cd CRISPResso2-master
+    # Build CRISPResso v1 with custom patches
+    cd /tmp/CRISPResso
+    wget -O CRISPResso.zip https://github.com/lucapinello/CRISPResso/archive/master.zip
+    unzip CRISPResso.zip
+    patch -p0 < CRISPResso.patch
+    cd CRISPResso-master/dependencies
+    tar -xf FLASH-1.2.11.tar.gz
+    cd FLASH-1.2.11
+    make
+    mkdir -p /opt/CRISPResso/bin
+    cp flash /opt/CRISPResso/bin/
+    cd /tmp/CRISPResso
+    python -m ensurepip
+    pip install virtualenv
+    chmod +x install-CRISPResso.sh
+    ./install-CRISPResso.sh /tmp/CRISPResso/CRISPResso-master /opt/CRISPResso/venv
 
-    # Create venv and install
-    python3 -m venv /opt/CRISPResso2/venv
-    . /opt/CRISPResso2/venv/bin/activate
-    pip install --upgrade pip
-    pip install .
-    deactivate
+    # Build EMBOSS 6.6.0
+    mkdir -p /tmp/emboss
+    cd /tmp/emboss
+    wget -O emboss.tar.gz ftp://emboss.open-bio.org/pub/EMBOSS/EMBOSS-6.6.0.tar.gz
+    tar -xf emboss.tar.gz
+    cd EMBOSS-6.6.0
+    ./configure --prefix=/opt/emboss --without-x
+    make
+    make install
 
-    # Skip EMBOSS - not used in pipeline and FTP server unreliable
-
-    # Build Samtools 1.23.1
+    # Build Samtools 1.9
     mkdir -p /tmp/samtools
     cd /tmp/samtools
-    wget -O samtools.tar.bz2 https://github.com/samtools/samtools/releases/download/1.23.1/samtools-1.23.1.tar.bz2
-    tar -xf samtools.tar.bz2
-    cd samtools-1.23.1
+    wget -O samtools.tar.gz https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2
+    tar -xf samtools.tar.gz
+    cd samtools-1.9
     ./configure --prefix=/opt/samtools
     make
     make install
 
-    # Download Trimmomatic 0.39 (latest stable release)
+    # Download Trimmomatic 0.39
     mkdir -p /tmp/trimmomatic
     cd /tmp/trimmomatic
-    wget -O trimmomatic.zip http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.39.zip
+    wget -O trimmomatic.zip https://github.com/usadellab/Trimmomatic/files/5854859/Trimmomatic-0.39.zip
     unzip -o trimmomatic.zip
     mkdir -p /opt/trimmomatic/bin
     cp -r Trimmomatic-0.39/* /opt/trimmomatic/
@@ -73,13 +84,11 @@ From: alpine:3.23
     # Install Perl dependencies
     cpanm YAML::XS
 
-    # Build guide position base counting tool (commented out - HPC Maven issues)
-    # cd /build/baseCounts
-    # export MAVEN_OPTS="-Dmaven.wagon.http.retryHandler.count=3"
-    # ./mvnw clean package
-    # mkdir -p /opt/base-counts/lib
-    # cp target/GeneEditing-*-jar-with-dependencies.jar /opt/base-counts/lib/GeneEditing.jar
-    echo "WARNING: baseCounts not built due to Maven Central access issues on HPC"
+    # Build guide position base counting tool
+    cd /tmp/baseCounts
+    ./mvnw clean package
+    mkdir -p /opt/base-counts/lib
+    cp target/GeneEditing-*-jar-with-dependencies.jar /opt/base-counts/lib/GeneEditing.jar
 
     # Install runtime dependencies
     apk --no-cache add \
@@ -95,27 +104,26 @@ From: alpine:3.23
         openblas \
         openjdk11-jre-headless \
         perl \
-        python3 \
-        py3-pip \
+        python2 \
         xz-libs \
         zlib
 
-    # Create wrapper scripts for CRISPResso2
-    mkdir -p /opt/CRISPResso2/bin
-    cat > /opt/CRISPResso2/bin/_crispresso <<'EOF'
+    # Create wrapper scripts for CRISPResso v1
+    mkdir -p /opt/CRISPResso/bin
+    cat > /opt/CRISPResso/bin/_crispresso <<'EOF'
 #!/bin/sh
-. /opt/CRISPResso2/venv/bin/activate
+. /opt/CRISPResso/venv/bin/activate
 "$(basename "$0")" "$@"
 EOF
-    chmod 755 /opt/CRISPResso2/bin/_crispresso
+    chmod 755 /opt/CRISPResso/bin/_crispresso
 
-    cd /opt/CRISPResso2/bin
+    cd /opt/CRISPResso/bin
     ln -s _crispresso CRISPResso
-    ln -s _crispresso CRISPResso2
     ln -s _crispresso CRISPRessoCompare
-    ln -s _crispresso CRISPRessoWGS
+    ln -s _crispresso CRISPRessoCount
     ln -s _crispresso CRISPRessoPooled
-    ln -s _crispresso CRISPRessoAggregate
+    ln -s _crispresso CRISPRessoPooledWGSCompare
+    ln -s _crispresso CRISPRessoWGS
 
     cat > /opt/trimmomatic/bin/trimmomatic <<'EOF'
 #!/bin/sh
@@ -123,25 +131,22 @@ exec java -jar /opt/trimmomatic/trimmomatic-0.39.jar "$@"
 EOF
     chmod 755 /opt/trimmomatic/bin/trimmomatic
 
-    # Commented out - baseCounts not built
-    # cat > /opt/base-counts/bin/computeBaseCounts <<'EOF'
-    # #!/bin/sh
-    # exec java -jar /opt/base-counts/lib/GeneEditing.jar "$@"
-    # EOF
-    # chmod 755 /opt/base-counts/bin/computeBaseCounts
+    cat > /opt/base-counts/bin/computeBaseCounts <<'EOF'
+#!/bin/sh
+exec java -jar /opt/base-counts/lib/GeneEditing.jar "$@"
+EOF
+    chmod 755 /opt/base-counts/bin/computeBaseCounts
 
-    # Run CRISPResso2 once to generate font cache
-    /opt/CRISPResso2/bin/CRISPResso -h >/dev/null || true
+    # Run CRISPResso once to generate font cache
+    /opt/CRISPResso/bin/CRISPResso -h >/dev/null || true
 
-    # Skip cleanup - causes build failure with --ignore-fakeroot-command
-    # Image will be larger but functional
+    # Cleanup
+    rm -rf /tmp/*
 
 %environment
-    export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso2/bin:/opt/samtools/bin:/opt/trimmomatic/bin
-    # Note: /opt/base-counts/bin not included - baseCounts not built due to HPC Maven restrictions
+    export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso/bin:/opt/emboss/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
 
-# Temporarily removing %labels to diagnose build issue
-# %labels
-#     Author nf-gene-editing-ngs
-#     Version 2.0.0
-#     Description Phase 2 - CRISPResso2 and Python 3 migration
+%labels
+    Author nf-gene-editing-ngs
+    Version 1.2
+    Description CRISPResso v1 with Python 2.7 (AGPL licensed)

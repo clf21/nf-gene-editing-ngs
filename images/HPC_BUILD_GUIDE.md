@@ -1,12 +1,26 @@
 # Building and Testing on HPC with Singularity
 
-This guide covers building the Phase 1 dependency updates as a Singularity image for HPC environments.
+This guide covers building the v1.2 CRISPResso v1 stack as a Singularity image for HPC environments.
 
 ## Prerequisites
 
 - Singularity/Apptainer installed (version 3.x or newer)
 - Build permissions (sudo or --fakeroot capability)
 - Git access to clone/update the repository
+- Maven Central access (for baseCounts build) OR pre-built JAR
+
+## Important Notes
+
+### Python 2.7 End-of-Life Warning
+⚠️ This build uses **Python 2.7**, which reached end-of-life on January 1, 2020. 
+
+**Security Implications:**
+- No security patches since 2020
+- Should only be run in isolated container environments
+- Do not expose to untrusted input
+
+**Why Python 2.7?**
+CRISPResso v1 (AGPL licensed) requires Python 2.7. CRISPResso2 (Python 3) has a proprietary license prohibiting commercial use without purchasing a license. See BUILD_NOTES.md for details.
 
 ## Building the Singularity Image
 
@@ -25,190 +39,263 @@ This will create a `.sif` file like `nf-gene-editing-ngs_<commit-hash>.sif`
 cd images/
 
 # With sudo
-sudo singularity build nf-gene-editing-ngs.sif Singularity.def
+sudo singularity build nf-gene-editing-ngs_v1.2.sif Singularity.def
 
 # Or with fakeroot (if user namespaces are enabled)
-singularity build --fakeroot nf-gene-editing-ngs.sif Singularity.def
+singularity build --fakeroot nf-gene-editing-ngs_v1.2.sif Singularity.def
+
+# On many HPC systems, use --ignore-fakeroot-command
+singularity build --force --ignore-fakeroot-command nf-gene-editing-ngs_v1.2.sif Singularity.def
 ```
 
 ### Build Time
 
-Expected build time: 20-45 minutes depending on HPC resources
-- Downloads: ~500MB
+Expected build time: 30-60 minutes depending on HPC resources and network speed
+- Downloads: ~400MB
 - Final image size: ~2-3GB
+- Python 2 compilation is slower than Python 3
+
+### Known Build Issues
+
+#### Maven Central Access Blocked
+
+If your HPC proxy blocks Maven Central, the baseCounts build will fail. 
+
+**Solution 1: Build baseCounts externally**
+```bash
+# On a system with internet access
+cd baseCounts
+./mvnw clean package
+
+# Copy the JAR to HPC
+scp target/GeneEditing-*-jar-with-dependencies.jar hpc:/path/to/repo/baseCounts/target/
+
+# Comment out Maven build in Singularity.def
+# The JAR will be copied from the existing target/ directory
+```
+
+**Solution 2: Skip baseCounts**
+If you don't need guide position base counting, comment out the baseCounts build section in Singularity.def.
+
+#### EMBOSS FTP Server Timeout
+
+The EMBOSS FTP server (ftp://emboss.open-bio.org) can be slow or unavailable.
+
+**Symptoms:**
+- Build hangs at EMBOSS download
+- FTP connection timeout
+
+**Solutions:**
+- Retry the build (sometimes it works on second attempt)
+- Cache the EMBOSS tarball and modify Singularity.def to use local copy
+- Skip EMBOSS if not needed (check if your pipeline uses it)
 
 ## Testing the Image
 
-### 1. Verify Tool Versions
+### 1. Quick Smoke Test (Recommended)
+
+```bash
+cd images/
+./test_container.sh nf-gene-editing-ngs_v1.2.sif
+```
+
+This automated test script verifies:
+- All tools are installed and accessible
+- CRISPResso v1 runs correctly
+- Bowtie2 can build indexes and align reads
+- Samtools can process BAM files
+- End-to-end workflow with synthetic test data
+
+### 2. Manual Tool Version Verification
 
 ```bash
 # Check Bowtie2
-singularity exec nf-gene-editing-ngs_*.sif bowtie2 --version
-# Expected: version 2.5.5
+singularity exec nf-gene-editing-ngs_v1.2.sif bowtie2 --version
+# Expected: version 2.3.4.3
 
 # Check Samtools
-singularity exec nf-gene-editing-ngs_*.sif samtools --version
-# Expected: samtools 1.23.1
+singularity exec nf-gene-editing-ngs_v1.2.sif samtools --version
+# Expected: samtools 1.9
+
+# Check Python version
+singularity exec nf-gene-editing-ngs_v1.2.sif python --version
+# Expected: Python 2.7.x
+
+# Check CRISPResso
+singularity exec nf-gene-editing-ngs_v1.2.sif CRISPResso --version
+# Expected: CRISPResso 1.0.x
 
 # Check Trimmomatic
-singularity exec nf-gene-editing-ngs_*.sif trimmomatic -version
-# Expected: 0.41
+singularity exec nf-gene-editing-ngs_v1.2.sif trimmomatic -version
+# Expected: 0.39
 
-# Check Python
-singularity exec nf-gene-editing-ngs_*.sif python3 --version
-# Expected: Python 3.11.x (Alpine 3.21 default)
+# Check EMBOSS (if built)
+singularity exec nf-gene-editing-ngs_v1.2.sif needleall --version
+# Expected: EMBOSS:6.6.0.0
 
-# Check CRISPResso (still version 1.x in Phase 1)
-singularity exec nf-gene-editing-ngs_*.sif CRISPResso --version
+# Check baseCounts (if built)
+singularity exec nf-gene-editing-ngs_v1.2.sif computeBaseCounts --help
 ```
 
-### 2. Configure Nextflow to Use the Image
+### 3. Test CRISPResso with Custom Patches
 
-Set environment variable:
-```bash
-export GENA_IMAGE="/path/to/nf-gene-editing-ngs_<commit>.sif"
-```
-
-Or update your Nextflow config file:
-```groovy
-singularity {
-    enabled = true
-    autoMounts = true
-}
-
-process {
-    container = '/path/to/nf-gene-editing-ngs_<commit>.sif'
-}
-```
-
-### 3. Run the Test Suite
+The custom patches add important output columns. Test that they work:
 
 ```bash
-cd /path/to/nf-gene-editing-ngs
+# Run CRISPResso help to verify installation
+singularity exec nf-gene-editing-ngs_v1.2.sif CRISPResso -h
 
-# Set the Singularity image
-export GENA_IMAGE="$(pwd)/images/nf-gene-editing-ngs_*.sif"
+# Test with minimal data (if available)
+singularity exec nf-gene-editing-ngs_v1.2.sif CRISPResso \
+  --fastq_r1 test_R1.fastq.gz \
+  --fastq_r2 test_R2.fastq.gz \
+  --amplicon_seq ATCGATCGATCG... \
+  --guide_seq ATCGATCG \
+  --output_folder test_output
 
-# Run tests
-./run_tests tests/main.nf.test
+# Verify output includes custom columns:
+# - Frameshift, In_frame, Noncoding, Splice_mod columns in alleles table
 ```
 
-### 4. Run a Small Test Pipeline
+## Deploying to HPC
 
-If you have test data:
+### 1. Copy Image to Shared Storage
 
 ```bash
+# Copy to project directory
+cp nf-gene-editing-ngs_v1.2.sif /project/lab/containers/
+
+# Or to scratch for testing
+cp nf-gene-editing-ngs_v1.2.sif $SCRATCH/containers/
+```
+
+### 2. Set Environment Variable
+
+Add to your `.bashrc` or job scripts:
+
+```bash
+export GENA_IMAGE="/project/lab/containers/nf-gene-editing-ngs_v1.2.sif"
+```
+
+### 3. Test with Nextflow
+
+```bash
+# Load Nextflow
+module load nextflow
+
+# Test with small dataset
 nextflow run main.nf \
   -profile singularity,slurm \
-  --metadata /path/to/test-metadata.yml \
+  --metadata test_metadata.yml \
   --reference hg38 \
-  --outdir results_phase1_test
+  --outdir test_results
 ```
 
-## Validation Checklist
+## Nextflow Configuration for HPC
 
-Phase 1 validation should verify:
+Example HPC profile in `nextflow.config`:
 
-- [ ] Image builds successfully
-- [ ] All tools show correct versions
-- [ ] Bowtie2 aligns reads correctly
-- [ ] Samtools BAM operations work
-- [ ] Trimmomatic trims reads
-- [ ] CRISPResso runs (still Python 2 version in Phase 1)
-- [ ] Test suite passes
-- [ ] Pipeline completes on small dataset
-
-## Known Issues
-
-### Python 2 Warning (Phase 1)
-
-Phase 1 still uses Python 2 for CRISPResso1. You may see deprecation warnings:
-```
-Python 2 is EOL and will not receive security updates
-```
-
-This is expected and will be resolved in Phase 2 (CRISPResso2 migration with Python 3).
-
-### Build Errors
-
-If you encounter permission errors:
-```bash
-# Check if fakeroot is available
-singularity build --fakeroot --help
-
-# Or request sudo access for the build
-sudo singularity build ...
-```
-
-If Alpine package downloads fail:
-- Check internet connectivity from HPC
-- Try using HPC proxy settings if required
-- Some HPC systems require pre-downloading packages
-
-### SLURM Integration
-
-If using SLURM, ensure your Nextflow profile includes:
 ```groovy
-process {
-    executor = 'slurm'
-    queue = 'your-queue-name'
-    
-    // Resource limits
-    memory = '6 GB'
-    cpus = 1
-    time = '4h'
+profiles {
+    hpc {
+        singularity {
+            enabled = true
+            autoMounts = true
+            runOptions = '--cleanenv --containall'
+        }
+        
+        process {
+            executor = 'slurm'
+            queue = 'general'
+            container = "${System.getenv('GENA_IMAGE') ?: '/project/lab/containers/nf-gene-editing-ngs_v1.2.sif'}"
+            
+            withLabel: high_memory {
+                memory = '32 GB'
+                time = '4h'
+            }
+        }
+    }
 }
 ```
-
-## Phase 1 vs Phase 2
-
-**Phase 1 (Current):**
-- Alpine 3.21
-- Python 3 installed but CRISPResso1 still uses Python 2
-- Updated: Bowtie2, Samtools, Trimmomatic
-- Safe baseline before major CRISPResso2 migration
-
-**Phase 2 (Next):**
-- CRISPResso1 → CRISPResso2
-- Full Python 3 migration
-- Remove Python 2 entirely
-- Higher risk, requires thorough validation
 
 ## Troubleshooting
 
-### Image Won't Build on Compute Nodes
+### Build fails with "permission denied"
 
-Some HPC systems restrict Singularity builds on compute nodes. Build on:
-- Login nodes (if permitted)
-- Dedicated build nodes
-- Local workstation, then transfer .sif file
-
-### Test Suite Failures
-
-Compare outputs against baseline (v1.2):
+Try using `--ignore-fakeroot-command`:
 ```bash
-# Save current results
-nextflow run main.nf ... --outdir results_v1.2
-
-# Test new image
-export GENA_IMAGE=nf-gene-editing-ngs_*.sif
-nextflow run main.nf ... --outdir results_v1.3
-
-# Compare key metrics
-diff results_v1.2/summary_table.txt results_v1.3/summary_table.txt
+singularity build --force --ignore-fakeroot-command nf-gene-editing-ngs_v1.2.sif Singularity.def
 ```
 
-## Support
+### Python 2 pip/virtualenv issues
 
-For issues specific to:
-- **Nextflow**: Check `nextflow.log`
-- **Singularity**: Check `.nextflow.log` and `work/` task directories
-- **SLURM**: Check job output files in `work/` directories
+If you see errors about pip or virtualenv during build:
+- This is expected with Python 2.7 EOL
+- The build uses `python -m ensurepip` which is built into Python 2.7.9+
+- Alpine 3.15 includes the last stable Python 2.7.18
 
-## Next Steps After Phase 1 Validation
+### CRISPResso matplotlib font cache errors
 
-Once Phase 1 passes validation:
-1. Tag as v1.3.0
-2. Document any alignment/trimming differences
-3. Prepare for Phase 2 (CRISPResso2 migration)
-4. Archive v1.2 image as fallback
+If CRISPResso fails with font-related errors:
+```bash
+# Rebuild font cache inside container
+singularity exec nf-gene-editing-ngs_v1.2.sif python -c "import matplotlib.pyplot"
+```
+
+### Container size too large
+
+The image is 2-3GB due to:
+- Python 2 dependencies
+- EMBOSS (large bioinformatics suite)
+- Build artifacts (if cleanup disabled)
+
+To reduce size:
+- Skip EMBOSS if not needed
+- Enable cleanup in Singularity.def (if build system allows)
+
+## Performance Considerations
+
+### Python 2.7 Performance
+- Generally slower than Python 3
+- NumPy/SciPy operations may be less optimized
+- Consider allocating 10-20% more time for CRISPResso jobs compared to modern tools
+
+### Alpine 3.15 Compatibility
+- Alpine 3.15 was released in November 2021
+- Compatible with most HPC systems as of 2024-2026
+- Uses musl libc instead of glibc (generally not an issue)
+
+## Security Recommendations
+
+Since Python 2.7 is EOL:
+
+1. **Network Isolation**: Run jobs without network access when possible
+2. **Input Validation**: Validate all input files before processing
+3. **Access Control**: Restrict container to trusted users only
+4. **Monitoring**: Watch for unusual behavior or resource usage
+5. **Updates**: Check for updated dependencies within Alpine 3.15 constraints
+
+## Related Documentation
+
+- BUILD_NOTES.md - Detailed build notes and version history
+- test_container.sh - Automated testing script
+- Singularity.def - Container definition file
+- CRISPResso v1 repository: https://github.com/lucapinello/CRISPResso
+
+## Getting Help
+
+If you encounter issues:
+
+1. Check BUILD_NOTES.md for known issues
+2. Review Singularity build logs
+3. Test individual tools with `singularity exec`
+4. Verify file paths and permissions
+5. Check HPC module conflicts
+
+## Version Information
+
+- **Container Version**: v1.2
+- **Python**: 2.7.18 (EOL since 2020)
+- **Alpine**: 3.15
+- **CRISPResso**: v1 (AGPL license)
+- **License**: AGPL v3 (allows commercial use)

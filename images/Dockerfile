@@ -1,6 +1,6 @@
 ## Build Phase #########################################################
 
-FROM alpine:3.21 AS build-base
+FROM alpine:3.15 AS build-base
 
 # Install build dependencies
 RUN apk --no-cache add \
@@ -15,45 +15,61 @@ RUN apk --no-cache add \
       openjdk11 \
       perl-app-cpanminus \
       perl-dev \
-      python3-dev \
+      python2-dev \
       wget \
       xz-dev \
       zlib-dev
 
-# Download and build Bowtie2 2.5.5
+# Download, patch and build Bowtie2 2.3.4.3
 FROM build-base AS build-bowtie2
 
-RUN mkdir -p /tmp/bowtie2 \
- && cd /tmp/bowtie2 \
- && wget -O bowtie2.tar.gz https://github.com/BenLangmead/bowtie2/archive/refs/tags/v2.5.5.tar.gz \
- && tar -xf bowtie2.tar.gz \
- && cd bowtie2-2.5.5 \
- && make
-# Note: Removed bowtie2.patch - it was for 2.3.4.3 and only fixed trailing whitespace
+COPY bowtie2.patch /tmp/bowtie2/bowtie2.patch
 
-# Install CRISPResso2 from source (Python 3 compatible)
+RUN cd /tmp/bowtie2 \
+ && wget -O bowtie2.zip https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.3.4.3/bowtie2-2.3.4.3-source.zip \
+ && unzip bowtie2.zip \
+ && patch -p0 < bowtie2.patch \
+ && cd bowtie2-2.3.4.3 \
+ && make
+
+# Download, patch and build CRISPResso `master` (and its vendored dependencies)
 FROM build-base AS build-crispresso
 
-RUN mkdir -p /tmp/CRISPResso2 \
- && cd /tmp/CRISPResso2 \
- && wget -O CRISPResso2.zip https://github.com/pinellolab/CRISPResso2/archive/refs/heads/master.zip \
- && unzip -o CRISPResso2.zip \
- && cd CRISPResso2-master \
- && python3 -m venv /opt/CRISPResso2/venv \
- && . /opt/CRISPResso2/venv/bin/activate \
- && pip install --upgrade pip \
- && pip install -e .
+COPY install-CRISPResso.sh CRISPResso.patch /tmp/CRISPResso/
 
-# Skip EMBOSS - not used in pipeline and FTP server unreliable
+RUN cd /tmp/CRISPResso \
+ && wget -O CRISPResso.zip https://github.com/lucapinello/CRISPResso/archive/master.zip \
+ && unzip CRISPResso.zip \
+ && patch -p0 < CRISPResso.patch \
+ && cd CRISPResso-master/dependencies \
+ && tar -xf FLASH-1.2.11.tar.gz \
+ && cd FLASH-1.2.11 \
+ && make \
+ && cd ../../.. \
+ && python -m ensurepip \
+ && pip install virtualenv \
+ && ./install-CRISPResso.sh /tmp/CRISPResso/CRISPResso-master /opt/CRISPResso/venv
 
-# Download, build and install Samtools 1.23.1
+# Download, build and install EMBOSS 6.6.0
+FROM build-base AS build-emboss
+
+RUN mkdir -p /tmp/emboss \
+ && cd /tmp/emboss \
+ && wget -O emboss.tar.gz ftp://emboss.open-bio.org/pub/EMBOSS/EMBOSS-6.6.0.tar.gz \
+ && tar -xf emboss.tar.gz \
+ && cd EMBOSS-6.6.0 \
+ && ./configure --prefix=/opt/emboss --without-x \
+ && make \
+ && make install
+
+# Download, build and install Samtools 1.9
 FROM build-base AS build-samtools
 
 RUN mkdir -p /tmp/samtools \
  && cd /tmp/samtools \
- && wget -O samtools.tar.bz2 https://github.com/samtools/samtools/releases/download/1.23.1/samtools-1.23.1.tar.bz2 \
- && tar -xf samtools.tar.bz2 \
- && cd samtools-1.23.1 \
+ && wget -O samtools.tar.gz https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2 \
+ && tar -xf samtools.tar.gz \
+ && cd samtools-1.9 \
  && ./configure --prefix=/opt/samtools \
  && make \
  && make install
@@ -63,7 +79,7 @@ FROM build-base AS build-trimmomatic
 
 RUN mkdir -p /tmp/trimmomatic \
  && cd /tmp/trimmomatic \
- && wget -O trimmomatic.zip http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.39.zip \
+ && wget -O trimmomatic.zip https://github.com/usadellab/Trimmomatic/files/5854859/Trimmomatic-0.39.zip \
  && unzip trimmomatic.zip
 
 # Install Perl dependencies
@@ -77,14 +93,11 @@ FROM build-base AS build-base-count
 COPY baseCounts /tmp/baseCounts
 
 RUN cd /tmp/baseCounts \
- && export MAVEN_OPTS="-Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.httpconnectionManager.ttlSeconds=120" \
- && (./mvnw clean package -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false || \
-     ./mvnw clean package -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false || \
-     ./mvnw clean package -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false)
+ && ./mvnw clean package
 
 ## Runtime Phase #######################################################
 
-FROM alpine:3.21
+FROM alpine:3.15
 
 # Install runtime dependencies
 RUN apk --no-cache add \
@@ -100,39 +113,43 @@ RUN apk --no-cache add \
       openblas \
       openjdk11-jre-headless \
       perl \
-      python3 \
+      python2 \
       xz-libs \
       zlib
 
 # Install Bowtie2
 COPY --from=build-bowtie2 \
-  /tmp/bowtie2/bowtie2-2.5.5/bowtie2 \
-  /tmp/bowtie2/bowtie2-2.5.5/bowtie2-align-s \
-  /tmp/bowtie2/bowtie2-2.5.5/bowtie2-align-l \
-  /tmp/bowtie2/bowtie2-2.5.5/bowtie2-build \
-  /tmp/bowtie2/bowtie2-2.5.5/bowtie2-build-s \
-  /tmp/bowtie2/bowtie2-2.5.5/bowtie2-build-l \
-  /tmp/bowtie2/bowtie2-2.5.5/bowtie2-inspect \
-  /tmp/bowtie2/bowtie2-2.5.5/bowtie2-inspect-s \
-  /tmp/bowtie2/bowtie2-2.5.5/bowtie2-inspect-l \
+  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2 \
+  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2-align-s \
+  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2-align-l \
+  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2-build \
+  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2-build-s \
+  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2-build-l \
+  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2-inspect \
+  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2-inspect-s \
+  /tmp/bowtie2/bowtie2-2.3.4.3/bowtie2-inspect-l \
   /opt/bowtie2/bin/
 
-# Install CRISPResso2
-COPY --from=build-crispresso /opt/CRISPResso2/venv /opt/CRISPResso2/venv
+# Install CRISPResso
+COPY --from=build-crispresso /tmp/CRISPResso/CRISPResso-master/dependencies/FLASH-1.2.11/flash /opt/CRISPResso/bin/
+COPY --from=build-crispresso /opt/CRISPResso/venv /opt/CRISPResso/venv
 
-COPY --chmod=755 <<'EOF' /opt/CRISPResso2/bin/_crispresso
+COPY --chmod=755 <<'EOF' /opt/CRISPResso/bin/_crispresso
 #!/bin/sh
-. /opt/CRISPResso2/venv/bin/activate
+. /opt/CRISPResso/venv/bin/activate
 "$(basename "$0")" "$@"
 EOF
 
-RUN cd /opt/CRISPResso2/bin \
+RUN cd /opt/CRISPResso/bin \
  && ln -s _crispresso CRISPResso \
- && ln -s _crispresso CRISPResso2 \
  && ln -s _crispresso CRISPRessoCompare \
- && ln -s _crispresso CRISPRessoWGS \
+ && ln -s _crispresso CRISPRessoCount \
  && ln -s _crispresso CRISPRessoPooled \
- && ln -s _crispresso CRISPRessoAggregate
+ && ln -s _crispresso CRISPRessoPooledWGSCompare \
+ && ln -s _crispresso CRISPRessoWGS
+
+# Install EMBOSS
+COPY --from=build-emboss /opt/emboss /opt/emboss
 
 # Install Samtools
 COPY --from=build-samtools /opt/samtools /opt/samtools
@@ -159,7 +176,7 @@ EOF
 COPY --from=build-perl_dependencies /usr/local/lib/perl5/site_perl /usr/local/lib/perl5/site_perl
 
 # Add binaries to PATH
-ENV PATH $PATH:/opt/bowtie2/bin:/opt/CRISPResso2/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
+ENV PATH $PATH:/opt/bowtie2/bin:/opt/CRISPResso/bin:/opt/emboss/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
 
-# Run CRISPResso2 once to have Matplotlib generate its font cache
+# Run CRISPResso once to have Matplotlib generate its font cache
 RUN CRISPResso -h >/dev/null
