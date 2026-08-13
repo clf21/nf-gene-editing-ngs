@@ -79,19 +79,31 @@ From: alpine:3.15
     # Configure and build
     ./configure --prefix=/opt/emboss --without-x --disable-shared --enable-static
     make
-    # Manual install: copy binaries directly to avoid problematic install-exec-hook
-    # The hook tries to download data files which fails in restricted networks
+    # Manual install: copy actual compiled binaries from .libs directories
+    # Skip 'make install' to avoid install-exec-hook that downloads data files
     mkdir -p /opt/emboss/bin /opt/emboss/share/EMBOSS
-    echo "INFO: Installing EMBOSS binaries manually"
-    # Copy all compiled binaries from emboss subdirectory
-    find emboss -maxdepth 1 -type f -executable -exec cp {} /opt/emboss/bin/ \;
+    echo "INFO: Installing EMBOSS binaries manually from .libs directories"
+    # Copy actual compiled binaries (not libtool wrapper scripts)
+    # EMBOSS binaries are in emboss/.libs/ directory
+    if [ -d emboss/.libs ]; then
+        cp emboss/.libs/* /opt/emboss/bin/ 2>/dev/null || true
+    fi
+    # Also check other subdirectories that might have tools
+    for dir in ajax nucleus plplot; do
+        if [ -d $dir/.libs ]; then
+            cp $dir/.libs/* /opt/emboss/bin/ 2>/dev/null || true
+        fi
+    done
+    # Remove any non-executable files (like .la files)
+    find /opt/emboss/bin -type f ! -executable -delete 2>/dev/null || true
     # Verify needle is present (critical for CRISPResso)
     if [ ! -f /opt/emboss/bin/needle ]; then
         echo "ERROR: needle binary not found after build"
-        ls -la emboss/needle* || true
+        echo "Contents of emboss/.libs:"
+        ls -la emboss/.libs/ | head -20 || true
         exit 1
     fi
-    chmod 755 /opt/emboss/bin/*
+    chmod 755 /opt/emboss/bin/* 2>/dev/null || true
     echo "INFO: EMBOSS installed - $(ls /opt/emboss/bin/ | wc -l) binaries including needle"
 
     # Build Samtools 1.9
