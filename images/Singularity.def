@@ -79,23 +79,36 @@ From: alpine:3.15
     # Configure and build
     ./configure --prefix=/opt/emboss --without-x --disable-shared --enable-static
     make
-    # Manual install: copy actual compiled binaries from .libs directories
+    # Manual install: copy binaries AND shared libraries from .libs directories
     # Skip 'make install' to avoid install-exec-hook that downloads data files
-    mkdir -p /opt/emboss/bin /opt/emboss/share/EMBOSS
-    echo "INFO: Installing EMBOSS binaries manually from .libs directories"
-    # Copy actual compiled binaries (not libtool wrapper scripts)
-    # EMBOSS binaries are in emboss/.libs/ directory
+    mkdir -p /opt/emboss/bin /opt/emboss/lib /opt/emboss/share/EMBOSS
+    echo "INFO: Installing EMBOSS binaries and libraries manually from .libs directories"
+
+    # Copy binaries from emboss/.libs/
     if [ -d emboss/.libs ]; then
-        cp emboss/.libs/* /opt/emboss/bin/ 2>/dev/null || true
+        # Copy executables
+        find emboss/.libs -type f -executable ! -name "*.so*" -exec cp {} /opt/emboss/bin/ \; 2>/dev/null || true
+        # Copy shared libraries
+        find emboss/.libs -type f -name "*.so*" -exec cp {} /opt/emboss/lib/ \; 2>/dev/null || true
     fi
-    # Also check other subdirectories that might have tools
-    for dir in ajax nucleus plplot; do
+
+    # Copy libraries from supporting directories
+    for dir in ajax nucleus plplot acd ajaxdb ensembl ajaxg; do
         if [ -d $dir/.libs ]; then
-            cp $dir/.libs/* /opt/emboss/bin/ 2>/dev/null || true
+            # Copy any executables
+            find $dir/.libs -type f -executable ! -name "*.so*" -exec cp {} /opt/emboss/bin/ \; 2>/dev/null || true
+            # Copy shared libraries
+            find $dir/.libs -type f -name "*.so*" -exec cp {} /opt/emboss/lib/ \; 2>/dev/null || true
         fi
     done
-    # Remove any non-executable files (like .la files)
-    find /opt/emboss/bin -type f ! -executable -delete 2>/dev/null || true
+
+    # Remove libtool archive files (.la)
+    find /opt/emboss/lib -name "*.la" -delete 2>/dev/null || true
+
+    # Set permissions
+    chmod 755 /opt/emboss/bin/* 2>/dev/null || true
+    chmod 755 /opt/emboss/lib/*.so* 2>/dev/null || true
+
     # Verify needle is present (critical for CRISPResso)
     if [ ! -f /opt/emboss/bin/needle ]; then
         echo "ERROR: needle binary not found after build"
@@ -103,8 +116,10 @@ From: alpine:3.15
         ls -la emboss/.libs/ | head -20 || true
         exit 1
     fi
-    chmod 755 /opt/emboss/bin/* 2>/dev/null || true
-    echo "INFO: EMBOSS installed - $(ls /opt/emboss/bin/ | wc -l) binaries including needle"
+
+    echo "INFO: EMBOSS installed"
+    echo "  Binaries: $(ls /opt/emboss/bin/ 2>/dev/null | wc -l)"
+    echo "  Libraries: $(ls /opt/emboss/lib/*.so* 2>/dev/null | wc -l)"
 
     # Build Samtools 1.9
     mkdir -p /tmp/samtools
@@ -204,6 +219,7 @@ EOF
 
 %environment
     export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso/bin:/opt/emboss/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/emboss/lib
 
 %labels
     Author nf-gene-editing-ngs
