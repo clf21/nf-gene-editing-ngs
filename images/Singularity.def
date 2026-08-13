@@ -76,9 +76,17 @@ From: alpine:3.15
         echo "ERROR: Could not download EMBOSS from any source"
         exit 1
     fi
-    ./configure --prefix=/opt/emboss --without-x
+    # Configure without X11 and disable problematic features
+    ./configure --prefix=/opt/emboss --without-x --disable-shared --enable-static
     make
-    make install
+    # Install binaries only, skip data file downloads that may fail
+    make install-exec || make install-binPROGRAMS install-binSCRIPTS
+    # Ensure needle is installed (minimum required for CRISPResso)
+    if [ ! -f /opt/emboss/bin/needle ]; then
+        echo "ERROR: needle not installed"
+        exit 1
+    fi
+    echo "INFO: EMBOSS needle installed successfully"
 
     # Build Samtools 1.9
     mkdir -p /tmp/samtools
