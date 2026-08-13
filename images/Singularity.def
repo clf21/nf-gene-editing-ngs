@@ -146,10 +146,13 @@ EOF
     fi
 
     # Run CRISPResso once to generate font cache
-    /opt/CRISPResso/bin/CRISPResso -h >/dev/null || true
+    # Add CRISPResso bin to PATH temporarily for build-time execution
+    export PATH=$PATH:/opt/CRISPResso/bin
+    /opt/CRISPResso/bin/CRISPResso -h >/dev/null 2>&1 || echo "INFO: Font cache generation skipped (will be created on first run)"
 
-    # Cleanup
-    rm -rf /tmp/*
+    # Skip cleanup - causes permission errors and increases image size slightly but ensures build succeeds
+    # This is expected behavior on HPC systems with --ignore-fakeroot-command
+    echo "INFO: Skipping cleanup to ensure successful build"
 
 %environment
     export PATH=$PATH:/opt/bowtie2/bin:/opt/CRISPResso/bin:/opt/samtools/bin:/opt/trimmomatic/bin:/opt/base-counts/bin
