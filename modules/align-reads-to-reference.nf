@@ -50,7 +50,7 @@ workflow alignReadsToReference {
 
     main:
         _alignReadsToReference(
-            file(params.bowtie2.dir),
+            params.bowtie2.dir,
             preparedReads
         )
         | set { passedAlignments }

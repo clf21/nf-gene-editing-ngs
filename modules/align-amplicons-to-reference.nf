@@ -33,7 +33,7 @@ workflow alignAmpliconsToReference {
 
     main:
         _alignAmpliconsToReference(
-            file(params.bowtie2.dir),
+            params.bowtie2.dir,
             ampliconsYaml
         )
         | set { aligned }
