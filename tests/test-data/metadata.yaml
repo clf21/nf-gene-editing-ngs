@@ -1,0 +1,20 @@
+experiment:
+  user: First Last <first.last@example.com>
+  experiment_name: Test experiment
+  experiment_date: 2025-05-02
+samples:
+  SRR16178872-AAVS1:
+    amplicons:
+      # Include only an amplicon not in the sample, should produce an error
+      - EMX1-edit
+  SRR11975752-ACTA2-EcoRI:
+    amplicons:
+      # Include only an amplicon present in the sample, should complete
+      # successfully with no automatic amplicon detection
+      - ACTA2.1-KI
+  SRR16179569-CCR5:
+    amplicons:
+      # Include an amplicon that is not present, should produce an error
+      - ACTA2.1-KI
+      # Also include an amplicon that is present, should complete successfully
+      - CCR5-1
