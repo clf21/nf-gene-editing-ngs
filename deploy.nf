@@ -39,7 +39,7 @@ workflow deploy {
             params._ref[params.genome].bowtie2._url
         ]])
         | _fetchRef
-        | reduce { _a, _b -> true }
+        | map { true }
         | set { isDeployed }
 
     emit:
