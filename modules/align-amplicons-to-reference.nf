@@ -7,7 +7,7 @@ process _alignAmpliconsToReference {
         // Bowtie2 Index Path
         // i.e., path containing `$BASENAME.*.bt2` files, where BASENAME is
         // taken from `prefix` in YAML config
-        path bt2IndexPath
+        val bt2IndexPath
 
         // Amplicons YAML Path
         path ampliconsYaml

@@ -12,7 +12,7 @@ process _alignReadsToReference {
         // Bowtie2 Index Path Prefix
         // i.e., path containing `$BASENAME.*.bt2` files, where BASENAME is
         // taken from `prefix` in YAML config
-        path bt2IndexPath
+        val bt2IndexPath
 
         // Input Read
         tuple val(meta),
