@@ -67,14 +67,19 @@ process _publishBaseCounts {
         if (baseCounts !instanceof List) { baseCounts = [ baseCounts ] }
 
         '''
-        # Output first file in full
-        cp "!{baseCounts.head()}" guide_position_base_counts.txt
+        # If no base counts available (tool not installed or all failed), create empty file
+        if [ !{baseCounts.size()} -eq 0 ]; then
+          echo "Sample\tAmplicon\tReadName\tPosition\tBase\tCount" > guide_position_base_counts.txt
+        else
+          # Output first file in full
+          cp "!{baseCounts.head()}" guide_position_base_counts.txt
 
-        # Concatenate subsequent files, without the header
-        declare -a TAIL=(!{baseCounts.tail().join(" ")})
-        for FILE in "${TAIL[@]}"; do
-          sed 1d "$FILE" >> guide_position_base_counts.txt
-        done
+          # Concatenate subsequent files, without the header
+          declare -a TAIL=(!{baseCounts.tail().join(" ")})
+          for FILE in "${TAIL[@]}"; do
+            sed 1d "$FILE" >> guide_position_base_counts.txt
+          done
+        fi
         '''
 }
 
@@ -115,5 +120,6 @@ workflow collectBaseCounts {
         baseCounts
         | collect(flat: false, sort: { a, b -> a[0] <=> b[0] }) // Sort by metadata for stable output
         | map { it.transpose()[1] }
+        | ifEmpty([])
         | _publishBaseCounts
 }
