@@ -26,16 +26,18 @@ process _fetchRef {
 
 workflow deploy {
     main:
-        // NOTE In the reduction step, we don't care about the returned
-        // values; we know the process succeeded by virtue of reaching
-        // this step. As such, this is just used as a synchronisation
-        // mechanism for when all references are downloaded.
-        Channel.fromList(params._ref.collect { refId, refInfo -> [
-            refId,
-            refInfo.bowtie2.dir,
-            refInfo.bowtie2.prefix,
-            refInfo.bowtie2._url
-        ]})
+        // Only fetch the genome specified by params.genome
+        // Check if the genome is defined in the reference configuration
+        if (!params._ref.containsKey(params.genome)) {
+            error "Genome '${params.genome}' is not defined in reference configuration. Available genomes: ${params._ref.keySet().join(', ')}"
+        }
+
+        Channel.fromList([[
+            params.genome,
+            params._ref[params.genome].bowtie2.dir,
+            params._ref[params.genome].bowtie2.prefix,
+            params._ref[params.genome].bowtie2._url
+        ]])
         | _fetchRef
         | reduce { _a, _b -> true }
         | set { isDeployed }
