@@ -24,6 +24,8 @@ class Utils {
     // Set reference parameters
     if (params.genome && params._ref.containsKey(params.genome)) {
       params.bowtie2 = params._ref[params.genome].bowtie2
+      // Convert bowtie2 dir to absolute path to ensure it works from any work directory
+      params.bowtie2.dir = Nextflow.file(params.bowtie2.dir).toString()
     } else {
       usage(workflow, params, "No or invalid reference ID provided!")
     }
