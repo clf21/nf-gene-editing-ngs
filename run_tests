@@ -25,7 +25,7 @@ fi
 # Default image name
 declare IMAGE="${IMAGE-nf-gene-editing-ngs}"
 declare TAG="${TAG-latest}"
-declare GENA_IMAGE
+declare GENA_IMAGE="${GENA_IMAGE-}"
 
 declare EXECUTOR="local"
 declare CONTAINER
@@ -85,11 +85,14 @@ if has docker; then
 elif has singularity; then
   CONTAINER="singularity"
 
-  # Use a local image, if it exists, otherwise default to Artifactory
-  if [[ -e "${IMAGE%*.sif}.sif" ]]; then
-    GENA_IMAGE="$(realpath "${IMAGE%*.sif}.sif")"
-  else
-    GENA_IMAGE="artifacts.example.com/functional-genomics/${IMAGE}:${TAG}"
+  # Only auto-detect image if GENA_IMAGE not already set
+  if [[ -z "${GENA_IMAGE}" ]]; then
+    # Use a local image, if it exists, otherwise default to Artifactory
+    if [[ -e "${IMAGE%*.sif}.sif" ]]; then
+      GENA_IMAGE="$(realpath "${IMAGE%*.sif}.sif")"
+    else
+      GENA_IMAGE="artifacts.example.com/functional-genomics/${IMAGE}:${TAG}"
+    fi
   fi
 
 else
