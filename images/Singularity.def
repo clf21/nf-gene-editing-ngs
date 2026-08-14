@@ -77,47 +77,36 @@ From: alpine:3.15
         exit 1
     fi
     # Configure and build
-    ./configure --prefix=/opt/emboss --without-x --disable-shared --enable-static
+    echo "INFO: Configuring EMBOSS"
+    ./configure --prefix=/opt/emboss --without-x
+
+    echo "INFO: Building EMBOSS (this may take 10-15 minutes)"
     make
-    # Manual install: copy binaries AND shared libraries from .libs directories
-    # Skip 'make install' to avoid install-exec-hook that downloads data files
-    mkdir -p /opt/emboss/bin /opt/emboss/lib /opt/emboss/share/EMBOSS
-    echo "INFO: Installing EMBOSS binaries and libraries manually from .libs directories"
 
-    # Copy binaries from emboss/.libs/
-    if [ -d emboss/.libs ]; then
-        # Copy executables
-        find emboss/.libs -type f -executable ! -name "*.so*" -exec cp {} /opt/emboss/bin/ \; 2>/dev/null || true
-        # Copy shared libraries
-        find emboss/.libs -type f -name "*.so*" -exec cp {} /opt/emboss/lib/ \; 2>/dev/null || true
-    fi
+    # Patch Makefile to remove problematic install-exec-hook
+    # The hook tries to download data files which fails in restricted networks
+    echo "INFO: Patching Makefile to remove install-exec-hook"
+    sed -i '/install-exec-hook:/,/^$/d' Makefile
 
-    # Copy libraries from supporting directories
-    for dir in ajax nucleus plplot acd ajaxdb ensembl ajaxg; do
-        if [ -d $dir/.libs ]; then
-            # Copy any executables
-            find $dir/.libs -type f -executable ! -name "*.so*" -exec cp {} /opt/emboss/bin/ \; 2>/dev/null || true
-            # Copy shared libraries
-            find $dir/.libs -type f -name "*.so*" -exec cp {} /opt/emboss/lib/ \; 2>/dev/null || true
-        fi
-    done
-
-    # Remove libtool archive files (.la)
-    find /opt/emboss/lib -name "*.la" -delete 2>/dev/null || true
-
-    # Set permissions
-    chmod 755 /opt/emboss/bin/* 2>/dev/null || true
-    chmod 755 /opt/emboss/lib/*.so* 2>/dev/null || true
+    # Now install normally - this will copy binaries and libraries with proper symlinks
+    echo "INFO: Installing EMBOSS to /opt/emboss"
+    make install
 
     # Verify needle is present (critical for CRISPResso)
     if [ ! -f /opt/emboss/bin/needle ]; then
-        echo "ERROR: needle binary not found after build"
-        echo "Contents of emboss/.libs:"
-        ls -la emboss/.libs/ | head -20 || true
+        echo "ERROR: needle binary not found after installation"
+        ls -la /opt/emboss/bin/ | head -20 || true
         exit 1
     fi
 
-    echo "INFO: EMBOSS installed"
+    # Verify libraries were installed
+    if [ ! -d /opt/emboss/lib ] || [ -z "$(ls -A /opt/emboss/lib/*.so* 2>/dev/null)" ]; then
+        echo "ERROR: EMBOSS libraries not found after installation"
+        ls -la /opt/emboss/lib/ 2>/dev/null || true
+        exit 1
+    fi
+
+    echo "INFO: EMBOSS installation complete"
     echo "  Binaries: $(ls /opt/emboss/bin/ 2>/dev/null | wc -l)"
     echo "  Libraries: $(ls /opt/emboss/lib/*.so* 2>/dev/null | wc -l)"
 
