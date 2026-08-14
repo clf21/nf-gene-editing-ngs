@@ -66,21 +66,24 @@ process _publishBaseCounts {
         // used to supersede this manual check.
         if (baseCounts !instanceof List) { baseCounts = [ baseCounts ] }
 
-        '''
-        # If no base counts available (tool not installed or all failed), create empty file
-        if [ !{baseCounts.size()} -eq 0 ]; then
-          echo "Sample\tAmplicon\tReadName\tPosition\tBase\tCount" > guide_position_base_counts.txt
-        else
-          # Output first file in full
-          cp "!{baseCounts.head()}" guide_position_base_counts.txt
+        // Handle empty list case
+        if (baseCounts.isEmpty()) {
+            '''
+            # No base counts available (tool not installed or all failed)
+            echo -e "Sample\\tAmplicon\\tReadName\\tPosition\\tBase\\tCount" > guide_position_base_counts.txt
+            '''
+        } else {
+            '''
+            # Output first file in full
+            cp "!{baseCounts.head()}" guide_position_base_counts.txt
 
-          # Concatenate subsequent files, without the header
-          declare -a TAIL=(!{baseCounts.tail().join(" ")})
-          for FILE in "${TAIL[@]}"; do
-            sed 1d "$FILE" >> guide_position_base_counts.txt
-          done
-        fi
-        '''
+            # Concatenate subsequent files, without the header
+            declare -a TAIL=(!{baseCounts.tail().join(" ")})
+            for FILE in "${TAIL[@]}"; do
+              sed 1d "$FILE" >> guide_position_base_counts.txt
+            done
+            '''
+        }
 }
 
 workflow countGuidePositionBases {
