@@ -33,10 +33,17 @@ skipped() {
 
 # Check if computeBaseCounts tool is available before running
 if ! command -v computeBaseCounts &> /dev/null; then
-  # Tool not installed - create empty output file with header
-  # Extract amplicon name from YAML file
-  AMPLICON_NAME=$(grep -m1 "^name:" "!{ampliconYaml}" | sed 's/name: *//' | tr -d '"' | tr -d "'")
-  echo -e "Sample\tAmplicon\tReadName\tPosition\tBase\tCount" > "!{samplePrefix}_${AMPLICON_NAME}_baseCounts.txt"
+  # Tool not installed - check if we have valid data to process
+  # Count reads in BAM file - if 0, this is an error case (no matching reads)
+  READ_COUNT=$(samtools view -c "!{sampleBam}")
+  if [ "$READ_COUNT" -eq 0 ]; then
+    # No reads in BAM - this is an error (amplicon not in sample)
+    failed >error.yaml
+  else
+    # Tool not installed but data is valid - create empty output file with header
+    AMPLICON_NAME=$(grep -m1 "^name:" "!{ampliconYaml}" | sed 's/name: *//' | tr -d '"' | tr -d "'")
+    echo -e "Sample\tAmplicon\tReadName\tPosition\tBase\tCount" > "!{samplePrefix}_${AMPLICON_NAME}_baseCounts.txt"
+  fi
 elif count-guide-bases; then
   # Tool ran successfully
   if ! output-exists *_baseCounts.txt; then
