@@ -31,20 +31,18 @@ skipped() {
 	YAML
 }
 
-if count-guide-bases; then
+# Check if computeBaseCounts tool is available before running
+if ! command -v computeBaseCounts &> /dev/null; then
+  # Tool not installed - create empty output file with header
+  # Extract amplicon name from YAML file
+  AMPLICON_NAME=$(grep -m1 "^name:" "!{ampliconYaml}" | sed 's/name: *//' | tr -d '"' | tr -d "'")
+  echo -e "Sample\tAmplicon\tReadName\tPosition\tBase\tCount" > "!{samplePrefix}_${AMPLICON_NAME}_baseCounts.txt"
+elif count-guide-bases; then
+  # Tool ran successfully
   if ! output-exists *_baseCounts.txt; then
     skipped >skipped.yaml
   fi
 else
-  EXIT_CODE=$?
-  # Exit code 127 means command not found
-  if [ $EXIT_CODE -eq 127 ]; then
-    # Tool not installed - create empty output file with header
-    # Extract amplicon name from YAML file
-    AMPLICON_NAME=$(grep -m1 "^name:" "!{ampliconYaml}" | sed 's/name: *//' | tr -d '"' | tr -d "'")
-    echo -e "Sample\tAmplicon\tReadName\tPosition\tBase\tCount" > "!{samplePrefix}_${AMPLICON_NAME}_baseCounts.txt"
-  else
-    # Tool is installed but failed, or other error - report error
-    failed >error.yaml
-  fi
+  # Tool exists but failed - report error
+  failed >error.yaml
 fi
